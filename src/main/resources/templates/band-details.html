@@ -10,7 +10,7 @@
     <span th:text="|Band name: *{name} |">Band name</span>
     <th:block th:each="m : *{members}">
         <div>
-            <span th:text="|${m.username} plays ${m.instrumentEnum}|"></span>
+            <span th:text="|${m.username} plays th ${m.instrumentEnum}|"></span>
         </div>
     </th:block>
     <th:block th:if="*{producer}">
