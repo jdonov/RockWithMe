@@ -153,4 +153,11 @@ public class BandServiceImpl implements BandService {
         band.setProducer(user);
         this.bandRepository.save(band);
     }
+
+    @Override
+    public void addEvent(Event event, String bandId) {
+        Band band = this.bandRepository.findById(bandId).orElse(null);
+        band.getEvents().add(event);
+        this.bandRepository.save(band);
+    }
 }

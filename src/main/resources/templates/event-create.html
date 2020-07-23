@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create event</title>
+</head>
+<body>
+
+<div>
+    <form th:object="${createEvent}" th:action="@{/bands/events/create}" th:method="POST">
+        <input type="hidden" th:field="*{bandId}">
+        <div>
+            <label for="public">Public </label>
+            <input type="radio" id="public" name="eventType" th:value="${T(rockwithme.app.model.entity.EventType).PUBLIC}"/>
+            <label for="private">Private </label>
+            <input type="radio" id="private" name="eventType" th:value="${T(rockwithme.app.model.entity.EventType).MEMBERS_ONLY}" checked/>
+        </div>
+        <div>
+            <label for="event-category">Event category:</label>
+            <select id="event-category" name="eventCategory">
+                <option value="">Select event category</option>
+                <th:block th:each="c : ${T(rockwithme.app.model.entity.EventCategory).values()}">
+                    <option th:text="${c.name()}" th:value="${c}"></option>
+                </th:block>
+            </select>
+        </div>
+        <div>
+            <label for="date-time">Date time</label>
+            <input type="datetime-local" id="date-time" name="eventDate">
+        </div>
+
+        <div>
+            <label for="description">Enter event description</label>
+            <textarea id="description" name="description"></textarea>
+        </div>
+        <input type="submit" value="Create event"/>
+    </form>
+</div>
+</body>
+</html>

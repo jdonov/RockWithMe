@@ -79,6 +79,9 @@ public class BandController {
 
     @GetMapping("/myBands/{id}")
     public String getMyBandDetails(@PathVariable(name = "id") String id, Model model, Authentication authentication) {
+
+        //TODO list band events with links
+
         BandMyBandDetailsDTO myBandDetailsDTOS = this.bandService.getMyBandDetails(id);
         model.addAttribute("myBand", this.bandService.getMyBandDetails(id));
         return "my-band-details";

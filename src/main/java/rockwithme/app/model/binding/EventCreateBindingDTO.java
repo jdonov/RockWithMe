@@ -1,25 +1,22 @@
-package rockwithme.app.model.entity;
+package rockwithme.app.model.binding;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import rockwithme.app.model.entity.Band;
+import rockwithme.app.model.entity.EventCategory;
+import rockwithme.app.model.entity.EventType;
 
-import javax.persistence.*;
-import javax.validation.constraints.Future;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "events")
-public class Event extends BaseEntity {
-    //TODO add scheduler to delete old events!
+public class EventCreateBindingDTO {
     private EventType eventType;
     private EventCategory eventCategory;
     private LocalDateTime eventDate;
     private String description;
-    private Band band;
+    private String bandId;
 
-    public Event() {
+    public EventCreateBindingDTO() {
     }
 
-    @Column(name = "event_type", nullable = false)
     public EventType getEventType() {
         return eventType;
     }
@@ -28,7 +25,6 @@ public class Event extends BaseEntity {
         this.eventType = eventType;
     }
 
-    @Column(name = "event_category", nullable = false)
     public EventCategory getEventCategory() {
         return eventCategory;
     }
@@ -37,9 +33,7 @@ public class Event extends BaseEntity {
         this.eventCategory = eventCategory;
     }
 
-    @Column(name = "event_date", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    @Future(message = "The event can not be in the past!")
     public LocalDateTime getEventDate() {
         return eventDate;
     }
@@ -48,7 +42,6 @@ public class Event extends BaseEntity {
         this.eventDate = eventDate;
     }
 
-    @Column(name = "description", columnDefinition = "TEXT")
     public String getDescription() {
         return description;
     }
@@ -57,13 +50,11 @@ public class Event extends BaseEntity {
         this.description = description;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "band_id", referencedColumnName = "id")
-    public Band getBand() {
-        return band;
+    public String getBandId() {
+        return bandId;
     }
 
-    public void setBand(Band band) {
-        this.band = band;
+    public void setBandId(String bandId) {
+        this.bandId = bandId;
     }
 }

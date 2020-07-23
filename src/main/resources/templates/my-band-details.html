@@ -17,7 +17,7 @@
                 <th:block th:if="*{isBecomeProducer()}">
                     <span>Wants to become a producer</span>
                 </th:block>
-                <span th:type="*{isClosed()} ? 'The request is closed!' : 'The request is open!'">
+                <span th:text="*{isClosed()} ? 'The request is closed!' : 'The request is open!'"></span>
             </a>
             <th:block th:unless="*{isClosed()}">
                 <form th:action="@{/bands/add/{request}(request=${r.id})}" th:method="POST">
@@ -30,6 +30,9 @@
             </th:block>
         </div>
     </th:block>
+    <div>
+        <a th:href="@{/bands/events/create(bandId=*{id})}">Create event</a>
+    </div>
 </div>
 
 </body>

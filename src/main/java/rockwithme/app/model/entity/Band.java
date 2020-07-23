@@ -23,6 +23,7 @@ public class Band extends BaseEntity {
     private Town town;
     private String description;
     private Set<JoinRequest> requests;
+    private Set<Event> events;
     private boolean needMembers;
 
     public Band() {
@@ -31,6 +32,7 @@ public class Band extends BaseEntity {
         this.styles = new HashSet<>();
         this.goals = new HashSet<>();
         this.requests = new HashSet<>();
+        this.events = new HashSet<>();
     }
 
     @Column(name = "name", nullable = false, unique = true)
@@ -139,6 +141,15 @@ public class Band extends BaseEntity {
 
     public void setRequests(Set<JoinRequest> requests) {
         this.requests = requests;
+    }
+
+    @OneToMany(fetch = FetchType.EAGER)
+    public Set<Event> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<Event> events) {
+        this.events = events;
     }
 
     @Column(name = "needs_members")

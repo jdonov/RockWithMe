@@ -8,7 +8,7 @@ import rockwithme.app.model.entity.Town;
 import java.util.List;
 import java.util.Set;
 
-public class BandMyBandDetailsDTO {
+public class BandMyBandDetailsDTO extends BaseServiceModel{
     private String name;
     private List<PlayerSkillsBandMemberDTO> members;
     private List<InstrumentEnum> instruments;
