@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div>
+    <th:block th:object="${userPublicDetails}">
+        <h2 th:text="*{username}"></h2>
+        <img th:src="*{imgUrl}">
+        <br>
+        <span th:text="|First name: *{firstName}|"></span>
+        <br>
+        <span th:text="|Last name: *{lastName}|"></span>
+        <br>
+        <span th:text="|From *{town}|"></span>
+        <br>
+        <span th:text="|Age *{age}|"></span>
+        <h4>Plays in: </h4>
+        <th:block th:each="b : ${userPublicDetails.bands}">
+            <ul>
+                <a th:href="@{/bands/details/{id}(id=${b.id})}">
+                    <li th:text="${b.name}"></li>
+                </a>
+            </ul>
+        </th:block>
+    </th:block>
+</div>
+
+</body>
+</html>

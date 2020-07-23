@@ -7,15 +7,21 @@
 <body>
 <form method="post" th:object="${userUpdateDTO}" th:action="@{/users/update}" enctype="multipart/form-data">
     <div>
-        <label for="firstName">First Name</label>
+        <span th:text="|First name: ${userMyDetailsDTO.firstName}|"></span>
+        <br>
+        <label for="firstName">Change first name</label>
         <input th:field="*{firstName}" type="text" name="firstName" id="firstName"/>
     </div>
     <div>
-        <label for="firstName">Last Name</label>
+        <span th:text="|Last name: ${userMyDetailsDTO.lastName}|"></span>
+        <br>
+        <label for="firstName">Change last name</label>
         <input th:field="*{lastName}" type="text" name="lastName" id="lastName"/>
     </div>
     <div>
-        <label for="town">Towns</label>
+        <span th:text="|Town: ${userMyDetailsDTO.town.name()}|"></span>
+        <br>
+        <label for="town">Change town:</label>
         <select th:field="*{town}" name="town" id="town">
             <option value="">Select Town</option>
             <th:block th:each="t : ${T(rockwithme.app.model.entity.Town).values()}">
@@ -24,7 +30,9 @@
         </select>
     </div>
     <div>
-        <label for="age">Enter age:</label>
+        <span th:text="|Age: ${userMyDetailsDTO.age}|"></span>
+        <br>
+        <label for="age">Update age:</label>
         <input th:field="*{age}" type="number" name="age" id="age"/>
     </div>
 
@@ -33,10 +41,17 @@
     </div>
 
     <input type="submit" value="Update player">
-
-
-    <!--    private Set<PlayerSkillsAddDTO> playerSkills;-->
-
 </form>
+<div>
+<form th:object="${changePassword}" th:method="POST" th:action="@{/users/changePass}">
+    <label for="oldPassword">Enter current password:</label>
+    <input id="oldPassword" type="password" th:field="*{oldPassword}">
+    <label for="newPassword">Enter new password:</label>
+    <input id="newPassword" type="password" th:field="*{newPassword}">
+    <label for="confirmNewPassword">Confirm new password:</label>
+    <input id="confirmNewPassword" type="password" th:field="*{confirmNewPassword}">
+    <input type="submit" value="Change password">
+</form>
+</div>
 </body>
 </html>

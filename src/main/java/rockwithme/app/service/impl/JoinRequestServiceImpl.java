@@ -83,4 +83,12 @@ public class JoinRequestServiceImpl implements JoinRequestService {
         this.userService.addBand(user, band);
         this.joinRequestRepository.save(joinRequest);
     }
+
+    @Override
+    public void rejectRequest(String requestId) {
+        JoinRequest joinRequest = this.joinRequestRepository.findById(requestId).orElse(null);
+        joinRequest.setApproved(false);
+        joinRequest.setClosed(true);
+        this.joinRequestRepository.save(joinRequest);
+    }
 }

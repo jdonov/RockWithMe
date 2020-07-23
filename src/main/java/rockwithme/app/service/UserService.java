@@ -7,6 +7,8 @@ import rockwithme.app.model.binding.UserUpdateDTO;
 import rockwithme.app.model.entity.Band;
 import rockwithme.app.model.entity.JoinRequest;
 import rockwithme.app.model.entity.User;
+import rockwithme.app.model.service.UserMyDetailsServiceDTO;
+import rockwithme.app.model.service.UserPublicDetailsServiceDTO;
 
 import java.util.List;
 
@@ -22,5 +24,13 @@ public interface UserService extends UserDetailsService {
     void updatePlayer(UserUpdateDTO userUpdateDTO);
 
     void addRequest(User user, JoinRequest request);
+
+    UserMyDetailsServiceDTO getUserDetailsByUsername(String username);
+
+    UserPublicDetailsServiceDTO getUserPublicDetailsById(String userId);
+
+    boolean checkIfValidOldPassword(String username, String password);
+
+    void changeUserPassword(String username, String password);
 
 }

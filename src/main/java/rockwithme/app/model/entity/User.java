@@ -54,7 +54,7 @@ public class User extends BaseEntity{
     }
 
     @Column(name = "password", nullable = false)
-    @Length(min = 2, message = "Password must be at least 2 characters!")
+    @Length(min = 3, message = "Password must be at least 3 characters!")
     public String getPassword() {
         return password;
     }

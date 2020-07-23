@@ -17,8 +17,10 @@ import rockwithme.app.model.entity.Band;
 import rockwithme.app.model.entity.JoinRequest;
 import rockwithme.app.model.entity.Role;
 import rockwithme.app.model.entity.User;
+import rockwithme.app.model.service.BandUserBandsServiceDTO;
+import rockwithme.app.model.service.UserMyDetailsServiceDTO;
+import rockwithme.app.model.service.UserPublicDetailsServiceDTO;
 import rockwithme.app.repository.UserRepository;
-import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
 
 import java.util.List;
@@ -97,7 +99,7 @@ public class UserServiceImpl implements UserService {
         if (userUpdateDTO.getAge() > 0) {
             user.setAge(userUpdateDTO.getAge());
         }
-        if (!userUpdateDTO.getImgUrl().isEmpty()) {
+        if (userUpdateDTO.getImgUrl() != null && !userUpdateDTO.getImgUrl().isEmpty()) {
             user.setImgUrl(userUpdateDTO.getImgUrl());
         }
         if (userUpdateDTO.getTown() != null) {
@@ -106,6 +108,33 @@ public class UserServiceImpl implements UserService {
         if (user != null) {
             this.userRepository.saveAndFlush(user);
         }
+    }
+
+    @Override
+    public UserMyDetailsServiceDTO getUserDetailsByUsername(String username) {
+        User user = this.userRepository.findByUsername(username).orElse(null);
+        return this.modelMapper.map(user, UserMyDetailsServiceDTO.class);
+    }
+
+    @Override
+    public UserPublicDetailsServiceDTO getUserPublicDetailsById(String userId) {
+        User user = this.userRepository.findById(userId).orElse(null);
+        UserPublicDetailsServiceDTO userPublic = this.modelMapper.map(user, UserPublicDetailsServiceDTO.class);
+        return userPublic;
+    }
+
+    @Override
+    public boolean checkIfValidOldPassword(String username, String password) {
+        User user = this.userRepository.findByUsername(username).orElse(null);
+        return this.passwordEncoder.matches(password, user.getPassword());
+    }
+
+    @Override
+    public void changeUserPassword(String username, String password) {
+        User user = this.userRepository.findByUsername(username).orElse(null);
+        user.setPassword(this.passwordEncoder.encode(password));
+        this.userRepository.saveAndFlush(user);
+
     }
 
     private UserDetails map(User user) {

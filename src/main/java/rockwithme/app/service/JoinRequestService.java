@@ -12,4 +12,6 @@ public interface JoinRequestService {
     List<JoinRequestServiceDTO> getRequestByUserId(String id);
 
     void approveRequest(String requestId);
+
+    void rejectRequest(String requestId);
 }

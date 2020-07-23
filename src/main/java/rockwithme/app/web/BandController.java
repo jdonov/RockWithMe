@@ -97,10 +97,15 @@ public class BandController {
     }
 
     @PostMapping("/add/{request}")
-    public String addMember(@PathVariable(name = "request") String requestId) {
+    public String addMember(@PathVariable(name = "request") String requestId, @RequestParam("addMember") boolean addMember) {
+        if(addMember) {
         this.joinRequestService.approveRequest(requestId);
+        } else {
+            this.joinRequestService.rejectRequest(requestId);
+        }
         return "redirect:/bands/myBands";
     }
+
 
     //TODO reject request
 
