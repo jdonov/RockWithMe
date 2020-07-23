@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<th:block th:each="b : ${myBands}">
+    <div>
+        <a th:href="@{/bands/myBands/{id}(id=${b.id})}">
+        <span th:text="|Band name: ${b.name}, requests to join: ${b.newRequests}|"></span>
+        </a>
+    </div>
+</th:block>
+</body>
+</html>

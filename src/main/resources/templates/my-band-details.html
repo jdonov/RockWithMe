@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:object="${myBand}">
+    <p th:text="*{name}"></p>
+    <th:block th:each="r : ${myBand.requests}" th:object="${r}">
+        <a th:href="@{/users/details(id=${r.getUserId()})}">
+            <span th:text="|Player username: *{username} |"></span>
+            <span th:text="|Applies for *{instrument} |"></span>
+        </a>
+        <th:block th:unless="*{isClosed()}">
+            <form th:action="@{/bands/add/{request}(request=${r.id})}" th:method="POST">
+                <input type="submit" th:value="ADD">
+            </form>
+        </th:block>
+    </th:block>
+</div>
+
+</body>
+</html>

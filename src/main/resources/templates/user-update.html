@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="post" th:object="${userUpdateDTO}" th:action="@{/users/update}" enctype="multipart/form-data">
+    <div>
+        <label for="firstName">First Name</label>
+        <input th:field="*{firstName}" type="text" name="firstName" id="firstName"/>
+    </div>
+    <div>
+        <label for="firstName">Last Name</label>
+        <input th:field="*{lastName}" type="text" name="lastName" id="lastName"/>
+    </div>
+    <div>
+        <label for="town">Towns</label>
+        <select th:field="*{town}" name="town" id="town">
+            <option value="">Select Town</option>
+            <th:block th:each="t : ${T(rockwithme.app.model.entity.Town).values()}">
+                <option th:text="${t.name()}" th:value="${t}"></option>
+            </th:block>
+        </select>
+    </div>
+    <div>
+        <label for="age">Enter age:</label>
+        <input th:field="*{age}" type="number" name="age" id="age"/>
+    </div>
+
+    <div>
+        <input type="file" id="file" name="file" class="custom-file-input" th:value="*{imgUrl}"/>
+    </div>
+
+    <input type="submit" value="Update player">
+
+
+    <!--    private Set<PlayerSkillsAddDTO> playerSkills;-->
+
+</form>
+</body>
+</html>

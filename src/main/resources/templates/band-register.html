@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form >
+    <div>
+        <label for="name">Band name</label>
+        <input type="text" name="name" id="name">
+    </div>
+    <div>
+        <label for="instrument">Instrument</label>
+        <select id="instrument" name="instrument">
+            <option value="">Select instrument</option>
+            <th:block th:each="i : ${T(rockwithme.app.model.entity.InstrumentEnum).values()}">
+                <option th:text="${i.name()}" th:value="${i}">Food</option>
+            </th:block>
+        </select>
+        <div id="instrumentsContainer"></div>
+    </div>
+    <div>
+        <label for="style">Style</label>
+        <select id="style" name="style">
+            <option value="">Select Style</option>
+            <th:block th:each="s : ${T(rockwithme.app.model.entity.Style).values()}">
+                <option th:text="${s.name()}" th:value="${s}">Food</option>
+            </th:block>
+        </select>
+        <div id="stylesContainer"></div>
+    </div>
+    <div>
+        <input type="radio" id="hasStudio" name="hasStudio" value="true">
+        <label for="hasStudio">Has Studio</label>
+        <input type="radio" id="noStudio" name="hasStudio" value="false" checked>
+        <label for="noStudio">No studio</label>
+    </div>
+    <div>
+        <input type="radio" id="needsProducer" name="needsProducer" value="true">
+        <label for="needsProducer">Needs Producer</label>
+        <input type="radio" id="noNeedsProducer" name="needsProducer" value="false" checked>
+        <label for="noNeedsProducer">Doesn't need producer</label>
+    </div>
+    <div>
+        <label for="goal">Goals</label>
+        <select id="goal" name="goal">
+            <option value="">Select Goal</option>
+            <th:block th:each="g : ${T(rockwithme.app.model.entity.Goal).values()}">
+                <option th:text="${g.name()}" th:value="${g}">Food</option>
+            </th:block>
+        </select>
+        <div id="goalsContainer"></div>
+    </div>
+    <div>
+        <label for="town">Town</label>
+        <select id="town" name="town">
+            <option value="">Select Town</option>
+            <th:block th:each="t : ${T(rockwithme.app.model.entity.Town).values()}">
+                <option th:text="${t.name()}" th:value="${t}">Food</option>
+            </th:block>
+        </select>
+    </div>
+    <div>
+        <label for="founder-instrument">Founder instrument:</label>
+        <select id="founder-instrument" name="founderInstrument">
+            <option value="">Select your instrument</option>
+            <th:block th:each="i : ${founderInstruments}">
+                <option th:text="${i.name()}" th:value="${i}">Food</option>
+            </th:block>
+        </select>
+    </div>
+    <div>
+        <label for="description">Description</label>
+        <input type="text" name="description" id="description">
+    </div>
+    <button id="btnRegister">Register Band</button>
+</form>
+<script src="../js/registerBand.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Title</title>
+</head>
+<body>
+<div th:object="${bandDetails}">
+    <span th:text="|Band name: *{name} |">Band name</span>
+    <th:block th:each="m : *{members}">
+        <div>
+            <span th:text="|${m.username} plays ${m.instrumentEnum}|"></span>
+        </div>
+    </th:block>
+    <span th:each="s : *{styles}" th:text="${s} "></span>
+    <span th:each="g : *{goals}" th:text="${g} "></span>
+    <span th:text="|Town: *{town}, |"></span>
+    <br>
+    <span th:text="*{needMembers} ? 'The band needs members for:' : 'The band is full'"/>
+    <th:block th:if="*{needMembers}">
+        <p th:each="i : *{getInstrumentsNeeded()}" th:text="${i.name()}"></p>
+    </th:block>
+    <th:block th:unless="${inMyBands}">
+        <div>
+            <button id="join-band" type="submit">Join the band</button>
+        </div>
+        <div id="join" class="hidden">
+            <form th:object="${joinBand}" th:action="@{/bands/join}" th:method="POST">
+                <input type="hidden" name="bandId" th:value="${bandDetails.id}">
+                <select th:field="*{instrument}" name="instrument">
+                    <option value="">Select instrument</option>
+                    <th:block th:each="i : ${bandDetails.getInstrumentsNeeded()}">
+                        <option th:text="${i.name()}" th:value="${i}"></option>
+                    </th:block>
+                </select>
+                <textarea th:field="*{description}" name="description"></textarea>
+                <input type="submit" value="Request to join"/>
+            </form>
+        </div>
+    </th:block>
+    <th:block th:if="${inMyBands}">
+        <p>You are member of the band!</p>
+    </th:block>
+</div>
+<script type="text/javascript" th:src="@{/js/joinBand.js}"></script>
+</body>
+</html>

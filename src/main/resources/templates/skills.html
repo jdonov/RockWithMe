@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Title</title>
+</head>
+<body>
+<h1>Hello, <span th:text="${user}">User name</span>!</h1>
+<p sec:authorize="hasAuthority('ADMIN')">Good job</p>
+<button type="button" id="test">Get Skills</button>
+<div id="info">
+
+</div>
+<div>
+    <th:block th:object="${currentPlayerSkills}" th:each="p : ${currentPlayerSkills}">
+        <form th:object="${p}" th:method="POST" th:action="@{/skills/update}">
+            <div>
+                <span th:text="|Instrument: *{instrument}|"></span>
+                <input id="instr" type="hidden" th:name="instrument" th:value="*{instrument}"/>
+                <span>Level </span>
+                <select th:name="level">
+                    <!--<option th:text="*{level.name()}" value=""></option>-->
+                    <th:block th:each="l : ${T(rockwithme.app.model.entity.Level).values()}">
+                        <option th:text="${l.name()}" th:selected="${l} == *{level}" th:value="${l}" ></option>
+                    </th:block>
+                </select>
+                <label for="y-playing">Years playing</label>
+                <input th:name="yearsPlaying" id="y-playing" type="number" th:placeholder="*{yearsPlaying}" th:value="*{yearsPlaying}"/>
+                <label for="b-played">Years playing</label>
+                <input th:name="bandPlayed" id="b-played" type="number" th:placeholder="*{bandPlayed}" th:value="*{bandPlayed}"/>
+                <input type="submit" value="Update"/>
+            </div>
+        </form>
+    </th:block>
+</div>
+<button id="addSkills">Add new skills</button>
+<div id="add-skills" class="hidden">
+    <form th:object="${addPlayerSkill}" th:action="@{/skills}" th:method="POST">
+        <div>
+            <label for="instrument">Instrument</label>
+            <select name="instrument" id="instrument">
+                <option value="">Select Instrument</option>
+                <th:block th:each="i : ${T(rockwithme.app.model.entity.InstrumentEnum).values()}">
+                    <th:block th:unless="${#lists.contains(currentInstruments, i)}">
+                        <option th:text="${i.name()}" th:value="${i}"></option>
+                    </th:block>
+                </th:block>
+            </select>
+            <div id="instrumentsContainer"></div>
+        </div>
+        <div>
+            <label for="level">Level</label>
+            <select name="level" id="level">
+                <option value="">Select Level</option>
+                <th:block th:each="l : ${T(rockwithme.app.model.entity.Level).values()}">
+                    <option th:text="${l.name()}" th:value="${l}"></option>
+                </th:block>
+            </select>
+        </div>
+        <div>
+            <label for="years-playing">Years Playing</label>
+            <input type="number" name="yearsPlaying" th:value="0" id="years-playing"/>
+
+            <label for="bands-played">Bands Played</label>
+            <input type="number" name="bandPlayed" th:value="0" id="bands-played"/>
+        </div>
+        <input id="prevent" type="submit" value="Add new skill"/>
+    </form>
+</div>
+<script type="text/javascript" th:src="@{/js/skills.js}"></script>
+</body>
+</html>
