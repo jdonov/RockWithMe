@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import rockwithme.app.exeption.NotRequiredSkills;
 import rockwithme.app.model.binding.JoinRequestBindingDTO;
+import rockwithme.app.model.binding.JoinRequestProducerBindingDTO;
 import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.JoinRequestServiceDTO;
 import rockwithme.app.model.service.PlayerSkillsServiceDTO;
@@ -39,6 +40,9 @@ public class JoinRequestServiceImpl implements JoinRequestService {
         JoinRequest joinRequest = this.modelMapper.map(joinRequestBindingDTO, JoinRequest.class);
         Band band = this.bandService.getBandById(joinRequestBindingDTO.getBandId());
         User user = this.userService.getUserByUsername(joinRequestBindingDTO.getUsername());
+        if (joinRequestBindingDTO.getInstrument() == null) {
+            throw new NotRequiredSkills("Instrument is required");
+        }
         List<InstrumentEnum> playerSkills = this.playerSkillsService.getByPlayerId(user.getId()).stream().map(PlayerSkillsServiceDTO::getInstrument).collect(Collectors.toList());
         if (playerSkills.contains(joinRequestBindingDTO.getInstrument())) {
             joinRequest.setBand(band);
@@ -52,12 +56,24 @@ public class JoinRequestServiceImpl implements JoinRequestService {
     }
 
     @Override
+    public void submitJoinRequestProducer(JoinRequestProducerBindingDTO joinRequestProducer) {
+        JoinRequest joinRequest = this.modelMapper.map(joinRequestProducer, JoinRequest.class);
+        Band band = this.bandService.getBandById(joinRequestProducer.getBandId());
+        User user = this.userService.getUserByUsername(joinRequestProducer.getUsername());
+        joinRequest.setBand(band);
+        joinRequest.setUser(user);
+        joinRequest = this.joinRequestRepository.saveAndFlush(joinRequest);
+        this.userService.addRequest(user, joinRequest);
+        this.bandService.addRequest(band, joinRequest);
+    }
+
+    @Override
     public List<JoinRequestServiceDTO> getRequestByBandId(String id) {
         List<JoinRequest> joinRequests = this.joinRequestRepository.findByBand_Id(id);
         List<JoinRequestServiceDTO> requests = joinRequests.stream()
                 .map(r -> this.modelMapper.map(r, JoinRequestServiceDTO.class))
                 .collect(Collectors.toList());
-        return null;
+        return requests;
     }
 
     @Override
@@ -75,11 +91,16 @@ public class JoinRequestServiceImpl implements JoinRequestService {
         JoinRequest joinRequest = this.joinRequestRepository.findById(requestId).orElse(null);
         Band band = this.bandService.getBandById(joinRequest.getBand().getId());
         User user = this.userService.getUserByUsername(joinRequest.getUser().getUsername());
-        Instrument instrument = this.instrumentService.getInstrument(joinRequest.getInstrument());
-        PlayerSkills playerSkills = this.playerSkillsService.getByPlayerIdAndInstrumentId(user.getId(), instrument.getId());
+        if (joinRequest.isBecomeProducer()) {
+            band.setNeedsProducer(false);
+            this.bandService.addProducer(user, band);
+        } else {
+            Instrument instrument = this.instrumentService.getInstrument(joinRequest.getInstrument());
+            PlayerSkills playerSkills = this.playerSkillsService.getByPlayerIdAndInstrumentId(user.getId(), instrument.getId());
+            this.bandService.addMember(band, playerSkills);
+        }
         joinRequest.setApproved(true);
         joinRequest.setClosed(true);
-        this.bandService.addMember(band, playerSkills);
         this.userService.addBand(user, band);
         this.joinRequestRepository.save(joinRequest);
     }

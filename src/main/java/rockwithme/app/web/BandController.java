@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import rockwithme.app.exeption.NotRequiredSkills;
 import rockwithme.app.model.binding.JoinRequestBindingDTO;
+import rockwithme.app.model.binding.JoinRequestProducerBindingDTO;
 import rockwithme.app.model.entity.Band;
 import rockwithme.app.model.entity.InstrumentEnum;
 import rockwithme.app.model.entity.User;
@@ -63,6 +64,7 @@ public class BandController {
         model.addAttribute("inMyBands", inMyBands(id));
         if (!model.containsAttribute("joinBand") && bandDetailsDTO.isNeedMembers()) {
             model.addAttribute("joinBand", new JoinRequestBindingDTO());
+            model.addAttribute("joinBandProducer", new JoinRequestProducerBindingDTO());
         }
 
         return "band-details";
@@ -83,16 +85,24 @@ public class BandController {
     }
 
     @PostMapping("/join")
-    public String joinBand(@ModelAttribute(name = "joinBand") JoinRequestBindingDTO joinRequestBindingDTO, Principal principal) {
+    public String joinBand(@ModelAttribute(name = "joinBand") JoinRequestBindingDTO joinRequestBindingDTO,
+                           @ModelAttribute(name = "joinBandProducer") JoinRequestProducerBindingDTO joinRequestProducerBindingDTO,
+                           @RequestParam("becomeProducer") boolean becomeProducer,
+                           Principal principal) {
 
-        joinRequestBindingDTO.setUsername(principal.getName());
-        try {
-            this.joinRequestService.submitJoinRequest(joinRequestBindingDTO);
-        } catch (NotRequiredSkills notRequiredSkills) {
-            //TODO handle errors!
-            return "redirect:/bands";
+        String username = principal.getName();
+        if (becomeProducer) {
+            joinRequestProducerBindingDTO.setUsername(username);
+            this.joinRequestService.submitJoinRequestProducer(joinRequestProducerBindingDTO);
+        } else {
+            try {
+                joinRequestBindingDTO.setUsername(username);
+                this.joinRequestService.submitJoinRequest(joinRequestBindingDTO);
+            } catch (NotRequiredSkills notRequiredSkills) {
+                //TODO handle errors!
+                return "redirect:/bands";
+            }
         }
-
         return "redirect:/bands";
     }
 

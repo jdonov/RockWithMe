@@ -13,6 +13,8 @@ import rockwithme.app.model.service.UserPublicDetailsServiceDTO;
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
+
+
     User registerUser(UserRegisterDTO user);
 
     User getUserByUsername(String username);

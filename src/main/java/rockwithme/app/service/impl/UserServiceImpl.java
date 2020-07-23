@@ -110,6 +110,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
     @Override
     public UserMyDetailsServiceDTO getUserDetailsByUsername(String username) {
         User user = this.userRepository.findByUsername(username).orElse(null);

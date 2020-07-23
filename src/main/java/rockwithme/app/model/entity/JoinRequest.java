@@ -11,6 +11,7 @@ public class JoinRequest extends BaseEntity{
     private String description;
     private boolean isApproved;
     private boolean isClosed;
+    private boolean becomeProducer;
 
     public JoinRequest() {
     }
@@ -35,7 +36,7 @@ public class JoinRequest extends BaseEntity{
         this.user = user;
     }
 
-    @Column(name = "instrument", nullable = false)
+    @Column(name = "instrument")
     public InstrumentEnum getInstrument() {
         return instrument;
     }
@@ -69,5 +70,14 @@ public class JoinRequest extends BaseEntity{
 
     public void setClosed(boolean closed) {
         isClosed = closed;
+    }
+
+    @Column(name = "become_producer")
+    public boolean isBecomeProducer() {
+        return becomeProducer;
+    }
+
+    public void setBecomeProducer(boolean becomeProducer) {
+        this.becomeProducer = becomeProducer;
     }
 }

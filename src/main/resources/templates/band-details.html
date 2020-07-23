@@ -13,31 +13,47 @@
             <span th:text="|${m.username} plays ${m.instrumentEnum}|"></span>
         </div>
     </th:block>
+    <th:block th:if="*{producer}">
+        <span th:text="|Producer *{producer}|"></span>
+        <br>
+    </th:block>
     <span th:each="s : *{styles}" th:text="${s} "></span>
     <span th:each="g : *{goals}" th:text="${g} "></span>
     <span th:text="|Town: *{town}, |"></span>
+    <br>
+    <span th:text="*{needsProducer} ? 'The band needs producer' : 'The bands does not need producer'"></span>
     <br>
     <span th:text="*{needMembers} ? 'The band needs members for:' : 'The band is full'"/>
     <th:block th:if="*{needMembers}">
         <p th:each="i : *{getInstrumentsNeeded()}" th:text="${i.name()}"></p>
     </th:block>
     <th:block th:unless="${inMyBands}">
-        <div>
-            <button id="join-band" type="submit">Join the band</button>
-        </div>
-        <div id="join" class="hidden">
-            <form th:object="${joinBand}" th:action="@{/bands/join}" th:method="POST">
+        <th:block sec:authorize="hasAuthority('PLAYER')">
+            <div>
+                <button id="join-band" type="submit">Join the band</button>
+            </div>
+            <div id="join" class="hidden">
+                <form th:object="${joinBand}" th:action="@{/bands/join}" th:method="POST">
+                    <input type="hidden" name="bandId" th:value="${bandDetails.id}">
+                    <select th:field="*{instrument}" name="instrument">
+                        <option value="">Select instrument</option>
+                        <th:block th:each="i : ${bandDetails.getInstrumentsNeeded()}">
+                            <option th:text="${i.name()}" th:value="${i}"></option>
+                        </th:block>
+                    </select>
+                    <textarea th:field="*{description}" name="description"></textarea>
+                    <input type="hidden" name="becomeProducer" value="false">
+                    <input type="submit" value="Request to join"/>
+                </form>
+            </div>
+        </th:block>
+        <th:block th:if="*{needsProducer}" sec:authorize="hasAuthority('PRODUCER')">
+            <form th:object="${joinBandProducer}" th:action="@{/bands/join}" th:method="POST">
                 <input type="hidden" name="bandId" th:value="${bandDetails.id}">
-                <select th:field="*{instrument}" name="instrument">
-                    <option value="">Select instrument</option>
-                    <th:block th:each="i : ${bandDetails.getInstrumentsNeeded()}">
-                        <option th:text="${i.name()}" th:value="${i}"></option>
-                    </th:block>
-                </select>
-                <textarea th:field="*{description}" name="description"></textarea>
-                <input type="submit" value="Request to join"/>
+                <input type="hidden" name="becomeProducer" value="true">
+                <input type="submit" value="Request to become producer"/>
             </form>
-        </div>
+        </th:block>
     </th:block>
     <th:block th:if="${inMyBands}">
         <p>You are member of the band!</p>

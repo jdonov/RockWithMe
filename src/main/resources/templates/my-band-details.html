@@ -8,19 +8,27 @@
 <div th:object="${myBand}">
     <p th:text="*{name}"></p>
     <th:block th:each="r : ${myBand.requests}" th:object="${r}">
-        <a th:href="@{/users/details(id=${r.getUserId()})}">
-            <span th:text="|Player username: *{username} |"></span>
-            <span th:text="|Applies for *{instrument} |"></span>
-        </a>
-        <th:block th:unless="*{isClosed()}">
-            <form th:action="@{/bands/add/{request}(request=${r.id})}" th:method="POST">
-                <input type="radio" id="addMember" name="addMember" value="true">
-                <label for="addMember">Add</label>
-                <input type="radio" id="rejectMembership" name="addMember" value="false">
-                <label for="rejectMembership">Reject</label>
-                <button type="submit">Confirm</button>
-            </form>
-        </th:block>
+        <div>
+            <a th:href="@{/users/details(id=${r.getUserId()})}">
+                <span th:text="|Player username: *{username} |"></span>
+                <th:block th:unless="*{isBecomeProducer()}">
+                    <span th:text="|Applies for *{instrument} |"></span>
+                </th:block>
+                <th:block th:if="*{isBecomeProducer()}">
+                    <span>Wants to become a producer</span>
+                </th:block>
+                <span th:type="*{isClosed()} ? 'The request is closed!' : 'The request is open!'">
+            </a>
+            <th:block th:unless="*{isClosed()}">
+                <form th:action="@{/bands/add/{request}(request=${r.id})}" th:method="POST">
+                    <input type="radio" id="addMember" name="addMember" value="true">
+                    <label for="addMember">Approve</label>
+                    <input type="radio" id="rejectMembership" name="addMember" value="false">
+                    <label for="rejectMembership">Reject</label>
+                    <button type="submit">Confirm</button>
+                </form>
+            </th:block>
+        </div>
     </th:block>
 </div>
 

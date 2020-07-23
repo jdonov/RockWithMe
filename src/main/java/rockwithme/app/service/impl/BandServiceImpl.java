@@ -1,6 +1,5 @@
 package rockwithme.app.service.impl;
 
-import javassist.expr.NewArray;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import rockwithme.app.model.binding.BandRegisterDTO;
@@ -61,6 +60,9 @@ public class BandServiceImpl implements BandService {
                     }
                 });
         bandDetailsDTO.setInstrumentsNeeded(needed);
+        if (band.getProducer() != null) {
+            bandDetailsDTO.setProducer(band.getProducer().getUsername());
+        }
         return bandDetailsDTO;
     }
 
@@ -143,6 +145,12 @@ public class BandServiceImpl implements BandService {
     @Override
     public void addMember(Band band, PlayerSkills playerSkills) {
         band.getMembers().add(playerSkills);
+        this.bandRepository.save(band);
+    }
+
+    @Override
+    public void addProducer(User user, Band band) {
+        band.setProducer(user);
         this.bandRepository.save(band);
     }
 }

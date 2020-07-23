@@ -30,7 +30,9 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 //        User user = this.userService.registerUser(new UserRegisterDTO("James", "Hatfield", "papaHat", "123", "123",  Role.ADMIN, Town.SOFIA));
-//        User user2 = this.userService.registerUser(new UserRegisterDTO("Kirk", "Hatfield", "kirk", "123","123", Role.PLAYER, Town.VARNA));
+//
+//        User user2 = this.userService.registerUser(new UserRegisterDTO("Kirk", "Hammet", "kirk", "123","123", Role.PLAYER, Town.VARNA));
+//        User user3 = this.userService.registerUser(new UserRegisterDTO("Bob", "Rock", "bobRock", "123","123", Role.PRODUCER, Town.PLOVDIV));
 //
 //        Arrays.stream(InstrumentEnum.values())
 //                .forEach(this.instrumentService::saveInstrument);

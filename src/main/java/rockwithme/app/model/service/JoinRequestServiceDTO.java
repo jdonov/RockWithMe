@@ -10,6 +10,7 @@ public class JoinRequestServiceDTO extends BaseServiceModel{
     private String description;
     private boolean isApproved;
     private boolean isClosed;
+    private boolean becomeProducer;
 
     public JoinRequestServiceDTO() {
     }
@@ -76,5 +77,13 @@ public class JoinRequestServiceDTO extends BaseServiceModel{
 
     public void setClosed(boolean closed) {
         isClosed = closed;
+    }
+
+    public boolean isBecomeProducer() {
+        return becomeProducer;
+    }
+
+    public void setBecomeProducer(boolean becomeProducer) {
+        this.becomeProducer = becomeProducer;
     }
 }
