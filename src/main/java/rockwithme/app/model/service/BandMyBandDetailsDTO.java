@@ -22,6 +22,7 @@ public class BandMyBandDetailsDTO extends BaseServiceModel{
     private String description;
     private boolean needMembers;
     private Set<JoinRequestServiceDTO> requests;
+    private Set<EventServiceDTO> events;
 
     public BandMyBandDetailsDTO() {
     }
@@ -128,5 +129,13 @@ public class BandMyBandDetailsDTO extends BaseServiceModel{
 
     public void setRequests(Set<JoinRequestServiceDTO> requests) {
         this.requests = requests;
+    }
+
+    public Set<EventServiceDTO> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<EventServiceDTO> events) {
+        this.events = events;
     }
 }

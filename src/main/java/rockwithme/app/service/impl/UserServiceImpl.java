@@ -92,20 +92,22 @@ public class UserServiceImpl implements UserService {
         User user = this.userRepository.findByUsername(userUpdateDTO.getUsername()).orElse(null);
         if (!userUpdateDTO.getFirstName().isEmpty()) {
             user.setFirstName(userUpdateDTO.getFirstName());
+            this.userRepository.saveAndFlush(user);
         }
         if (!userUpdateDTO.getLastName().isEmpty()) {
             user.setLastName(userUpdateDTO.getLastName());
+            this.userRepository.saveAndFlush(user);
         }
         if (userUpdateDTO.getAge() > 0) {
             user.setAge(userUpdateDTO.getAge());
+            this.userRepository.saveAndFlush(user);
         }
         if (userUpdateDTO.getImgUrl() != null && !userUpdateDTO.getImgUrl().isEmpty()) {
             user.setImgUrl(userUpdateDTO.getImgUrl());
+            this.userRepository.saveAndFlush(user);
         }
         if (userUpdateDTO.getTown() != null) {
             user.setTown(userUpdateDTO.getTown());
-        }
-        if (user != null) {
             this.userRepository.saveAndFlush(user);
         }
     }

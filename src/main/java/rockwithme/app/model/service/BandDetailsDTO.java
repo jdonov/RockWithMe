@@ -21,6 +21,8 @@ public class BandDetailsDTO extends BaseServiceModel{
     private Town town;
     private String description;
     private boolean needMembers;
+    private Set<EventServiceDTO> events;
+
 
     public BandDetailsDTO() {
     }
@@ -119,5 +121,13 @@ public class BandDetailsDTO extends BaseServiceModel{
 
     public void setNeedMembers(boolean needMembers) {
         this.needMembers = needMembers;
+    }
+
+    public Set<EventServiceDTO> getEvents() {
+        return events;
+    }
+
+    public void setEvents(Set<EventServiceDTO> events) {
+        this.events = events;
     }
 }

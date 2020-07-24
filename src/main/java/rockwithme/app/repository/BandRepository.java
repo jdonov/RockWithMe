@@ -19,4 +19,5 @@ public interface BandRepository extends JpaRepository<Band, String> {
     List<String> findBandInstruments(@Param("id") String id);
 
     List<Band> findByMembers(User user);
+
 }

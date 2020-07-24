@@ -1,26 +1,41 @@
-package rockwithme.app.model.entity;
+package rockwithme.app.model.binding;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import rockwithme.app.model.entity.EventCategory;
+import rockwithme.app.model.entity.EventType;
 
-import javax.persistence.*;
 import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "events")
-public class Event extends BaseEntity {
-    //TODO add scheduler to delete old events!
+public class EventUpdateBindingDTO {
+    private String id;
+    private String bandId;
     private EventType eventType;
     private EventCategory eventCategory;
     private LocalDateTime eventDate;
     private String description;
-    private Band band;
-    private boolean canceled;
 
-    public Event() {
+    public EventUpdateBindingDTO() {
     }
 
-    @Column(name = "event_type", nullable = false)
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getBandId() {
+        return bandId;
+    }
+
+    public void setBandId(String bandId) {
+        this.bandId = bandId;
+    }
+
+    @NotNull(message = "Event type can not be null!")
     public EventType getEventType() {
         return eventType;
     }
@@ -29,7 +44,6 @@ public class Event extends BaseEntity {
         this.eventType = eventType;
     }
 
-    @Column(name = "event_category", nullable = false)
     public EventCategory getEventCategory() {
         return eventCategory;
     }
@@ -38,9 +52,8 @@ public class Event extends BaseEntity {
         this.eventCategory = eventCategory;
     }
 
-    @Column(name = "event_date", nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    @Future(message = "The event can not be in the past!")
+    @Future(message = "Event date can not be in the past!")
     public LocalDateTime getEventDate() {
         return eventDate;
     }
@@ -49,31 +62,11 @@ public class Event extends BaseEntity {
         this.eventDate = eventDate;
     }
 
-    @Column(name = "description", columnDefinition = "TEXT")
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "band_id", referencedColumnName = "id")
-    public Band getBand() {
-        return band;
-    }
-
-    public void setBand(Band band) {
-        this.band = band;
-    }
-
-    @Column(name = "is_canceled")
-    public boolean isCanceled() {
-        return canceled;
-    }
-
-    public void setCanceled(boolean canceled) {
-        this.canceled = canceled;
     }
 }

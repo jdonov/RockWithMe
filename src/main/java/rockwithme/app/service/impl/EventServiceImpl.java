@@ -3,8 +3,10 @@ package rockwithme.app.service.impl;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import rockwithme.app.model.binding.EventCreateBindingDTO;
+import rockwithme.app.model.binding.EventUpdateBindingDTO;
 import rockwithme.app.model.entity.Band;
 import rockwithme.app.model.entity.Event;
+import rockwithme.app.model.service.EventServiceDTO;
 import rockwithme.app.repository.EventRepository;
 import rockwithme.app.service.BandService;
 import rockwithme.app.service.EventService;
@@ -30,5 +32,36 @@ public class EventServiceImpl implements EventService {
         event.setBand(band);
         event = this.eventRepository.saveAndFlush(event);
         this.bandService.addEvent(event, eventCreateBindingDTO.getBandId());
+    }
+
+    @Override
+    public EventServiceDTO getEventById(String eventId) {
+        return this.modelMapper.map(this.eventRepository.findById(eventId).orElse(null), EventServiceDTO.class);
+        //TODO throw exception and handle it if no such event!!!
+    }
+
+    @Override
+    public EventUpdateBindingDTO getEventToUpdateById(String eventId) {
+        Event event = this.eventRepository.findById(eventId).orElse(null);
+        EventUpdateBindingDTO eventUpdateBindingDTO = this.modelMapper.map(event, EventUpdateBindingDTO.class);
+        eventUpdateBindingDTO.setBandId(event.getBand().getId());
+        return eventUpdateBindingDTO;
+        //TODO throw exception and handle it if no such event!!!
+    }
+
+    @Override
+    public void updateEvent(String eventId, EventUpdateBindingDTO eventUpdateBindingDTO) {
+        Event event = this.eventRepository.findById(eventId).orElse(null);
+        event.setDescription(eventUpdateBindingDTO.getDescription());
+        event.setEventType(eventUpdateBindingDTO.getEventType());
+        event.setEventDate(eventUpdateBindingDTO.getEventDate());
+        this.eventRepository.saveAndFlush(event);
+    }
+
+    @Override
+    public void cancelEvent(String eventId) {
+        Event event = this.eventRepository.findById(eventId).orElse(null);
+        event.setCanceled(true);
+        this.eventRepository.saveAndFlush(event);
     }
 }

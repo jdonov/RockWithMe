@@ -54,7 +54,7 @@ public class PlayerSkillsController {
                                  ModelAndView modelAndView) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("addPlayerSkill", playerSkillsAddDTO);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.playerSkillsAddDTO", bindingResult);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.addPlayerSkill", bindingResult);
         } else {
             playerSkillsAddDTO.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
             this.playerSkillsService.registerPlayerSkills(playerSkillsAddDTO);
@@ -71,7 +71,7 @@ public class PlayerSkillsController {
         if (bindingResult.hasErrors()) {
             //TODO handle validation errors - remove 'addPlayerSkill'???
             redirectAttributes.addFlashAttribute("addPlayerSkill", playerSkillsAddDTO);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.playerSkillsAddDTO", bindingResult);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.addPlayerSkill", bindingResult);
         } else {
             this.playerSkillsService.updatePlayerSkills(playerSkillsAddDTO);
         }

@@ -12,6 +12,7 @@ import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,6 +61,12 @@ public class BandServiceImpl implements BandService {
                     }
                 });
         bandDetailsDTO.setInstrumentsNeeded(needed);
+        Set<EventServiceDTO> events = band.getEvents().stream()
+                .filter(e -> e.getEventType().equals(EventType.PUBLIC) && e.getEventDate().isAfter(LocalDateTime.now()))
+                .map(e -> this.modelMapper.map(e, EventServiceDTO.class))
+                .sorted(Comparator.comparing(EventServiceDTO::getEventDate))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        bandDetailsDTO.setEvents(events);
         if (band.getProducer() != null) {
             bandDetailsDTO.setProducer(band.getProducer().getUsername());
         }
@@ -95,6 +102,7 @@ public class BandServiceImpl implements BandService {
             myBandDetails.setRequests(reqs);
         }
         myBandDetails.setInstrumentsNeeded(needed);
+        myBandDetails.setEvents(myBandDetails.getEvents().stream().sorted(Comparator.comparing(EventServiceDTO::getEventDate)).collect(Collectors.toCollection(LinkedHashSet::new)));
         return myBandDetails;
     }
 

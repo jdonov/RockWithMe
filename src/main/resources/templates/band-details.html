@@ -27,6 +27,13 @@
     <th:block th:if="*{needMembers}">
         <p th:each="i : *{getInstrumentsNeeded()}" th:text="${i.name()}"></p>
     </th:block>
+    <th:block th:each="e : *{getEvents()}">
+        <span th:text="${e.getEventCategory()}"> </span>
+        <span th:text="|Date: ${#temporals.format(e.getEventDate(), 'dd-MMM-yyyy HH:mm')}|"></span>
+        <div>
+            <span th:text="${e.description}"></span>
+        </div>
+    </th:block>
     <th:block th:unless="${inMyBands}">
         <th:block sec:authorize="hasAuthority('PLAYER')">
             <div>

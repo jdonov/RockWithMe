@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create event</title>
+</head>
+<body>
+
+<div>
+    <form th:object="${updateEvent}" th:action="@{/bands/events/update/{id}(id=${updateEvent.id})}" method="POST">
+        <input type="hidden" th:field="*{bandId}">
+        <div>
+            <label for="public">Public </label>
+            <input type="radio" id="public" name="eventType" th:value="${T(rockwithme.app.model.entity.EventType).PUBLIC}" th:checked="${updateEvent.getEventType().equals(T(rockwithme.app.model.entity.EventType).PUBLIC)}"/>
+            <label for="private">Private </label>
+            <input type="radio" id="private" name="eventType" th:value="${T(rockwithme.app.model.entity.EventType).MEMBERS_ONLY}" th:checked="${updateEvent.getEventType().equals(T(rockwithme.app.model.entity.EventType).MEMBERS_ONLY)}"/>
+        </div>
+        <div>
+            <input type="hidden" th:field="*{eventCategory}"/>
+           <span th:text="*{getEventCategory()}"></span>
+        </div>
+        <div>
+            <label for="date-time">Date time</label>
+            <input th:value="*{getEventDate()}" type="datetime-local" id="date-time" name="eventDate">
+        </div>
+
+        <div>
+            <label for="description">Enter event description</label>
+            <textarea th:text="*{description}" id="description" name="description"></textarea>
+        </div>
+        <input type="submit" value="Update event"/>
+    </form>
+</div>
+</body>
+</html>

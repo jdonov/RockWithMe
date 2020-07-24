@@ -75,6 +75,7 @@ public class UserController {
                 }
             }
             this.userService.updatePlayer(userUpdateDTO);
+            modelAndView.setViewName("redirect:update");
         }
         return modelAndView;
     }

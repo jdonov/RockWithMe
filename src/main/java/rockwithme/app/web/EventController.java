@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import rockwithme.app.model.binding.EventCreateBindingDTO;
+import rockwithme.app.model.binding.EventUpdateBindingDTO;
 import rockwithme.app.service.EventService;
 
 import javax.validation.Valid;
@@ -38,11 +39,44 @@ public class EventController {
                                            RedirectAttributes redirectAttributes,
                                            ModelAndView modelAndView) {
         if (bindingResult.hasErrors()) {
-
+            redirectAttributes.addFlashAttribute("createEvent", eventCreateBindingDTO);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.createEvent", bindingResult);
         }
 
         this.eventService.createEvent(eventCreateBindingDTO);
-        modelAndView.setViewName("redirect:/bands/myBands");
+        modelAndView.setViewName("redirect:/bands/myBands/"+eventCreateBindingDTO.getBandId());
         return modelAndView;
+    }
+
+    @GetMapping("/update")
+    public String updateEvent(@RequestParam("id") String eventId, Model model) {
+        if (!model.containsAttribute("updateEvent")) {
+            model.addAttribute("updateEvent", this.eventService.getEventToUpdateById(eventId));
+        }
+        return "event-update";
+    }
+
+    @PostMapping("/update/{id}")
+    public ModelAndView updateEventConfirm(@PathVariable("id") String eventId,
+                                     @Valid @ModelAttribute EventUpdateBindingDTO eventUpdateBindingDTO,
+                                     BindingResult bindingResult,
+                                     RedirectAttributes redirectAttributes,
+                                     ModelAndView modelAndView) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("updateEvent", eventUpdateBindingDTO);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.updateEvent", bindingResult);
+            modelAndView.setViewName("redirect:/bands/events/update?id="+eventId);
+        } else {
+            this.eventService.updateEvent(eventId, eventUpdateBindingDTO);
+            modelAndView.setViewName("redirect:/bands/myBands/"+eventUpdateBindingDTO.getBandId());
+        }
+
+        return modelAndView;
+    }
+
+    @PostMapping("/cancel/{id}")
+    public String cancelEvent(@PathVariable("id") String eventId) {
+        this.eventService.cancelEvent(eventId);
+        return "redirect:/bands/myBands";
     }
 }
