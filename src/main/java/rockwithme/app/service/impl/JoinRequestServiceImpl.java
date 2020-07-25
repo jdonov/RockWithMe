@@ -82,7 +82,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
         List<JoinRequestServiceDTO> requests = joinRequests.stream()
                 .map(r -> this.modelMapper.map(r, JoinRequestServiceDTO.class))
                 .collect(Collectors.toList());
-        return null;
+        return requests;
     }
 
     @Override

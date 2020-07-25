@@ -7,5 +7,18 @@
 <body>
 <h1>Hello, <span th:text="${user}">User name</span>!</h1>
 <p sec:authorize="hasAuthority('ADMIN')">Good job</p>
+<th:block th:if="${bandOfTheWeek != null}" th:object="${bandOfTheWeek}">
+    <h3 th:text="|The band of this week is ${bandOfTheWeek.name} with ${bandOfTheWeek.likes} likes|"></h3>
+    <th:block th:unless="${bandOfTheWeek.events == null}">
+        <h4>The band has the following events coming soon...</h4>
+        <th:block th:each="e : ${bandOfTheWeek.events}">
+            <span th:text="${e.getEventCategory()}"> </span>
+            <span th:text="|Date: ${#temporals.format(e.getEventDate(), 'dd-MMM-yyyy HH:mm')}|"></span>
+            <div>
+                <span th:text="${e.description}"></span>
+            </div>
+        </th:block>
+    </th:block>
+</th:block>
 </body>
 </html>

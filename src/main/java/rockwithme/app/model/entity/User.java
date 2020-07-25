@@ -119,7 +119,7 @@ public class User extends BaseEntity{
         this.imgUrl = imgUrl;
     }
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     public Set<Like> getLikes() {
         return likes;
     }

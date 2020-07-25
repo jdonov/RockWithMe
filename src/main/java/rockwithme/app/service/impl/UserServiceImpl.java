@@ -13,10 +13,7 @@ import rockwithme.app.exeption.PasswordsNotMatch;
 import rockwithme.app.exeption.UserAlreadyExists;
 import rockwithme.app.model.binding.UserRegisterDTO;
 import rockwithme.app.model.binding.UserUpdateDTO;
-import rockwithme.app.model.entity.Band;
-import rockwithme.app.model.entity.JoinRequest;
-import rockwithme.app.model.entity.Role;
-import rockwithme.app.model.entity.User;
+import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.BandUserBandsServiceDTO;
 import rockwithme.app.model.service.UserMyDetailsServiceDTO;
 import rockwithme.app.model.service.UserPublicDetailsServiceDTO;
@@ -77,6 +74,12 @@ public class UserServiceImpl implements UserService {
     public void addRequest(User user, JoinRequest request) {
         user.getRequests().add(request);
         this.userRepository.save(user);
+    }
+
+    @Override
+    public void addLike(Like like, User user) {
+        user.getLikes().add(like);
+        this.userRepository.saveAndFlush(user);
     }
 
     @Override

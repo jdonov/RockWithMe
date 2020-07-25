@@ -162,7 +162,7 @@ public class Band extends BaseEntity {
         this.needMembers = needMembers;
     }
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     public Set<Like> getLikes() {
         return likes;
     }

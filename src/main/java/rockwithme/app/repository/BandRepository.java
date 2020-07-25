@@ -20,4 +20,7 @@ public interface BandRepository extends JpaRepository<Band, String> {
 
     List<Band> findByMembers(User user);
 
+    @Query(value = "SELECT * FROM bands WHERE id = (SELECT band_id from likes GROUP BY band_id ORDER BY COUNT(band_id) DESC LIMIT 1)", nativeQuery = true)
+    Band findMostLikedBand();
+
 }

@@ -2,10 +2,7 @@ package rockwithme.app.service;
 
 import rockwithme.app.model.binding.BandRegisterDTO;
 import rockwithme.app.model.entity.*;
-import rockwithme.app.model.service.BandDetailsDTO;
-import rockwithme.app.model.service.BandMyAllBandsDTO;
-import rockwithme.app.model.service.BandMyBandDetailsDTO;
-import rockwithme.app.model.service.BandServiceDTO;
+import rockwithme.app.model.service.*;
 
 import java.util.List;
 import java.util.Set;
@@ -31,4 +28,7 @@ public interface BandService {
 
     void addEvent(Event event, String bandId);
 
+    void addLike(Like like, Band band);
+
+    BandOfTheWeekServiceDTO getBandOfTheWeek();
 }

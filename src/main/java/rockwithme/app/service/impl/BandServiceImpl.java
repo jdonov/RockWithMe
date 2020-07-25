@@ -42,12 +42,11 @@ public class BandServiceImpl implements BandService {
 
     @Override
     public BandDetailsDTO getBandDetails(String id) {
-        List<String> instr_ids = this.bandRepository.findBandInstruments(id);
         Band band = this.bandRepository.findById(id).orElse(null);
-        band.setInstruments(new ArrayList<>());
-        instr_ids.forEach(i -> band.getInstruments().add(this.instrumentService.getInstrumentById(i)));
+        bandInstruments(band);
+
         BandDetailsDTO bandDetailsDTO = this.modelMapper.map(band, BandDetailsDTO.class);
-        if(!band.getMembers().isEmpty()) {
+        if (!band.getMembers().isEmpty()) {
             bandDetailsDTO.setMembers(band.getMembers().stream().map(p -> new PlayerSkillsBandMemberDTO(p.getPlayer().getUsername(), p.getInstrument().getInstrument()))
                     .collect(Collectors.toList()));
         }
@@ -75,12 +74,12 @@ public class BandServiceImpl implements BandService {
 
     @Override
     public BandMyBandDetailsDTO getMyBandDetails(String id) {
-        List<String> instr_ids = this.bandRepository.findBandInstruments(id);
         Band band = this.bandRepository.findById(id).orElse(null);
-        band.setInstruments(new ArrayList<>());
-        instr_ids.forEach(i -> band.getInstruments().add(this.instrumentService.getInstrumentById(i)));
+
+        bandInstruments(band);
+
         BandMyBandDetailsDTO myBandDetails = this.modelMapper.map(band, BandMyBandDetailsDTO.class);
-        if(!band.getMembers().isEmpty()) {
+        if (!band.getMembers().isEmpty()) {
             myBandDetails.setMembers(band.getMembers().stream().map(p -> new PlayerSkillsBandMemberDTO(p.getPlayer().getUsername(), p.getInstrument().getInstrument()))
                     .collect(Collectors.toList()));
         }
@@ -93,7 +92,7 @@ public class BandServiceImpl implements BandService {
                         needed.remove(index);
                     }
                 });
-        if(band.getRequests() != null && !band.getRequests().isEmpty()) {
+        if (band.getRequests() != null && !band.getRequests().isEmpty()) {
             Set<JoinRequestServiceDTO> reqs = band.getRequests().stream().map(request -> {
                 JoinRequestServiceDTO joinRequestServiceDTO = this.modelMapper.map(request, JoinRequestServiceDTO.class);
                 joinRequestServiceDTO.setUsername(request.getUser().getUsername());
@@ -166,6 +165,37 @@ public class BandServiceImpl implements BandService {
     public void addEvent(Event event, String bandId) {
         Band band = this.bandRepository.findById(bandId).orElse(null);
         band.getEvents().add(event);
-        this.bandRepository.save(band);
+        this.bandRepository.saveAndFlush(band);
+    }
+
+    @Override
+    public void addLike(Like like, Band band) {
+        band.getLikes().add(like);
+        this.bandRepository.saveAndFlush(band);
+    }
+
+    @Override
+    public BandOfTheWeekServiceDTO getBandOfTheWeek() {
+        Band band = this.bandRepository.findMostLikedBand();
+        if (band == null) {
+            return null;
+        }
+        BandOfTheWeekServiceDTO bandOfTheWeekServiceDTO = new BandOfTheWeekServiceDTO();
+        bandOfTheWeekServiceDTO.setName(band.getName());
+        bandOfTheWeekServiceDTO.setId(band.getId());
+        bandOfTheWeekServiceDTO.setLikes(band.getLikes().size());
+        bandOfTheWeekServiceDTO.setEvents(band.getEvents().stream()
+                .filter(event -> event.getEventType().equals(EventType.PUBLIC))
+                .map(e -> this.modelMapper.map(e, EventServiceDTO.class))
+                .sorted(Comparator.comparing(EventServiceDTO::getEventDate))
+                .limit(3)
+                .collect(Collectors.toCollection(LinkedHashSet::new)));
+        return bandOfTheWeekServiceDTO;
+    }
+
+    private void bandInstruments(Band band) {
+        List<String> instr_ids = this.bandRepository.findBandInstruments(band.getId());
+        band.setInstruments(new ArrayList<>());
+        instr_ids.forEach(i -> band.getInstruments().add(this.instrumentService.getInstrumentById(i)));
     }
 }
