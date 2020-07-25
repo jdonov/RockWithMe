@@ -18,6 +18,12 @@
         <span th:text="|From *{town}|"></span>
         <br>
         <span th:text="|Age *{age}|"></span>
+        <h4>Skills:</h4>
+        <th:block th:each="s : ${userSkills}">
+            <div>
+                <span th:text="|Instrument: ${s.instrument} level ${s.level} plays for ${s.yearsPlaying} years in ${s.bandPlayed} bands|"></span>
+            </div>
+        </th:block>
         <h4>Plays in: </h4>
         <th:block th:each="b : ${userPublicDetails.bands}">
             <ul>

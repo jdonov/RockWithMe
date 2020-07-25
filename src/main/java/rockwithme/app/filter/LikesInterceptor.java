@@ -4,12 +4,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import rockwithme.app.model.service.LikeServiceDTO;
+import rockwithme.app.service.LikeService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Component
-public class LoginInterceptor implements HandlerInterceptor {
+public class LikesInterceptor implements HandlerInterceptor {
+    private final LikeService likeService;
+
+    public LikesInterceptor(LikeService likeService) {
+        this.likeService = likeService;
+    }
 
 
     @Override
@@ -17,6 +25,9 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (modelAndView == null) {
             modelAndView = new ModelAndView();
         }
-        modelAndView.addObject("user", SecurityContextHolder.getContext().getAuthentication().getName());
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<String> likes = this.likeService.likedBands(username);
+
+        modelAndView.addObject("userLikes", likes);
     }
 }

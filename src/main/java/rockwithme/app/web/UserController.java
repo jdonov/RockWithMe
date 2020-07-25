@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import rockwithme.app.model.binding.UserChangePasswordDTO;
 import rockwithme.app.model.binding.UserUpdateDTO;
 import rockwithme.app.model.service.UserPublicDetailsServiceDTO;
+import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
 
 import javax.validation.Valid;
@@ -27,15 +28,18 @@ import java.util.regex.Pattern;
 public class UserController {
     public static final String UPLOAD_DIR = "uploads";
     private final UserService userService;
+    private final PlayerSkillsService playerSkillsService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, PlayerSkillsService playerSkillsService) {
         this.userService = userService;
+        this.playerSkillsService = playerSkillsService;
     }
 
     @GetMapping("/details")
     public ModelAndView userDetails(@RequestParam("id") String userId, ModelAndView modelAndView) {
         UserPublicDetailsServiceDTO user = this.userService.getUserPublicDetailsById(userId);
         modelAndView.addObject("userPublicDetails", user);
+        modelAndView.addObject("userSkills", this.playerSkillsService.getByPlayerId(userId));
         modelAndView.setViewName("user-public-details");
         return modelAndView;
     }

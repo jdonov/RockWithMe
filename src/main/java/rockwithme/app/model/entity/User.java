@@ -20,6 +20,7 @@ public class User extends BaseEntity{
     private Set<Band> bands;
     private Set<JoinRequest> requests;
     private String imgUrl;
+    private Set<Like> likes;
 
     public User() {
         this.authorities = new HashSet<>();
@@ -116,5 +117,14 @@ public class User extends BaseEntity{
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    @OneToMany
+    public Set<Like> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<Like> likes) {
+        this.likes = likes;
     }
 }

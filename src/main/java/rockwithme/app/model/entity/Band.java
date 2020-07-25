@@ -25,6 +25,7 @@ public class Band extends BaseEntity {
     private Set<JoinRequest> requests;
     private Set<Event> events;
     private boolean needMembers;
+    private Set<Like> likes;
 
     public Band() {
         this.members = new HashSet<>();
@@ -159,5 +160,14 @@ public class Band extends BaseEntity {
 
     public void setNeedMembers(boolean needMembers) {
         this.needMembers = needMembers;
+    }
+
+    @OneToMany
+    public Set<Like> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<Like> likes) {
+        this.likes = likes;
     }
 }
