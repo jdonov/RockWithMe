@@ -16,6 +16,7 @@ import rockwithme.app.model.binding.UserUpdateDTO;
 import rockwithme.app.model.service.UserPublicDetailsServiceDTO;
 import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
+import rockwithme.app.utils.FileUploader;
 
 import javax.validation.Valid;
 import java.io.File;
@@ -26,7 +27,6 @@ import java.util.regex.Pattern;
 @Controller
 @RequestMapping("/users")
 public class UserController {
-    public static final String UPLOAD_DIR = "uploads";
     private final UserService userService;
     private final PlayerSkillsService playerSkillsService;
 
@@ -70,8 +70,8 @@ public class UserController {
             userUpdateDTO.setUsername(authentication.getName());
             if (file != null && !file.isEmpty() && file.getOriginalFilename().length() > 0) {
                 if (Pattern.matches(".+\\.(jpg|png)", file.getOriginalFilename())) {
-                    handleMultipartFile(file);
-                    userUpdateDTO.setImgUrl("/" + UPLOAD_DIR + "/" + file.getOriginalFilename());
+                    FileUploader.handleMultipartFile(file);
+                    userUpdateDTO.setImgUrl("/" + FileUploader.UPLOAD_DIR + "/" + file.getOriginalFilename());
                     modelAndView.setViewName("redirect:/home");
                 } else {
                     modelAndView.addObject("fileError", "Submit picture [.jpg, .png]");
@@ -111,22 +111,5 @@ public class UserController {
         return modelAndView;
     }
 
-    private void handleMultipartFile(MultipartFile file) {
-        String name = file.getOriginalFilename();
-        long size = file.getSize();
-//        log.info("File: " + name + ", Size: " + size);
-        try {
-            File currentDir = new File(UPLOAD_DIR);
-            if (!currentDir.exists()) {
-                currentDir.mkdirs();
-            }
-            String path = currentDir.getAbsolutePath() + "/" + file.getOriginalFilename();
-            path = new File(path).getAbsolutePath();
-//            log.info(path);
-            File f = new File(path);
-            FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(f));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
+
 }

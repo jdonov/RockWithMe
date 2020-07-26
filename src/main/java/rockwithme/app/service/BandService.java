@@ -1,6 +1,8 @@
 package rockwithme.app.service;
 
 import rockwithme.app.model.binding.BandRegisterDTO;
+import rockwithme.app.model.binding.BandRemoveMemberBindingDTO;
+import rockwithme.app.model.binding.BandRemoveProducerBindingDTO;
 import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.*;
 
@@ -24,11 +26,21 @@ public interface BandService {
 
     void addMember(Band band, PlayerSkills playerSkills);
 
+    void removeMember(BandRemoveMemberBindingDTO bandRemoveMemberBindingDTO);
+
     void addProducer(User user, Band band);
+
+    void removeProducer(BandRemoveProducerBindingDTO bandRemoveProducerBindingDTO);
 
     void addEvent(Event event, String bandId);
 
     void addLike(Like like, Band band);
+
+    void addPhoto(String bandId, String imgUrl);
+
+    void deleteBandsWithNoMembers();
+
+    List<Band> findAllToDelete();
 
     BandOfTheWeekServiceDTO getBandOfTheWeek();
 }

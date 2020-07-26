@@ -7,6 +7,30 @@
 <body>
 <div th:object="${myBand}">
     <p th:text="*{name}"></p>
+    <div>
+        <img th:src="*{imgUrl}">
+    </div>
+    <th:block th:each="m : *{members}">
+        <div>
+            <span th:text="|${m.username} plays th ${m.instrumentEnum}|"></span>
+            <form th:object="${removeMember}" th:action="@{/bands/myBands/remove/}" th:method="POST">
+                <input type="hidden" name="bandId" th:value="${myBand.id}">
+                <input type="hidden" name="username" th:value="${m.username}">
+                <input type="hidden" name="instrument" th:value="${m.instrumentEnum}">
+                <input type="submit" value="Remove member">
+            </form>
+        </div>
+    </th:block>
+    <th:block>
+        <div th:unless="*{producer == null}">
+            <span th:text="|Producer: *{producer}|"></span>
+            <form th:object="${removeProducer}" th:action="@{/bands/myBands/remove/producer}" th:method="POST">
+                <input type="hidden" name="bandId" th:value="${myBand.id}">
+                <input type="hidden" name="producerUsername" th:value="${myBand.producer}">
+                <input type="submit" value="Remove member">
+            </form>
+        </div>
+    </th:block>
     <th:block th:unless="*{events.isEmpty()}">
         <th:block th:each="e : *{getEvents()}">
             <span th:text="${e.getEventCategory()}"> </span>
@@ -45,6 +69,12 @@
     </th:block>
     <div>
         <a th:href="@{/bands/events/create(bandId=*{id})}">Create event</a>
+    </div>
+    <div>
+        <form th:action="@{/bands/myBands/addPhoto/{id}(id=*{id})}" th:method="POST" enctype="multipart/form-data">
+            <input type="file" id="file" name="file" class="custom-file-input" th:value="*{imgUrl}"/>
+            <input type="submit" value="Upload picture">
+        </form>
     </div>
 </div>
 

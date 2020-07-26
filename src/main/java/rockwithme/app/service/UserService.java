@@ -24,6 +24,8 @@ public interface UserService extends UserDetailsService {
 
     void addBand(User user, Band band);
 
+    void removeBand(User user, Band band);
+
     void updatePlayer(UserUpdateDTO userUpdateDTO);
 
     void addRequest(User user, JoinRequest request);

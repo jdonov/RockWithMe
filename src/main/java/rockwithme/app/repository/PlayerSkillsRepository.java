@@ -9,6 +9,7 @@ import rockwithme.app.model.entity.PlayerSkillsPK;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PlayerSkillsRepository extends JpaRepository<PlayerSkills, PlayerSkillsPK> {
@@ -16,5 +17,7 @@ public interface PlayerSkillsRepository extends JpaRepository<PlayerSkills, Play
     List<PlayerSkills> findAllByPlayer(@Param("id") String id);
 
     @Query("SELECT p FROM PlayerSkills p WHERE p.player.id = :userId AND p.instrument.id = :instrId")
-    PlayerSkills findByPlayerIdAndInstrId(@Param("userId") String userId,@Param("instrId") String instrId);
+    PlayerSkills findByPlayerIdAndInstrId(@Param("userId") String userId, @Param("instrId") String instrId);
+
+    Optional<PlayerSkills> findById(PlayerSkillsPK id);
 }

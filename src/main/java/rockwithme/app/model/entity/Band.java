@@ -26,6 +26,8 @@ public class Band extends BaseEntity {
     private Set<Event> events;
     private boolean needMembers;
     private Set<Like> likes;
+    private String imgUrl;
+    private boolean deleted;
 
     public Band() {
         this.members = new HashSet<>();
@@ -47,7 +49,7 @@ public class Band extends BaseEntity {
     }
 
     @NotNull
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     public Set<PlayerSkills> getMembers() {
         return members;
     }
@@ -97,7 +99,7 @@ public class Band extends BaseEntity {
         this.needsProducer = needsProducer;
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "producer_id", referencedColumnName = "id")
     public User getProducer() {
         return producer;
@@ -162,12 +164,30 @@ public class Band extends BaseEntity {
         this.needMembers = needMembers;
     }
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     public Set<Like> getLikes() {
         return likes;
     }
 
     public void setLikes(Set<Like> likes) {
         this.likes = likes;
+    }
+
+    @Column(name = "pic")
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    @Column(name = "deleted")
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

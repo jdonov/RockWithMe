@@ -3,6 +3,8 @@ package rockwithme.app.service.impl;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import rockwithme.app.model.binding.BandRegisterDTO;
+import rockwithme.app.model.binding.BandRemoveMemberBindingDTO;
+import rockwithme.app.model.binding.BandRemoveProducerBindingDTO;
 import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.*;
 import rockwithme.app.repository.BandRepository;
@@ -34,7 +36,7 @@ public class BandServiceImpl implements BandService {
 
     @Override
     public List<BandServiceDTO> getAllBands() {
-        return this.bandRepository.findAll()
+        return this.bandRepository.findAllByDeletedIsFalse()
                 .stream()
                 .map(b -> this.modelMapper.map(b, BandServiceDTO.class))
                 .collect(Collectors.toList());
@@ -100,6 +102,9 @@ public class BandServiceImpl implements BandService {
             }).collect(Collectors.toCollection(HashSet::new));
             myBandDetails.setRequests(reqs);
         }
+        if (band.getProducer() != null) {
+            myBandDetails.setProducer(band.getProducer().getUsername());
+        }
         myBandDetails.setInstrumentsNeeded(needed);
         myBandDetails.setEvents(myBandDetails.getEvents().stream().sorted(Comparator.comparing(EventServiceDTO::getEventDate)).collect(Collectors.toCollection(LinkedHashSet::new)));
         return myBandDetails;
@@ -156,9 +161,31 @@ public class BandServiceImpl implements BandService {
     }
 
     @Override
+    @Transactional
+    public void removeMember(BandRemoveMemberBindingDTO bandRemoveMemberBindingDTO) {
+        Band band = this.bandRepository.findById(bandRemoveMemberBindingDTO.getBandId()).orElse(null);
+        User user = this.userService.getUserByUsername(bandRemoveMemberBindingDTO.getUsername());
+        Instrument instrument = this.instrumentService.getInstrument(bandRemoveMemberBindingDTO.getInstrument());
+        PlayerSkills playerSkills1 = this.playerSkillsService.getByCompositeId(user.getId(), instrument.getId());
+        band.getMembers().remove(playerSkills1);
+        this.bandRepository.saveAndFlush(band);
+        this.userService.removeBand(user, band);
+    }
+
+    @Override
     public void addProducer(User user, Band band) {
         band.setProducer(user);
         this.bandRepository.save(band);
+    }
+
+    @Override
+    @Transactional
+    public void removeProducer(BandRemoveProducerBindingDTO bandRemoveProducerBindingDTO) {
+        User user = this.userService.getUserByUsername(bandRemoveProducerBindingDTO.getProducerUsername());
+        Band band = this.bandRepository.findById(bandRemoveProducerBindingDTO.getBandId()).orElse(null);
+        band.setProducer(null);
+        this.bandRepository.saveAndFlush(band);
+        this.userService.removeBand(user, band);
     }
 
     @Override
@@ -171,6 +198,13 @@ public class BandServiceImpl implements BandService {
     @Override
     public void addLike(Like like, Band band) {
         band.getLikes().add(like);
+        this.bandRepository.saveAndFlush(band);
+    }
+
+    @Override
+    public void addPhoto(String bandId, String imgUrl) {
+        Band band = this.bandRepository.findById(bandId).orElse(null);
+        band.setImgUrl(imgUrl);
         this.bandRepository.saveAndFlush(band);
     }
 
@@ -191,6 +225,16 @@ public class BandServiceImpl implements BandService {
                 .limit(3)
                 .collect(Collectors.toCollection(LinkedHashSet::new)));
         return bandOfTheWeekServiceDTO;
+    }
+
+    @Override
+    public void deleteBandsWithNoMembers() {
+        this.bandRepository.deleteAllWithoutMembers();
+    }
+
+    @Override
+    public List<Band> findAllToDelete() {
+        return this.bandRepository.findAllToDelete();
     }
 
     private void bandInstruments(Band band) {

@@ -16,6 +16,7 @@ public class BandRegisterDTO {
     private Set<Goal> goals;
     private Town town;
     private String description;
+    private String imgUrl;
 
     public BandRegisterDTO() {
     }
@@ -100,4 +101,11 @@ public class BandRegisterDTO {
         this.description = description;
     }
 
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
 }

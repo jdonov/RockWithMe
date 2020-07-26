@@ -68,4 +68,10 @@ public class PlayerSkillsServiceImpl implements PlayerSkillsService {
     public PlayerSkills getByPlayerIdAndInstrumentId(String playerId, String instrumentId) {
         return this.playerSkillsRepository.findByPlayerIdAndInstrId(playerId, instrumentId);
     }
+
+    @Override
+    public PlayerSkills getByCompositeId(String userId, String instrumentId) {
+        PlayerSkillsPK id = new PlayerSkillsPK(userId, instrumentId);
+        return this.playerSkillsRepository.findById(id).orElse(null);
+    }
 }

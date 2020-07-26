@@ -11,4 +11,6 @@ public interface PlayerSkillsService {
     List<PlayerSkillsServiceDTO> getByPlayerId(String playerId);
     PlayerSkills getByPlayerIdAndInstrumentId(String playerId, String instrumentId);
     void updatePlayerSkills(PlayerSkillsAddDTO playerSkillsAddDTO);
+
+    PlayerSkills getByCompositeId(String userId, String instrumentId);
 }

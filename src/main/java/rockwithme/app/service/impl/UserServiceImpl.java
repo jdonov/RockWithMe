@@ -67,13 +67,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addBand(User user, Band band) {
         user.getBands().add(band);
-        this.userRepository.save(user);
+        this.userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public void removeBand(User user, Band band) {
+        user.getBands().remove(band);
+        this.userRepository.saveAndFlush(user);
     }
 
     @Override
     public void addRequest(User user, JoinRequest request) {
         user.getRequests().add(request);
-        this.userRepository.save(user);
+        this.userRepository.saveAndFlush(user);
     }
 
     @Override

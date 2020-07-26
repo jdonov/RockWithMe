@@ -5,7 +5,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import rockwithme.app.exeption.NotRequiredSkills;
+import rockwithme.app.model.binding.BandRemoveMemberBindingDTO;
+import rockwithme.app.model.binding.BandRemoveProducerBindingDTO;
 import rockwithme.app.model.binding.JoinRequestBindingDTO;
 import rockwithme.app.model.binding.JoinRequestProducerBindingDTO;
 import rockwithme.app.model.entity.Band;
@@ -16,10 +20,12 @@ import rockwithme.app.service.BandService;
 import rockwithme.app.service.JoinRequestService;
 import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
+import rockwithme.app.utils.FileUploader;
 
 import java.security.Principal;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Controller
@@ -82,9 +88,26 @@ public class BandController {
 
         //TODO list band events with links
 
-        BandMyBandDetailsDTO myBandDetailsDTOS = this.bandService.getMyBandDetails(id);
         model.addAttribute("myBand", this.bandService.getMyBandDetails(id));
+        if (!model.containsAttribute("removeMember")) {
+            model.addAttribute("removeMember", new BandRemoveMemberBindingDTO());
+        }
+        if (!model.containsAttribute("removeProducer")) {
+            model.addAttribute("removeProducer", new BandRemoveProducerBindingDTO());
+        }
         return "my-band-details";
+    }
+
+    @PostMapping("/myBands/remove")
+    public String removeMember(@ModelAttribute("removeMember") BandRemoveMemberBindingDTO bandRemoveMemberBindingDTO) {
+        this.bandService.removeMember(bandRemoveMemberBindingDTO);
+        return "redirect:/bands/myBands/" + bandRemoveMemberBindingDTO.getBandId();
+    }
+
+    @PostMapping("/myBands/remove/producer")
+    public String removeProducer(@ModelAttribute("removeProducer") BandRemoveProducerBindingDTO bandRemoveProducerBindingDTO) {
+        this.bandService.removeProducer(bandRemoveProducerBindingDTO);
+        return "redirect:/bands/myBands/" + bandRemoveProducerBindingDTO.getBandId();
     }
 
     @PostMapping("/join")
@@ -117,6 +140,22 @@ public class BandController {
             this.joinRequestService.rejectRequest(requestId);
         }
         return "redirect:/bands/myBands";
+    }
+
+    @PostMapping("/myBands/addPhoto/{id}")
+    public ModelAndView addPhoto(@PathVariable("id") String bandId,
+                                 @RequestParam(name = "file", required = false) MultipartFile file,
+                                 ModelAndView modelAndView) {
+        if (file != null && !file.isEmpty() && file.getOriginalFilename().length() > 0) {
+            if (Pattern.matches(".+\\.(jpg|png)", file.getOriginalFilename())) {
+                FileUploader.handleMultipartFile(file);
+                this.bandService.addPhoto(bandId, "/" + FileUploader.UPLOAD_DIR + "/" + file.getOriginalFilename());
+            } else {
+                modelAndView.addObject("fileError", "Submit picture [.jpg, .png]");
+            }
+        }
+        modelAndView.setViewName("redirect:/bands/myBands/" + bandId);
+        return modelAndView;
     }
 
 

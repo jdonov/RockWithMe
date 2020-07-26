@@ -7,6 +7,9 @@
 <body>
 <form method="post" th:object="${userUpdateDTO}" th:action="@{/users/update}" enctype="multipart/form-data">
     <div>
+        <img th:src="${userMyDetailsDTO.imgUrl}">
+    </div>
+    <div>
         <span th:text="|First name: ${userMyDetailsDTO.firstName}|"></span>
         <br>
         <label for="firstName">Change first name</label>
