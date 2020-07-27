@@ -2,7 +2,7 @@ package rockwithme.app.service.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import rockwithme.app.exeption.NotRequiredSkills;
+import rockwithme.app.exeption.NotRequiredSkillsException;
 import rockwithme.app.model.binding.JoinRequestBindingDTO;
 import rockwithme.app.model.binding.JoinRequestProducerBindingDTO;
 import rockwithme.app.model.entity.*;
@@ -41,7 +41,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
         Band band = this.bandService.getBandById(joinRequestBindingDTO.getBandId());
         User user = this.userService.getUserByUsername(joinRequestBindingDTO.getUsername());
         if (joinRequestBindingDTO.getInstrument() == null) {
-            throw new NotRequiredSkills("Instrument is required");
+            throw new NotRequiredSkillsException("Instrument is required");
         }
         List<InstrumentEnum> playerSkills = this.playerSkillsService.getByPlayerId(user.getId()).stream().map(PlayerSkillsServiceDTO::getInstrument).collect(Collectors.toList());
         if (playerSkills.contains(joinRequestBindingDTO.getInstrument())) {
@@ -51,7 +51,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
             this.userService.addRequest(user, joinRequest);
             this.bandService.addRequest(band, joinRequest);
         } else {
-            throw new NotRequiredSkills("You don't have the required skills");
+            throw new NotRequiredSkillsException("You don't have the required skills");
         }
     }
 

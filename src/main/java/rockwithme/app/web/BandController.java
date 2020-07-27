@@ -10,12 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import rockwithme.app.exeption.NotRequiredSkills;
+import rockwithme.app.exeption.NotRequiredSkillsException;
 import rockwithme.app.model.binding.*;
 import rockwithme.app.model.entity.Band;
-import rockwithme.app.model.entity.InstrumentEnum;
-import rockwithme.app.model.entity.User;
-import rockwithme.app.model.entity.Views;
 import rockwithme.app.model.service.*;
 import rockwithme.app.service.BandService;
 import rockwithme.app.service.JoinRequestService;
@@ -24,7 +21,6 @@ import rockwithme.app.service.UserService;
 import rockwithme.app.utils.FileUploader;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -66,23 +62,21 @@ public class BandController {
     }
 
     @PostMapping("/register")
-    public ModelAndView registerBand(@Valid @RequestBody BandRegisterDTO bandRegisterDTO,
+    public String registerBand(@Valid @RequestBody BandRegisterDTO bandRegisterDTO,
                                BindingResult bindingResult,
                                RedirectAttributes redirectAttributes,
-                               ModelAndView modelAndView,
                                @RequestParam(name = "file", required = false) MultipartFile file,
                                Authentication authentication) {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("bandRegister", bandRegisterDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.bandRegister", bindingResult);
-            modelAndView.setViewName("redirect:/bands/register");
+            return "redirect:register";
         } else {
             bandRegisterDTO.setFounder(authentication.getName());
             Band band = this.bandService.registerBand(bandRegisterDTO);
-            modelAndView.setViewName("redirect:/bands");
+            return "redirect:/bands";
         }
-        return modelAndView;
     }
 
     @GetMapping("/details/{id}")
@@ -152,7 +146,7 @@ public class BandController {
                 try {
                     this.joinRequestService.submitJoinRequest(joinRequestBindingDTO);
                     return "redirect:/bands";
-                } catch (NotRequiredSkills notRequiredSkills) {
+                } catch (NotRequiredSkillsException notRequiredSkillsException) {
                     FieldError err = new FieldError("joinBand", "instrument", "You don't have the required skills to join the band!");
                     bindingResult.addError(err);
                     redirectAttributes.addFlashAttribute("redirectErr", true);

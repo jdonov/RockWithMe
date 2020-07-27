@@ -43,4 +43,10 @@ public interface BandService {
     List<Band> findAllToDelete();
 
     BandOfTheWeekServiceDTO getBandOfTheWeek();
+
+    int getCountOfAllActiveBands();
+
+    int getCountOfAllDeletedBands();
+
+    BandAdminServiceDTO getLastRegistered();
 }

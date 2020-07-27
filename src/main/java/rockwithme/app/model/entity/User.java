@@ -4,6 +4,8 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,6 +23,7 @@ public class User extends BaseEntity{
     private Set<JoinRequest> requests;
     private String imgUrl;
     private Set<Like> likes;
+    private LocalDateTime registrationDate;
 
     public User() {
         this.authorities = new HashSet<>();
@@ -126,5 +129,14 @@ public class User extends BaseEntity{
 
     public void setLikes(Set<Like> likes) {
         this.likes = likes;
+    }
+
+    @Column(name = "registration_date")
+    public LocalDateTime getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(LocalDateTime registrationDate) {
+        this.registrationDate = registrationDate;
     }
 }

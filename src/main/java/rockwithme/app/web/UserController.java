@@ -1,31 +1,33 @@
 package rockwithme.app.web;
 
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import rockwithme.app.exeption.UserWithoutRolesException;
 import rockwithme.app.model.binding.UserChangePasswordDTO;
 import rockwithme.app.model.binding.UserRegisterDTO;
 import rockwithme.app.model.binding.UserUpdateDTO;
+import rockwithme.app.model.entity.Role;
 import rockwithme.app.model.entity.User;
+import rockwithme.app.model.service.AdminDetailsServiceDTO;
 import rockwithme.app.model.service.UserPublicDetailsServiceDTO;
+import rockwithme.app.model.service.UserSearchDetailsDTO;
+import rockwithme.app.repository.specification.UserSpecificationsBuilder;
 import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
 import rockwithme.app.utils.FileUploader;
 
 import javax.validation.Valid;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Controller
@@ -138,6 +140,67 @@ public class UserController {
         this.userService.changeUserPassword(username, userChangePasswordDTO.getNewPassword());
         modelAndView.setViewName("redirect:update");
         return modelAndView;
+    }
+
+    @GetMapping("/admin")
+    public String getAdmin() {
+
+        return "admin";
+    }
+
+//    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/admin/search")
+    public String getUser(@RequestParam(value = "username", required = false) String username,
+                          @RequestParam(value = "firstName", required = false) String firstName,
+                          @RequestParam(value = "lastName", required = false) String lastName,
+                          RedirectAttributes redirectAttributes) {
+
+        UserSpecificationsBuilder builder = new UserSpecificationsBuilder();
+
+        if (username != null && !username.isEmpty()) {
+            builder.with("username", ":", username);
+        }
+        if (firstName != null && !firstName.isEmpty()) {
+            builder.with("firstName", ":", firstName);
+        }
+        if (lastName != null && !lastName.isEmpty()) {
+            builder.with("lastName", ":", lastName);
+        }
+
+        Specification<User> spec = builder.build();
+        List<UserSearchDetailsDTO> users = this.userService.searchUsers(spec);
+        redirectAttributes.addFlashAttribute("users", users);
+        return "redirect:/users/admin";
+    }
+
+    @PostMapping("/admin/addRole/{id}")
+    public ModelAndView addNewRole(@PathVariable("id") String userId,
+                                   @RequestParam(value = "role", required = false) Role role,
+                                   RedirectAttributes redirectAttributes,
+                                   ModelAndView modelAndView) {
+        if (role != null) {
+            this.userService.addNewRole(userId, role);
+        } else {
+            redirectAttributes.addFlashAttribute("errRole", "Select role to add!");
+        }
+        modelAndView.setViewName("redirect:/users/admin");
+        return modelAndView;
+    }
+
+    @PostMapping("/admin/removeRole/{id}")
+    public String removeRole(@PathVariable("id") String userId,
+                             @RequestParam(value = "role", required = false) Role role,
+                             RedirectAttributes redirectAttributes) {
+        if (role != null) {
+            try {
+                this.userService.removeUserRole(userId, role);
+            } catch (UserWithoutRolesException userWithoutRolesException) {
+                redirectAttributes.addFlashAttribute("errRole", userWithoutRolesException.getMessage());
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("errRole", "Select role to remove!");
+        }
+        return "redirect:/users/admin";
     }
 
 

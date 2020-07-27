@@ -30,7 +30,7 @@
     <select id="role" name="role">
         <option value="">Select role</option>
         <th:block th:each="r : ${T(rockwithme.app.model.entity.Role).values()}">
-            <option th:text="${r.name()}" th:selected="${r} == *{role}" th:value="${r}"></option>
+            <option th:unless="${r == T(rockwithme.app.model.entity.Role).ADMIN}" th:text="${r.name()}" th:selected="${r} == *{role}" th:value="${r}"></option>
         </th:block>
     </select>
     <label for="town">Select town</label>

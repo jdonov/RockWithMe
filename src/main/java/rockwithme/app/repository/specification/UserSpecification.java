@@ -30,7 +30,7 @@ public class UserSpecification implements Specification<User> {
         }
         else if (criteria.getOperation().equalsIgnoreCase(":")) {
 //            if (root.get(criteria.getKey()).getJavaType() == String.class) {
-            if (criteria.getKey().equals("username")) {
+            if (criteria.getKey().equals("username") || criteria.getKey().equals("firstName") || criteria.getKey().equals("lastName")) {
                 return builder.like(
                         root.get(criteria.getKey()), "%" + criteria.getValue() + "%");
             } else {

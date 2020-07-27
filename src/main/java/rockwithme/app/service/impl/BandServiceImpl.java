@@ -122,6 +122,7 @@ public class BandServiceImpl implements BandService {
         band.setGoals(bandRegisterDTO.getGoals());
         band.setStyles(bandRegisterDTO.getStyles());
         band.setNeedMembers(band.getMembers().size() < band.getInstruments().size());
+        band.setRegistrationDate(LocalDateTime.now());
         band = this.bandRepository.saveAndFlush(band);
         this.userService.addBand(founder, band);
         return band;
@@ -241,5 +242,20 @@ public class BandServiceImpl implements BandService {
         List<String> instr_ids = this.bandRepository.findBandInstruments(band.getId());
         band.setInstruments(new ArrayList<>());
         instr_ids.forEach(i -> band.getInstruments().add(this.instrumentService.getInstrumentById(i)));
+    }
+
+    @Override
+    public int getCountOfAllActiveBands() {
+        return this.bandRepository.findAllActive();
+    }
+
+    @Override
+    public int getCountOfAllDeletedBands() {
+        return this.bandRepository.findAllDeleted();
+    }
+
+    @Override
+    public BandAdminServiceDTO getLastRegistered() {
+        return this.modelMapper.map(this.bandRepository.findLastRegistered(), BandAdminServiceDTO.class);
     }
 }

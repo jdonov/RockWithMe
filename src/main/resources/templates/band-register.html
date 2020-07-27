@@ -5,6 +5,9 @@
     <title>Title</title>
 </head>
 <body>
+<th:block th:object="${bandRegister}">
+    <h3 th:if="${#fields.hasErrors('name')}" th:text="ERROR"></h3>
+</th:block>
 <form>
     <div>
         <label for="name">Band name</label>

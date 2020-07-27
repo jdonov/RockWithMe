@@ -40,4 +40,13 @@ public interface BandRepository extends JpaRepository<Band, String> {
     @Query("SELECT b FROM Band b WHERE b.members.size = 0 AND b.producer IS NULL")
     List<Band> findAllToDelete();
 
+    @Query("SELECT COUNT(b) FROM Band b WHERE b.deleted = false")
+    int findAllActive();
+
+    @Query("SELECT COUNT(b) FROM Band b WHERE b.deleted = true")
+    int findAllDeleted();
+
+    @Query(value = "SELECT * FROM bands b ORDER BY registration_date DESC LIMIT 1", nativeQuery = true)
+    Band findLastRegistered();
+
 }

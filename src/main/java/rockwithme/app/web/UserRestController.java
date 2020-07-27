@@ -2,9 +2,11 @@ package rockwithme.app.web;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import rockwithme.app.model.binding.UserRegisterDTO;
 import rockwithme.app.model.entity.User;
+import rockwithme.app.model.service.UserSearchDetailsDTO;
 import rockwithme.app.repository.specification.UserSpecificationsBuilder;
 import rockwithme.app.service.UserService;
 
@@ -23,13 +25,8 @@ public class UserRestController {
         this.userService = userService;
     }
 
-//    @GetMapping("/login")
-//    public String login() {
-//        return "login";
-//    }
-
-    @GetMapping
-    public ResponseEntity<List<User>> getUser(@RequestParam(value = "search") String search) {
+    @GetMapping("/search")
+    public ResponseEntity<List<UserSearchDetailsDTO>> getUser(@RequestParam(value = "search") String search) {
 //        UserSpecification spec1 =
 //                new UserSpecification(new SearchCriteria("firstName", ":", "Ja"));
 //        UserSpecification spec2 =

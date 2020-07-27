@@ -9,17 +9,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import rockwithme.app.exeption.PasswordsNotMatch;
-import rockwithme.app.exeption.UserAlreadyExists;
+import rockwithme.app.exeption.PasswordsNotMatchException;
+import rockwithme.app.exeption.UserAlreadyExistsException;
+import rockwithme.app.exeption.UserWithoutRolesException;
 import rockwithme.app.model.binding.UserRegisterDTO;
 import rockwithme.app.model.binding.UserUpdateDTO;
 import rockwithme.app.model.entity.*;
-import rockwithme.app.model.service.BandUserBandsServiceDTO;
+import rockwithme.app.model.service.UserAdminServiceDTO;
 import rockwithme.app.model.service.UserMyDetailsServiceDTO;
 import rockwithme.app.model.service.UserPublicDetailsServiceDTO;
+import rockwithme.app.model.service.UserSearchDetailsDTO;
 import rockwithme.app.repository.UserRepository;
 import rockwithme.app.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -42,15 +45,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerUser(UserRegisterDTO userDto) {
         this.userRepository.findByUsername(userDto.getUsername()).ifPresent(u -> {
-            throw new UserAlreadyExists(String.format("User with username '%s' already exists.", userDto.getUsername()));
+            throw new UserAlreadyExistsException(String.format("User with username '%s' already exists.", userDto.getUsername()));
         });
         if (!userDto.getPassword().equals(userDto.getConfirmPassword())) {
-            throw new PasswordsNotMatch("Passwords doesn't match!");
+            throw new PasswordsNotMatchException("Passwords doesn't match!");
         }
         User user = this.modelMapper.map(userDto, User.class);
         user.setAuthorities(Set.of(Role.valueOf(userDto.getRole())));
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-
+        user.setRegistrationDate(LocalDateTime.now());
         this.userRepository.saveAndFlush(user);
     }
 
@@ -60,8 +63,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> searchUsers(Specification<User> specification) {
-        return this.userRepository.findAll(specification);
+    public List<UserSearchDetailsDTO> searchUsers(Specification<User> specification) {
+        return this.userRepository.findAll(specification).stream()
+                .map(user -> this.modelMapper.map(user, UserSearchDetailsDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -138,7 +143,37 @@ public class UserServiceImpl implements UserService {
         User user = this.userRepository.findByUsername(username).orElse(null);
         user.setPassword(this.passwordEncoder.encode(password));
         this.userRepository.saveAndFlush(user);
+    }
 
+    @Override
+    public void addNewRole(String userId, Role role) {
+        User user = this.userRepository.findById(userId).orElse(null);
+        user.getAuthorities().add(role);
+        this.userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public void removeUserRole(String userId, Role role) {
+        User user = this.userRepository.findById(userId).orElse(null);
+        if (user.getAuthorities().size() > 1) {
+            Set<Role> newRoles = user.getAuthorities().stream()
+                    .filter(r -> !r.equals(role))
+                    .collect(Collectors.toSet());
+            user.setAuthorities(newRoles);
+            this.userRepository.saveAndFlush(user);
+        } else {
+            throw new UserWithoutRolesException("Can not delete role! User has only one role!");
+        }
+    }
+
+    @Override
+    public int getCountOfAllUsers() {
+        return this.userRepository.findAllUsersCount();
+    }
+
+    @Override
+    public UserAdminServiceDTO getLastRegisteredUser() {
+        return this.modelMapper.map(this.userRepository.findLastRegistered(), UserAdminServiceDTO.class);
     }
 
     private UserDetails map(User user) {

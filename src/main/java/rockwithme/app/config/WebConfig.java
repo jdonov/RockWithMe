@@ -5,20 +5,23 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import rockwithme.app.filter.BandOfTheWeekInterceptor;
-import rockwithme.app.filter.LikesInterceptor;
-import rockwithme.app.filter.LoginInterceptor;
+import rockwithme.app.interceptor.AdminInterceptor;
+import rockwithme.app.interceptor.BandOfTheWeekInterceptor;
+import rockwithme.app.interceptor.LikesInterceptor;
+import rockwithme.app.interceptor.LoginInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     private final LoginInterceptor loginInterceptor;
     private final LikesInterceptor likesInterceptor;
     private final BandOfTheWeekInterceptor bandOfTheWeekInterceptor;
+    private final AdminInterceptor adminInterceptor;
 
-    public WebConfig(LoginInterceptor loginInterceptor, LikesInterceptor likesInterceptor, BandOfTheWeekInterceptor bandOfTheWeekInterceptor) {
+    public WebConfig(LoginInterceptor loginInterceptor, LikesInterceptor likesInterceptor, BandOfTheWeekInterceptor bandOfTheWeekInterceptor, AdminInterceptor adminInterceptor) {
         this.loginInterceptor = loginInterceptor;
         this.likesInterceptor = likesInterceptor;
         this.bandOfTheWeekInterceptor = bandOfTheWeekInterceptor;
+        this.adminInterceptor = adminInterceptor;
     }
 
     @Override
@@ -26,6 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(bandOfTheWeekInterceptor).addPathPatterns("/", "/home");
         registry.addInterceptor(loginInterceptor).addPathPatterns("/skills", "/home");
         registry.addInterceptor(likesInterceptor).addPathPatterns("/bands/**");
+        registry.addInterceptor(adminInterceptor).addPathPatterns("/users/admin");
     }
 
     @Override
