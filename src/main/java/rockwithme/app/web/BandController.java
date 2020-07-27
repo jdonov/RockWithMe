@@ -4,17 +4,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import rockwithme.app.exeption.NotRequiredSkills;
-import rockwithme.app.model.binding.BandRemoveMemberBindingDTO;
-import rockwithme.app.model.binding.BandRemoveProducerBindingDTO;
-import rockwithme.app.model.binding.JoinRequestBindingDTO;
-import rockwithme.app.model.binding.JoinRequestProducerBindingDTO;
+import rockwithme.app.model.binding.*;
 import rockwithme.app.model.entity.Band;
 import rockwithme.app.model.entity.InstrumentEnum;
 import rockwithme.app.model.entity.User;
+import rockwithme.app.model.entity.Views;
 import rockwithme.app.model.service.*;
 import rockwithme.app.service.BandService;
 import rockwithme.app.service.JoinRequestService;
@@ -22,8 +23,8 @@ import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
 import rockwithme.app.utils.FileUploader;
 
+import javax.validation.Valid;
 import java.security.Principal;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -58,7 +59,30 @@ public class BandController {
                     this.playerSkillsService.getByPlayerId(this.userService.getUserByUsername(authentication.getName()).getId())
                             .stream().map(PlayerSkillsServiceDTO::getInstrument).collect(Collectors.toList()));
         }
+        if (!model.containsAttribute("bandRegister")) {
+            model.addAttribute("bandRegister", new BandRegisterDTO());
+        }
         return "band-register";
+    }
+
+    @PostMapping("/register")
+    public ModelAndView registerBand(@Valid @RequestBody BandRegisterDTO bandRegisterDTO,
+                               BindingResult bindingResult,
+                               RedirectAttributes redirectAttributes,
+                               ModelAndView modelAndView,
+                               @RequestParam(name = "file", required = false) MultipartFile file,
+                               Authentication authentication) {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("bandRegister", bandRegisterDTO);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.bandRegister", bindingResult);
+            modelAndView.setViewName("redirect:/bands/register");
+        } else {
+            bandRegisterDTO.setFounder(authentication.getName());
+            Band band = this.bandService.registerBand(bandRegisterDTO);
+            modelAndView.setViewName("redirect:/bands");
+        }
+        return modelAndView;
     }
 
     @GetMapping("/details/{id}")
@@ -111,22 +135,31 @@ public class BandController {
     }
 
     @PostMapping("/join")
-    public String joinBand(@ModelAttribute(name = "joinBand") JoinRequestBindingDTO joinRequestBindingDTO,
+    public String joinBand(@Valid @ModelAttribute(name = "joinBand") JoinRequestBindingDTO joinRequestBindingDTO,
+                           BindingResult bindingResult,
+                           RedirectAttributes redirectAttributes,
                            @ModelAttribute(name = "joinBandProducer") JoinRequestProducerBindingDTO joinRequestProducerBindingDTO,
-                           @RequestParam("becomeProducer") boolean becomeProducer,
-                           Principal principal) {
-
-        String username = principal.getName();
+                           @RequestParam("becomeProducer") boolean becomeProducer) {
         if (becomeProducer) {
-            joinRequestProducerBindingDTO.setUsername(username);
             this.joinRequestService.submitJoinRequestProducer(joinRequestProducerBindingDTO);
         } else {
-            try {
-                joinRequestBindingDTO.setUsername(username);
-                this.joinRequestService.submitJoinRequest(joinRequestBindingDTO);
-            } catch (NotRequiredSkills notRequiredSkills) {
-                //TODO handle errors!
-                return "redirect:/bands";
+            if (bindingResult.hasErrors()) {
+                redirectAttributes.addFlashAttribute("redirectErr", true);
+                redirectAttributes.addFlashAttribute("joinBand", joinRequestBindingDTO);
+                redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.joinBand", bindingResult);
+                return "redirect:/bands/details/" + joinRequestBindingDTO.getBandId();
+            } else {
+                try {
+                    this.joinRequestService.submitJoinRequest(joinRequestBindingDTO);
+                    return "redirect:/bands";
+                } catch (NotRequiredSkills notRequiredSkills) {
+                    FieldError err = new FieldError("joinBand", "instrument", "You don't have the required skills to join the band!");
+                    bindingResult.addError(err);
+                    redirectAttributes.addFlashAttribute("redirectErr", true);
+                    redirectAttributes.addFlashAttribute("joinBand", joinRequestBindingDTO);
+                    redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.joinBand", bindingResult);
+                    return "redirect:/bands/details/" + joinRequestBindingDTO.getBandId();
+                }
             }
         }
         return "redirect:/bands";

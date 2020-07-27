@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerUser(UserRegisterDTO userDto) {
+    public void registerUser(UserRegisterDTO userDto) {
         this.userRepository.findByUsername(userDto.getUsername()).ifPresent(u -> {
             throw new UserAlreadyExists(String.format("User with username '%s' already exists.", userDto.getUsername()));
         });
@@ -48,10 +48,10 @@ public class UserServiceImpl implements UserService {
             throw new PasswordsNotMatch("Passwords doesn't match!");
         }
         User user = this.modelMapper.map(userDto, User.class);
-        user.setAuthorities(Set.of(userDto.getRole()));
+        user.setAuthorities(Set.of(Role.valueOf(userDto.getRole())));
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        return this.userRepository.saveAndFlush(user);
+        this.userRepository.saveAndFlush(user);
     }
 
     @Override
@@ -99,28 +99,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updatePlayer(UserUpdateDTO userUpdateDTO) {
         User user = this.userRepository.findByUsername(userUpdateDTO.getUsername()).orElse(null);
-        if (!userUpdateDTO.getFirstName().isEmpty()) {
-            user.setFirstName(userUpdateDTO.getFirstName());
-            this.userRepository.saveAndFlush(user);
-        }
-        if (!userUpdateDTO.getLastName().isEmpty()) {
-            user.setLastName(userUpdateDTO.getLastName());
-            this.userRepository.saveAndFlush(user);
-        }
-        if (userUpdateDTO.getAge() > 0) {
-            user.setAge(userUpdateDTO.getAge());
-            this.userRepository.saveAndFlush(user);
-        }
-        if (userUpdateDTO.getImgUrl() != null && !userUpdateDTO.getImgUrl().isEmpty()) {
-            user.setImgUrl(userUpdateDTO.getImgUrl());
-            this.userRepository.saveAndFlush(user);
-        }
-        if (userUpdateDTO.getTown() != null) {
-            user.setTown(userUpdateDTO.getTown());
-            this.userRepository.saveAndFlush(user);
-        }
+        user.setFirstName(userUpdateDTO.getFirstName());
+        user.setLastName(userUpdateDTO.getLastName());
+        user.setTown(Town.valueOf(userUpdateDTO.getTown()));
+        user.setAge(userUpdateDTO.getAge());
+        user.setImgUrl(userUpdateDTO.getImgUrl());
+        this.userRepository.saveAndFlush(user);
     }
 
+    @Override
+    public UserRegisterDTO updateUserByUsername(String username) {
+        User user = this.userRepository.findByUsername(username).orElse(null);
+        UserRegisterDTO userRegisterDTO = this.modelMapper.map(user, UserRegisterDTO.class);
+        return null;
+    }
 
     @Override
     public UserMyDetailsServiceDTO getUserDetailsByUsername(String username) {

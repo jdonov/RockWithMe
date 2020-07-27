@@ -35,7 +35,7 @@ public class EventUpdateBindingDTO {
         this.bandId = bandId;
     }
 
-    @NotNull(message = "Event type can not be null!")
+    @NotNull(message = "Select event type!")
     public EventType getEventType() {
         return eventType;
     }
@@ -44,6 +44,7 @@ public class EventUpdateBindingDTO {
         this.eventType = eventType;
     }
 
+    @NotNull(message = "Select event category!")
     public EventCategory getEventCategory() {
         return eventCategory;
     }
@@ -53,6 +54,7 @@ public class EventUpdateBindingDTO {
     }
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    @NotNull(message = "Select event date!")
     @Future(message = "Event date can not be in the past!")
     public LocalDateTime getEventDate() {
         return eventDate;

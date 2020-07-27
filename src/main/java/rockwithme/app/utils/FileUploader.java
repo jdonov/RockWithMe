@@ -1,11 +1,14 @@
 package rockwithme.app.utils;
 
 import org.springframework.util.FileCopyUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 public class FileUploader {
     public static final String UPLOAD_DIR = "uploads";
@@ -26,5 +29,14 @@ public class FileUploader {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public static String checkFile(MultipartFile file) {
+        if (file != null && !file.isEmpty() && file.getOriginalFilename().length() > 0) {
+            if (!Pattern.matches(".+\\.(jpg|png)", file.getOriginalFilename())) {
+                return "The photo must be in 'jpg' or 'png' format!";
+            }
+        }
+        return null;
     }
 }

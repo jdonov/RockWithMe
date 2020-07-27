@@ -13,22 +13,22 @@
         <span th:text="|First name: ${userMyDetailsDTO.firstName}|"></span>
         <br>
         <label for="firstName">Change first name</label>
-        <input th:field="*{firstName}" type="text" name="firstName" id="firstName"/>
+        <input th:value="${userMyDetailsDTO.firstName}" type="text" name="firstName" id="firstName"/>
     </div>
     <div>
         <span th:text="|Last name: ${userMyDetailsDTO.lastName}|"></span>
         <br>
-        <label for="firstName">Change last name</label>
-        <input th:field="*{lastName}" type="text" name="lastName" id="lastName"/>
+        <label for="lastName">Change last name</label>
+        <input th:value="${userMyDetailsDTO.lastName}" type="text" name="lastName" id="lastName"/>
     </div>
     <div>
         <span th:text="|Town: ${userMyDetailsDTO.town.name()}|"></span>
         <br>
         <label for="town">Change town:</label>
-        <select th:field="*{town}" name="town" id="town">
+        <select name="town" id="town">
             <option value="">Select Town</option>
             <th:block th:each="t : ${T(rockwithme.app.model.entity.Town).values()}">
-                <option th:text="${t.name()}" th:value="${t}"></option>
+                <option th:text="${t.name()}" th:value="${t}" th:selected="${t} == ${userMyDetailsDTO.town}"></option>
             </th:block>
         </select>
     </div>
@@ -36,7 +36,7 @@
         <span th:text="|Age: ${userMyDetailsDTO.age}|"></span>
         <br>
         <label for="age">Update age:</label>
-        <input th:field="*{age}" type="number" name="age" id="age"/>
+        <input th:value="${userMyDetailsDTO.age}" type="number" name="age" id="age"/>
     </div>
 
     <div>

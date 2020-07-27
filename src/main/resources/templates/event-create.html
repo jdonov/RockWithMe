@@ -23,10 +23,20 @@
                     <option th:text="${c.name()}" th:value="${c}"></option>
                 </th:block>
             </select>
+            <th:block th:if="${#fields.hasErrors('eventCategory')}">
+                <th:block th:each="e : ${#fields.errors('eventCategory')}">
+                    <small th:text="${e}" class="text-danger">Field error</small>
+                </th:block>
+            </th:block>
         </div>
         <div>
             <label for="date-time">Date time</label>
             <input type="datetime-local" id="date-time" name="eventDate">
+            <th:block th:if="${#fields.hasErrors('eventDate')}">
+                <th:block th:each="e : ${#fields.errors('eventDate')}">
+                    <small th:text="${e}" class="text-danger">Field error</small>
+                </th:block>
+            </th:block>
         </div>
 
         <div>

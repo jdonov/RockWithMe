@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<form >
+<form>
     <div>
         <label for="name">Band name</label>
         <input type="text" name="name" id="name">
@@ -57,7 +57,7 @@
         <select id="town" name="town">
             <option value="">Select Town</option>
             <th:block th:each="t : ${T(rockwithme.app.model.entity.Town).values()}">
-                <option th:text="${t.name()}" th:value="${t}">Food</option>
+                <option th:text="${t.name()}" th:value="${t}">town</option>
             </th:block>
         </select>
     </div>

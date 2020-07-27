@@ -1,5 +1,6 @@
 package rockwithme.app.web;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -12,7 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import rockwithme.app.model.binding.UserChangePasswordDTO;
+import rockwithme.app.model.binding.UserRegisterDTO;
 import rockwithme.app.model.binding.UserUpdateDTO;
+import rockwithme.app.model.entity.User;
 import rockwithme.app.model.service.UserPublicDetailsServiceDTO;
 import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
@@ -22,6 +25,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 @Controller
@@ -33,6 +37,31 @@ public class UserController {
     public UserController(UserService userService, PlayerSkillsService playerSkillsService) {
         this.userService = userService;
         this.playerSkillsService = playerSkillsService;
+    }
+
+    @GetMapping("/register")
+    public String registerUser(Model model) {
+        if (!model.containsAttribute("registerUser")) {
+            model.addAttribute("registerUser", new UserRegisterDTO());
+        }
+        return "user-register";
+    }
+
+    @PostMapping("/register")
+    public ModelAndView registerUser(@Valid @ModelAttribute("registerUser") UserRegisterDTO userRegisterDTO,
+                                     BindingResult bindingResult,
+                                     RedirectAttributes redirectAttributes,
+                                     ModelAndView modelAndView) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("registerUser", userRegisterDTO);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerUser", bindingResult);
+            modelAndView.setViewName("redirect:/users/register");
+        } else {
+            this.userService.registerUser(userRegisterDTO);
+            modelAndView.setViewName("redirect:/login");
+        }
+
+        return modelAndView;
     }
 
     @GetMapping("/details")

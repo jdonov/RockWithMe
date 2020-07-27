@@ -41,10 +41,13 @@ public class EventController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("createEvent", eventCreateBindingDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.createEvent", bindingResult);
+            modelAndView.setViewName("redirect:/bands/events/create?bandId="+eventCreateBindingDTO.getBandId());
+        } else {
+            this.eventService.createEvent(eventCreateBindingDTO);
+            modelAndView.setViewName("redirect:/bands/myBands/"+eventCreateBindingDTO.getBandId());
         }
 
-        this.eventService.createEvent(eventCreateBindingDTO);
-        modelAndView.setViewName("redirect:/bands/myBands/"+eventCreateBindingDTO.getBandId());
+
         return modelAndView;
     }
 

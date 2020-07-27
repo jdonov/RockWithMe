@@ -1,20 +1,23 @@
 package rockwithme.app.model.binding;
+import rockwithme.app.constraint.EnumValue;
 import rockwithme.app.model.entity.Town;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.util.Set;
 
 public class UserUpdateDTO {
     private String firstName;
     private String lastName;
     private String username;
-    private Town town;
+    private String town;
     private int age;
     private String imgUrl;
 
     public UserUpdateDTO() {
     }
 
-    public UserUpdateDTO(String firstName, String lastName, String username, Town town, int age, String imgUrl) {
+    public UserUpdateDTO(String firstName, String lastName, String username, String town, int age, String imgUrl) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -23,6 +26,7 @@ public class UserUpdateDTO {
         this.imgUrl = imgUrl;
     }
 
+    @NotBlank(message = "First name can not be empty!")
     public String getFirstName() {
         return firstName;
     }
@@ -31,6 +35,7 @@ public class UserUpdateDTO {
         this.firstName = firstName;
     }
 
+    @NotBlank(message = "Last name can not be empty!")
     public String getLastName() {
         return lastName;
     }
@@ -47,14 +52,16 @@ public class UserUpdateDTO {
         this.username = username;
     }
 
-    public Town getTown() {
+    @EnumValue(enumClass = Town.class, message = "Select valid town!")
+    public String getTown() {
         return town;
     }
 
-    public void setTown(Town town) {
+    public void setTown(String town) {
         this.town = town;
     }
 
+    @Positive(message = "Age must be positive!")
     public int getAge() {
         return age;
     }

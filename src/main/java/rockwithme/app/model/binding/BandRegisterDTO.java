@@ -1,26 +1,35 @@
 package rockwithme.app.model.binding;
 
+import rockwithme.app.constraint.EnumValue;
 import rockwithme.app.model.entity.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
 
 public class BandRegisterDTO {
     private String name;
     private String founder;
-    private InstrumentEnum founderInstrument;
+//    private InstrumentEnum founderInstrument;
+    private String founderInstrument;
     private List<InstrumentEnum> instruments;
+//    private List<String> instruments;
     private Set<Style> styles;
+//    private Set<String> styles;
     private boolean hasStudio;
     private boolean needsProducer;
     private Set<Goal> goals;
-    private Town town;
+//    private Set<String> goals;
+//    private Town town;
+    private String town;
     private String description;
-    private String imgUrl;
 
     public BandRegisterDTO() {
     }
 
+    @NotBlank(message = "Band name can not be blank!")
     public String getName() {
         return name;
     }
@@ -37,14 +46,16 @@ public class BandRegisterDTO {
         this.founder = founder;
     }
 
-    public InstrumentEnum getFounderInstrument() {
+    @EnumValue(enumClass = InstrumentEnum.class, message = "Select your instrument!")
+    public String getFounderInstrument() {
         return founderInstrument;
     }
 
-    public void setFounderInstrument(InstrumentEnum founderInstrument) {
+    public void setFounderInstrument(String founderInstrument) {
         this.founderInstrument = founderInstrument;
     }
 
+    @NotEmpty(message = "select at least 1 instrument!")
     public List<InstrumentEnum> getInstruments() {
         return instruments;
     }
@@ -53,6 +64,7 @@ public class BandRegisterDTO {
         this.instruments = instruments;
     }
 
+    @NotEmpty(message = "Select at least 1 style!")
     public Set<Style> getStyles() {
         return styles;
     }
@@ -61,6 +73,7 @@ public class BandRegisterDTO {
         this.styles = styles;
     }
 
+    @NotNull(message = "Mark if the band has own studio!")
     public boolean isHasStudio() {
         return hasStudio;
     }
@@ -69,6 +82,7 @@ public class BandRegisterDTO {
         this.hasStudio = hasStudio;
     }
 
+    @NotNull(message = "Mark if the band needs producer!")
     public boolean isNeedsProducer() {
         return needsProducer;
     }
@@ -77,6 +91,7 @@ public class BandRegisterDTO {
         this.needsProducer = needsProducer;
     }
 
+    @NotEmpty(message = "Select at least 1 goal!")
     public Set<Goal> getGoals() {
         return goals;
     }
@@ -85,11 +100,12 @@ public class BandRegisterDTO {
         this.goals = goals;
     }
 
-    public Town getTown() {
+    @EnumValue(enumClass = Town.class, message = "Select valid town!")
+    public String getTown() {
         return town;
     }
 
-    public void setTown(Town town) {
+    public void setTown(String town) {
         this.town = town;
     }
 
@@ -99,13 +115,5 @@ public class BandRegisterDTO {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getImgUrl() {
-        return imgUrl;
-    }
-
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
     }
 }

@@ -50,13 +50,13 @@ public class UserRestController {
         return ResponseEntity.ok(this.userService.searchUsers(spec));
     }
 
-    @PostMapping
-    public ResponseEntity<User> registerUser(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
-        User user = new User();
-        user.setFirstName(userRegisterDTO.getFirstName());
-        user.setLastName(userRegisterDTO.getLastName());
-        user.setUsername(userRegisterDTO.getUsername());
-        user.setAuthorities(Set.of(userRegisterDTO.getRole()));
-        return ResponseEntity.ok(user);
-    }
+//    @PostMapping
+//    public ResponseEntity<User> registerUser(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
+//        User user = new User();
+//        user.setFirstName(userRegisterDTO.getFirstName());
+//        user.setLastName(userRegisterDTO.getLastName());
+//        user.setUsername(userRegisterDTO.getUsername());
+//        user.setAuthorities(Set.of(userRegisterDTO.getRole()));
+//        return ResponseEntity.ok(user);
+//    }
 }

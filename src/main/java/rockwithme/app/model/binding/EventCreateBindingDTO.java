@@ -5,6 +5,8 @@ import rockwithme.app.model.entity.Band;
 import rockwithme.app.model.entity.EventCategory;
 import rockwithme.app.model.entity.EventType;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class EventCreateBindingDTO {
@@ -17,6 +19,7 @@ public class EventCreateBindingDTO {
     public EventCreateBindingDTO() {
     }
 
+    @NotNull(message = "Select event type!")
     public EventType getEventType() {
         return eventType;
     }
@@ -25,6 +28,7 @@ public class EventCreateBindingDTO {
         this.eventType = eventType;
     }
 
+    @NotNull(message = "Select event category!")
     public EventCategory getEventCategory() {
         return eventCategory;
     }
@@ -33,6 +37,8 @@ public class EventCreateBindingDTO {
         this.eventCategory = eventCategory;
     }
 
+    @Future(message = "Event can not be in the past!")
+    @NotNull(message = "Select event date!")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     public LocalDateTime getEventDate() {
         return eventDate;

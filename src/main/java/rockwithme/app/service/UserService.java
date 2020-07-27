@@ -16,7 +16,7 @@ import java.util.List;
 public interface UserService extends UserDetailsService {
 
 
-    User registerUser(UserRegisterDTO user);
+    void registerUser(UserRegisterDTO user);
 
     User getUserByUsername(String username);
 
@@ -33,6 +33,8 @@ public interface UserService extends UserDetailsService {
     void addLike(Like like, User user);
 
     UserMyDetailsServiceDTO getUserDetailsByUsername(String username);
+
+    UserRegisterDTO updateUserByUsername(String username);
 
     UserPublicDetailsServiceDTO getUserPublicDetailsById(String userId);
 

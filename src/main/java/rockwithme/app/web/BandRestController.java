@@ -20,11 +20,11 @@ public class BandRestController {
         this.bandService = bandService;
     }
 
-    @PostMapping
-    @JsonView(Views.BandRegisterDTO.class)
-    public ResponseEntity<Band> registerBand(@RequestBody BandRegisterDTO bandRegisterDTO, Authentication authentication) {
-        bandRegisterDTO.setFounder(authentication.getName());
-        Band band = this.bandService.registerBand(bandRegisterDTO);
-        return ResponseEntity.ok(band);
-    }
+//    @PostMapping
+//    @JsonView(Views.BandRegisterDTO.class)
+//    public ResponseEntity<Band> registerBand(@RequestBody BandRegisterDTO bandRegisterDTO, Authentication authentication) {
+//        bandRegisterDTO.setFounder(authentication.getName());
+//        Band band = this.bandService.registerBand(bandRegisterDTO);
+//        return ResponseEntity.ok(band);
+//    }
 }

@@ -1,6 +1,7 @@
 package rockwithme.app.model.binding;
 
 import org.hibernate.validator.constraints.Length;
+import rockwithme.app.constraint.EnumValue;
 import rockwithme.app.model.entity.Role;
 import rockwithme.app.model.entity.Town;
 
@@ -13,13 +14,13 @@ public class UserRegisterDTO {
     private String username;
     private String password;
     private String confirmPassword;
-    private Role role;
-    private Town town;
+    private String role;
+    private String town;
 
     public UserRegisterDTO() {
     }
 
-    public UserRegisterDTO(String firstName, String lastName, String username, String password, String confirmPassword, Role role, Town town) {
+    public UserRegisterDTO(String firstName, String lastName, String username, String password, String confirmPassword, String role, String town) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -47,7 +48,6 @@ public class UserRegisterDTO {
         this.lastName = lastName;
     }
 
-    @NotBlank(message = "Username can not be empty!")
     @Length(min = 3, max = 15, message = "Username must be between 3 and 15 letters")
     public String getUsername() {
         return username;
@@ -57,7 +57,6 @@ public class UserRegisterDTO {
         this.username = username;
     }
 
-    @NotBlank(message = "Password can not be empty!")
     @Length(min = 3, message = "Password must be at least 3 characters long!")
     public String getPassword() {
         return password;
@@ -76,21 +75,21 @@ public class UserRegisterDTO {
         this.confirmPassword = confirmPassword;
     }
 
-    @NotBlank(message = "Role can not be null!")
-    public Role getRole() {
+    @EnumValue(enumClass = Role.class, message = "Select valid role!")
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 
-    @NotBlank(message = "Please enter town!")
-    public Town getTown() {
+    @EnumValue(enumClass = Town.class, message = "Select valid town!")
+    public String getTown() {
         return town;
     }
 
-    public void setTown(Town town) {
+    public void setTown(String town) {
         this.town = town;
     }
 }

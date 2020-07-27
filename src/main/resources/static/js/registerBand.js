@@ -80,7 +80,7 @@ async function registerBand(e) {
 }
 
 async function createBand(band) {
-    const response = await fetch("http://localhost:8080/api/bands", {
+    const response = await fetch("http://localhost:8080/bands/register", {
         method: "POST",
         body: JSON.stringify(band),
         headers: {

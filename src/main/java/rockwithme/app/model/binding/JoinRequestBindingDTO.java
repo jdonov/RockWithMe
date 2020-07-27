@@ -2,6 +2,9 @@ package rockwithme.app.model.binding;
 
 import rockwithme.app.model.entity.InstrumentEnum;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class JoinRequestBindingDTO {
     private String bandId;
     private String username;
@@ -12,6 +15,7 @@ public class JoinRequestBindingDTO {
     public JoinRequestBindingDTO() {
     }
 
+    @NotBlank(message = "Band id can not be null!")
     public String getBandId() {
         return bandId;
     }
@@ -20,6 +24,7 @@ public class JoinRequestBindingDTO {
         this.bandId = bandId;
     }
 
+    @NotBlank(message = "Username can not be null!")
     public String getUsername() {
         return username;
     }
@@ -28,6 +33,7 @@ public class JoinRequestBindingDTO {
         this.username = username;
     }
 
+    @NotNull(message = "Select instrument!")
     public InstrumentEnum getInstrument() {
         return instrument;
     }

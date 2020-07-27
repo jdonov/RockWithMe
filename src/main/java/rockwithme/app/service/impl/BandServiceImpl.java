@@ -115,7 +115,7 @@ public class BandServiceImpl implements BandService {
     public Band registerBand(BandRegisterDTO bandRegisterDTO) {
         Band band = this.modelMapper.map(bandRegisterDTO, Band.class);
         User founder = this.userService.getUserByUsername(bandRegisterDTO.getFounder());
-        Instrument founderInstrument = this.instrumentService.getInstrument(bandRegisterDTO.getFounderInstrument());
+        Instrument founderInstrument = this.instrumentService.getInstrument(InstrumentEnum.valueOf(bandRegisterDTO.getFounderInstrument()));
         PlayerSkills playerSkills = this.playerSkillsService.getByPlayerIdAndInstrumentId(founder.getId(), founderInstrument.getId());
         band.setMembers(Set.of(playerSkills));
         band.setInstruments(bandRegisterDTO.getInstruments().stream().map(instrumentService::getInstrument).collect(Collectors.toList()));
