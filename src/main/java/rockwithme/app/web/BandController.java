@@ -1,5 +1,6 @@
 package rockwithme.app.web;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -12,18 +13,18 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import rockwithme.app.exeption.NotRequiredSkillsException;
 import rockwithme.app.model.binding.*;
-import rockwithme.app.model.entity.Band;
+import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.*;
+import rockwithme.app.repository.specification.BandSpecificationBuilder;
 import rockwithme.app.service.BandService;
 import rockwithme.app.service.JoinRequestService;
 import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
 import rockwithme.app.utils.FileUploader;
-
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/bands")
@@ -42,42 +43,46 @@ public class BandController {
 
     @GetMapping
     public String allBands(Model model) {
-        if (!model.containsAttribute("allBands")) {
+        if (!model.containsAttribute("allBands") && !model.containsAttribute("bands")) {
             model.addAttribute("allBands", this.bandService.getAllBands());
         }
         return "bands";
     }
 
-    @GetMapping("/register")
-    public String regBand(Model model, Authentication authentication) {
-        if (!model.containsAttribute("founderInstruments")) {
-            model.addAttribute("founderInstruments",
-                    this.playerSkillsService.getByPlayerId(this.userService.getUserByUsername(authentication.getName()).getId())
-                            .stream().map(PlayerSkillsServiceDTO::getInstrument).collect(Collectors.toList()));
-        }
-        if (!model.containsAttribute("bandRegister")) {
-            model.addAttribute("bandRegister", new BandRegisterDTO());
-        }
-        return "band-register";
-    }
+//    @GetMapping("/register")
+//    public String regBand(Model model, HttpSession httpSession) {
+//        if (!model.containsAttribute("founderInstruments")) {
+//            model.addAttribute("founderInstruments",
+//                    this.playerSkillsService.getByPlayerId(this.userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getId())
+//                            .stream().map(PlayerSkillsServiceDTO::getInstrument).collect(Collectors.toList()));
+//        }
+//        if (!model.containsAttribute("bandRegister")) {
+//            model.addAttribute("bandRegister", new BandRegisterDTO());
+//        }
+//        return "band-register";
+//    }
 
-    @PostMapping("/register")
-    public String registerBand(@Valid @RequestBody BandRegisterDTO bandRegisterDTO,
-                               BindingResult bindingResult,
-                               RedirectAttributes redirectAttributes,
-                               @RequestParam(name = "file", required = false) MultipartFile file,
-                               Authentication authentication) {
 
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("bandRegister", bandRegisterDTO);
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.bandRegister", bindingResult);
-            return "redirect:register";
-        } else {
-            bandRegisterDTO.setFounder(authentication.getName());
-            Band band = this.bandService.registerBand(bandRegisterDTO);
-            return "redirect:/bands";
-        }
-    }
+
+
+//    @PostMapping("/register")
+//    public ModelAndView registerBand(@Valid @RequestBody BandRegisterDTO bandRegisterDTO,
+//                                     BindingResult bindingResult,
+//                                     RedirectAttributes redirectAttributes,
+//                                     Authentication authentication,
+//                                     ModelAndView modelAndView) {
+//
+//        if (bindingResult.hasErrors()) {
+//            redirectAttributes.addFlashAttribute("bandRegister", bandRegisterDTO);
+//            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.bandRegister", bindingResult);
+//            modelAndView.setViewName("redirect:/bands/register");
+//        } else {
+//            bandRegisterDTO.setFounder(authentication.getName());
+//            this.bandService.registerBand(bandRegisterDTO);
+//            modelAndView.setViewName("redirect:/bands");
+//        }
+//        return modelAndView;
+//    }
 
     @GetMapping("/details/{id}")
     public String bandDetails(@PathVariable(name = "id") String id, Model model) {
@@ -90,7 +95,6 @@ public class BandController {
             model.addAttribute("joinBand", new JoinRequestBindingDTO());
             model.addAttribute("joinBandProducer", new JoinRequestProducerBindingDTO());
         }
-
         return "band-details";
     }
 
@@ -134,7 +138,10 @@ public class BandController {
                            RedirectAttributes redirectAttributes,
                            @ModelAttribute(name = "joinBandProducer") JoinRequestProducerBindingDTO joinRequestProducerBindingDTO,
                            @RequestParam("becomeProducer") boolean becomeProducer) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
         if (becomeProducer) {
+            joinRequestProducerBindingDTO.setUsername(username);
             this.joinRequestService.submitJoinRequestProducer(joinRequestProducerBindingDTO);
         } else {
             if (bindingResult.hasErrors()) {
@@ -144,6 +151,7 @@ public class BandController {
                 return "redirect:/bands/details/" + joinRequestBindingDTO.getBandId();
             } else {
                 try {
+                    joinRequestBindingDTO.setUsername(username);
                     this.joinRequestService.submitJoinRequest(joinRequestBindingDTO);
                     return "redirect:/bands";
                 } catch (NotRequiredSkillsException notRequiredSkillsException) {
@@ -161,8 +169,8 @@ public class BandController {
 
     @PostMapping("/add/{request}")
     public String addMember(@PathVariable(name = "request") String requestId, @RequestParam("addMember") boolean addMember) {
-        if(addMember) {
-        this.joinRequestService.approveRequest(requestId);
+        if (addMember) {
+            this.joinRequestService.approveRequest(requestId);
         } else {
             this.joinRequestService.rejectRequest(requestId);
         }
@@ -185,15 +193,50 @@ public class BandController {
         return modelAndView;
     }
 
-
-    //TODO reject request
-
     private boolean inMyBands(String bandId) {
         Set<BandMyAllBandsDTO> myAllBandsDTOS = this.bandService.getBandByMember(SecurityContextHolder.getContext().getAuthentication().getName());
         if (myAllBandsDTOS == null || myAllBandsDTOS.isEmpty()) {
             return false;
         }
         return myAllBandsDTOS.stream().map(BaseServiceModel::getId).filter(id -> id.equals(bandId)).findFirst().orElse(null) != null;
+    }
+
+    @GetMapping("/search")
+    public String getUser(@RequestParam(value = "name", required = false) String name,
+                          @RequestParam(value = "style", required = false) Style style,
+                          @RequestParam(value = "goal", required = false) Goal goal,
+                          @RequestParam(value = "town", required = false) Town town,
+                          @RequestParam(value = "needMembers", required = false) Boolean needMembers,
+                          @RequestParam(value = "needsProducer", required = false) Boolean needsProducer,
+                          RedirectAttributes redirectAttributes) {
+
+        BandSpecificationBuilder builder = new BandSpecificationBuilder();
+
+        if (name != null && !name.isEmpty()) {
+            builder.with("name", ":", name);
+        }
+        if (style != null) {
+            builder.with("styles", ":", style);
+        }
+        if (goal != null) {
+            builder.with("goals", ":", goal);
+        }
+        if (town != null) {
+            builder.with("town", ":", town);
+        }
+
+        if (needMembers != null) {
+            builder.with("needMembers", ":", needMembers);
+        }
+
+        if (needsProducer != null) {
+            builder.with("needsProducer", ":", needsProducer);
+        }
+
+        Specification<Band> spec = builder.build();
+        List<BandSearchServiceDTO> bands = this.bandService.searchUsers(spec);
+        redirectAttributes.addFlashAttribute("bands", bands);
+        return "redirect:/bands";
     }
 
 

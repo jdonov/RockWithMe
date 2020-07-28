@@ -39,11 +39,11 @@
             <div>
                 <button id="join-band" type="submit">Join the band</button>
             </div>
-            <div id="join" th:class="${redirectErr} ? '' : 'hidden'">
+            <div id="join" th:class="${redirectErr} != null ? '' : 'hidden'">
                 <form th:object="${joinBand}" th:action="@{/bands/join}" th:method="POST">
                     <input type="hidden" name="bandId" th:value="${bandDetails.id}">
-                    <input type="hidden" name="username" th:value="${#authentication.getName()}">
-                    <select th:field="*{instrument}" name="instrument">
+                    <input type="hidden" name="username">
+                    <select name="instrument">
                         <option value="">Select instrument</option>
                         <th:block th:each="i : ${bandDetails.getInstrumentsNeeded()}">
                             <option th:text="${i.name()}" th:value="${i}"></option>

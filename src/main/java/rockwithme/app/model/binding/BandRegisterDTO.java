@@ -55,7 +55,7 @@ public class BandRegisterDTO {
         this.founderInstrument = founderInstrument;
     }
 
-    @NotEmpty(message = "select at least 1 instrument!")
+//    @NotEmpty(message = "select at least 1 instrument!")
     public List<InstrumentEnum> getInstruments() {
         return instruments;
     }
@@ -64,7 +64,7 @@ public class BandRegisterDTO {
         this.instruments = instruments;
     }
 
-    @NotEmpty(message = "Select at least 1 style!")
+//    @NotEmpty(message = "Select at least 1 style!")
     public Set<Style> getStyles() {
         return styles;
     }
@@ -91,7 +91,7 @@ public class BandRegisterDTO {
         this.needsProducer = needsProducer;
     }
 
-    @NotEmpty(message = "Select at least 1 goal!")
+//    @NotEmpty(message = "Select at least 1 goal!")
     public Set<Goal> getGoals() {
         return goals;
     }

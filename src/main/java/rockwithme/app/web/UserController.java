@@ -1,6 +1,7 @@
 package rockwithme.app.web;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -148,7 +149,7 @@ public class UserController {
         return "admin";
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
+    //TODO Add to security filter for only ADMIN!!!
     @GetMapping("/admin/search")
     public String getUser(@RequestParam(value = "username", required = false) String username,
                           @RequestParam(value = "firstName", required = false) String firstName,

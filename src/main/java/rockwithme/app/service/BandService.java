@@ -1,5 +1,6 @@
 package rockwithme.app.service;
 
+import org.springframework.data.jpa.domain.Specification;
 import rockwithme.app.model.binding.BandRegisterDTO;
 import rockwithme.app.model.binding.BandRemoveMemberBindingDTO;
 import rockwithme.app.model.binding.BandRemoveProducerBindingDTO;
@@ -49,4 +50,6 @@ public interface BandService {
     int getCountOfAllDeletedBands();
 
     BandAdminServiceDTO getLastRegistered();
+
+    List<BandSearchServiceDTO> searchUsers(Specification<Band> spec);
 }

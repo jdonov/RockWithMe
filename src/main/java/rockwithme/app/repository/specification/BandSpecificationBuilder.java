@@ -1,35 +1,34 @@
 package rockwithme.app.repository.specification;
 
 import org.springframework.data.jpa.domain.Specification;
-import rockwithme.app.model.entity.User;
+import rockwithme.app.model.entity.Band;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class UserSpecificationsBuilder {
-
+public class BandSpecificationBuilder {
     private final List<SearchCriteria> params;
 
-    public UserSpecificationsBuilder() {
+    public BandSpecificationBuilder() {
         params = new ArrayList<>();
     }
 
-    public UserSpecificationsBuilder with(String key, String operation, Object value) {
+    public BandSpecificationBuilder with(String key, String operation, Object value) {
         params.add(new SearchCriteria(key, operation, value));
         return this;
     }
 
-    public Specification<User> build() {
+    public Specification<Band> build() {
         if (params.size() == 0) {
             return null;
         }
 
-        List<Specification<User>> specs = params.stream()
-                .map(UserSpecification::new)
+        List<Specification<Band>> specs = params.stream()
+                .map(BandSpecification::new)
                 .collect(Collectors.toList());
 
-        Specification<User> result = specs.get(0);
+        Specification<Band> result = specs.get(0);
 
         for (int i = 1; i < params.size(); i++) {
             result = Specification.where(result).and(specs.get(i));

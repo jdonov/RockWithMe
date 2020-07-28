@@ -8,7 +8,7 @@ const instrumentsEl = document.getElementById("instrumentsContainer");
 const stylesEl = document.getElementById("stylesContainer");
 const goalsEl = document.getElementById("goalsContainer");
 document.getElementById("btnRegister").addEventListener("click", registerBand);
-document.getElementById("instrument").addEventListener("change", chooseInstr);
+document.getElementById("instruments").addEventListener("change", chooseInstr);
 document.getElementById("style").addEventListener("change", chooseStyle);
 document.getElementById("goal").addEventListener("change", chooseGoal);
 let instrArr = [];
@@ -32,7 +32,7 @@ function createEl(e, targetEl, targetArr) {
 
     function delEl() {
         let index = targetArr.indexOf(nameEl);
-        targetArr.splice(index,1);
+        targetArr.splice(index, 1);
         divEl.remove();
     }
 }
@@ -70,7 +70,6 @@ async function registerBand(e) {
         founderInstrument: founderInstrument.value,
         description: descriptionInput.value
     };
-    console.log(band);
     try {
         await createBand(band);
     } catch (e) {
@@ -87,5 +86,7 @@ async function createBand(band) {
             'Content-type': "application/json"
         }
     });
-    return await response.json();
+    // return await response.json();
+    return await response.text();
+    // document.body.innerHTML = html;
 }

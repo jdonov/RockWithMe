@@ -8,33 +8,32 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-public class UserSpecification implements Specification<User> {
-    private UserSearchCriteria criteria;
+public class UserSpecification extends BaseSpecification implements Specification<User> {
 
     public UserSpecification() {
     }
 
-    public UserSpecification(UserSearchCriteria criteria) {
-        this.criteria = criteria;
+    public UserSpecification(SearchCriteria criteria) {
+        super(criteria);
     }
 
     @Override
     public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
-        if (criteria.getOperation().equalsIgnoreCase(">")) {
+        if (this.getCriteria().getOperation().equalsIgnoreCase(">")) {
             return builder.greaterThanOrEqualTo(
-                    root.get(criteria.getKey()), criteria.getValue().toString());
+                    root.get(this.getCriteria().getKey()), this.getCriteria().getValue().toString());
         }
-        else if (criteria.getOperation().equalsIgnoreCase("<")) {
+        else if (this.getCriteria().getOperation().equalsIgnoreCase("<")) {
             return builder.lessThanOrEqualTo(
-                    root.get(criteria.getKey()), criteria.getValue().toString());
+                    root.get(this.getCriteria().getKey()), this.getCriteria().getValue().toString());
         }
-        else if (criteria.getOperation().equalsIgnoreCase(":")) {
-//            if (root.get(criteria.getKey()).getJavaType() == String.class) {
-            if (criteria.getKey().equals("username") || criteria.getKey().equals("firstName") || criteria.getKey().equals("lastName")) {
+        else if (this.getCriteria().getOperation().equalsIgnoreCase(":")) {
+//            if (root.get(this.getCriteria().getKey()).getJavaType() == String.class) {
+            if (this.getCriteria().getKey().equals("username") || this.getCriteria().getKey().equals("firstName") || this.getCriteria().getKey().equals("lastName")) {
                 return builder.like(
-                        root.get(criteria.getKey()), "%" + criteria.getValue() + "%");
+                        root.get(this.getCriteria().getKey()), "%" + this.getCriteria().getValue() + "%");
             } else {
-                return builder.equal(root.get(criteria.getKey()), criteria.getValue());
+                return builder.equal(root.get(this.getCriteria().getKey()), this.getCriteria().getValue());
             }
         }
 

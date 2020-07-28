@@ -21,7 +21,7 @@ public class AdminInterceptor implements HandlerInterceptor {
         this.bandService = bandService;
     }
 
-    @Override
+        @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         AdminDetailsServiceDTO adminDetailsServiceDTO = new AdminDetailsServiceDTO();
         adminDetailsServiceDTO.setRegisteredUsers(this.userService.getCountOfAllUsers());

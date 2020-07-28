@@ -1,6 +1,7 @@
 package rockwithme.app.service.impl;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import rockwithme.app.model.binding.BandRegisterDTO;
 import rockwithme.app.model.binding.BandRemoveMemberBindingDTO;
@@ -257,5 +258,12 @@ public class BandServiceImpl implements BandService {
     @Override
     public BandAdminServiceDTO getLastRegistered() {
         return this.modelMapper.map(this.bandRepository.findLastRegistered(), BandAdminServiceDTO.class);
+    }
+
+    @Override
+    public List<BandSearchServiceDTO> searchUsers(Specification<Band> spec) {
+        return this.bandRepository.findAll(spec).stream()
+                .map(band -> this.modelMapper.map(band, BandSearchServiceDTO.class))
+                .collect(Collectors.toList());
     }
 }
