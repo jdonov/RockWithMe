@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import rockwithme.app.model.binding.BandRegisterDTO;
@@ -25,13 +24,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
-@SessionScope
 @RequestMapping("/bands/register")
 public class BandRegisterController {
 
-    private List<InstrumentEnum> instruments;
-    private Set<Goal> goals;
-    private Set<Style> styles;
     private final BandService bandService;
     private final PlayerSkillsService playerSkillsService;
     private final UserService userService;
@@ -40,10 +35,8 @@ public class BandRegisterController {
         this.bandService = bandService;
         this.playerSkillsService = playerSkillsService;
         this.userService = userService;
-        this.instruments = new ArrayList<>();
-        this.goals = new LinkedHashSet<>();
-        this.styles = new LinkedHashSet<>();
     }
+
 
     @GetMapping
     public String regBand(Model model, HttpSession httpSession) {
@@ -55,20 +48,28 @@ public class BandRegisterController {
         if (!model.containsAttribute("bandRegister")) {
             model.addAttribute("bandRegister", new BandRegisterDTO());
         }
-        model.addAttribute("bandInstruments", this.instruments);
-        model.addAttribute("bandGoals", this.goals);
-        model.addAttribute("bandStyles", this.styles);
-        return "band-register-session";
+        if (httpSession.getAttribute("bandInstruments") == null) {
+            httpSession.setAttribute("bandInstruments", new ArrayList<InstrumentEnum>());
+        }
+        if (httpSession.getAttribute("bandGoals") == null) {
+            httpSession.setAttribute("bandGoals", new LinkedHashSet<Goal>());
+        }
+        if (httpSession.getAttribute("bandStyles") == null) {
+            httpSession.setAttribute("bandStyles", new LinkedHashSet<Style>());
+        }
+
+        return "band-register";
     }
 
     @PostMapping
     public ModelAndView registerBand(@Valid @ModelAttribute("bandRegister") BandRegisterDTO bandRegisterDTO,
                                      BindingResult bindingResult,
                                      RedirectAttributes redirectAttributes,
+                                     HttpSession httpSession,
                                      Authentication authentication,
                                      ModelAndView modelAndView) {
 
-        checkBandRegister(bandRegisterDTO, bindingResult);
+        checkBandRegister(bandRegisterDTO, bindingResult, httpSession);
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("bandRegister", bandRegisterDTO);
@@ -77,7 +78,7 @@ public class BandRegisterController {
         } else {
             bandRegisterDTO.setFounder(authentication.getName());
             this.bandService.registerBand(bandRegisterDTO);
-            this.clear();
+            this.clear(httpSession);
             modelAndView.setViewName("redirect:/bands");
         }
         return modelAndView;
@@ -86,9 +87,12 @@ public class BandRegisterController {
     @PostMapping("/addInstr")
     public String addInstr(@RequestParam("instrument") InstrumentEnum instrument,
                            @ModelAttribute BandRegisterDTO bandRegisterDTO,
-                           RedirectAttributes redirectAttributes) {
+                           RedirectAttributes redirectAttributes,
+                           HttpSession httpSession) {
         if(instrument != null) {
-            this.instruments.add(instrument);
+            List<InstrumentEnum> instruments = (List<InstrumentEnum>) httpSession.getAttribute("bandInstruments");
+            instruments.add(instrument);
+            httpSession.setAttribute("bandInstruments", instruments);
         }
         redirectAttributes.addFlashAttribute("bandRegister", bandRegisterDTO);
         return "redirect:/bands/register";
@@ -97,8 +101,11 @@ public class BandRegisterController {
     @PostMapping("/removeInstr")
     public String removeInstr(@RequestParam("instr") InstrumentEnum instrumentEnum,
                               @ModelAttribute BandRegisterDTO bandRegisterDTO,
-                              RedirectAttributes redirectAttributes) {
-        this.instruments.remove(instrumentEnum);
+                              RedirectAttributes redirectAttributes,
+                              HttpSession httpSession) {
+        List<InstrumentEnum> instruments = (List<InstrumentEnum>) httpSession.getAttribute("bandInstruments");
+        instruments.remove(instrumentEnum);
+        httpSession.setAttribute("bandInstruments", instruments);
         redirectAttributes.addFlashAttribute("bandRegister", bandRegisterDTO);
         return "redirect:/bands/register";
     }
@@ -106,9 +113,12 @@ public class BandRegisterController {
     @PostMapping("/addStyle")
     public String addStyle(@RequestParam("style") Style style,
                            @ModelAttribute BandRegisterDTO bandRegisterDTO,
-                           RedirectAttributes redirectAttributes) {
+                           RedirectAttributes redirectAttributes,
+                           HttpSession httpSession) {
         if(style != null) {
-            this.styles.add(style);
+            LinkedHashSet<Style> styles = (LinkedHashSet<Style>) httpSession.getAttribute("bandStyles");
+            styles.add(style);
+            httpSession.setAttribute("bandStyles", styles);
         }
         redirectAttributes.addFlashAttribute("bandRegister", bandRegisterDTO);
         return "redirect:/bands/register";
@@ -117,8 +127,11 @@ public class BandRegisterController {
     @PostMapping("/removeStyle")
     public String removeStyle(@RequestParam("style") Style style,
                               @ModelAttribute BandRegisterDTO bandRegisterDTO,
-                              RedirectAttributes redirectAttributes) {
-        this.styles.remove(style);
+                              RedirectAttributes redirectAttributes,
+                              HttpSession httpSession) {
+        LinkedHashSet<Style> styles = (LinkedHashSet<Style>) httpSession.getAttribute("bandStyles");
+        styles.remove(style);
+        httpSession.setAttribute("bandStyles", styles);
         redirectAttributes.addFlashAttribute("bandRegister", bandRegisterDTO);
         return "redirect:/bands/register";
     }
@@ -126,9 +139,12 @@ public class BandRegisterController {
     @PostMapping("/addGoal")
     public String addGoal(@RequestParam("goal") Goal goal,
                           @ModelAttribute BandRegisterDTO bandRegisterDTO,
-                          RedirectAttributes redirectAttributes) {
-        if(goal != null)
-        this.goals.add(goal);
+                          RedirectAttributes redirectAttributes, HttpSession httpSession) {
+        if(goal != null) {
+            LinkedHashSet<Goal> goals = (LinkedHashSet<Goal>) httpSession.getAttribute("bandGoals");
+            goals.add(goal);
+            httpSession.setAttribute("bandGoals", goals);
+        }
         redirectAttributes.addFlashAttribute("bandRegister", bandRegisterDTO);
         return "redirect:/bands/register";
     }
@@ -136,36 +152,44 @@ public class BandRegisterController {
     @PostMapping("/removeGoal")
     public String removeGoal(@RequestParam("goal") Goal goal,
                              @ModelAttribute BandRegisterDTO bandRegisterDTO,
-                             RedirectAttributes redirectAttributes) {
-        this.goals.remove(goal);
+                             RedirectAttributes redirectAttributes,
+                             HttpSession httpSession) {
+        LinkedHashSet<Goal> goals = (LinkedHashSet<Goal>) httpSession.getAttribute("bandGoals");
+        goals.remove(goal);
+        httpSession.setAttribute("bandGoals", goals);
         redirectAttributes.addFlashAttribute("bandRegister", bandRegisterDTO);
         return "redirect:/bands/register";
     }
 
-    private void checkBandRegister(BandRegisterDTO bandRegisterDTO, BindingResult bindingResult) {
-        if (this.instruments.size() == 0) {
+    private void checkBandRegister(BandRegisterDTO bandRegisterDTO, BindingResult bindingResult, HttpSession httpSession) {
+        List<InstrumentEnum> instruments = (List<InstrumentEnum>) httpSession.getAttribute("bandInstruments");
+        LinkedHashSet<Style> styles = (LinkedHashSet<Style>) httpSession.getAttribute("bandStyles");
+        LinkedHashSet<Goal> goals = (LinkedHashSet<Goal>) httpSession.getAttribute("bandGoals");
+
+        if (instruments.size() == 0) {
             FieldError err = new FieldError("bandRegister", "instruments", "Select at least 1 instrument!");
             bindingResult.addError(err);
         } else {
-            bandRegisterDTO.setInstruments(this.instruments);
+            bandRegisterDTO.setInstruments(instruments);
         }
-        if (this.styles.size() == 0) {
+        if (styles.size() == 0) {
             FieldError err = new FieldError("bandRegister", "styles", "Select at least 1 style!");
             bindingResult.addError(err);
         } else {
-            bandRegisterDTO.setStyles(this.styles);
+            bandRegisterDTO.setStyles(styles);
         }
-        if (this.goals.size() == 0) {
+        if (goals.size() == 0) {
             FieldError err = new FieldError("bandRegister", "goals", "Select at least 1 goal!");
             bindingResult.addError(err);
         } else {
-            bandRegisterDTO.setGoals(this.goals);
+            bandRegisterDTO.setGoals(goals);
         }
     }
 
-    private void clear() {
-        this.instruments.clear();
-        this.styles.clear();
-        this.goals.clear();
+    private void clear(HttpSession session) {
+        session.removeAttribute("bandInstruments");
+        session.removeAttribute("bandStyles");
+        session.removeAttribute("bandGoals");
+
     }
 }

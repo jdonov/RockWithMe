@@ -5,82 +5,154 @@
     <title>Title</title>
 </head>
 <body>
-<th:block th:object="${bandRegister}">
-    <h3 th:if="${#fields.hasErrors()}" th:text="ERROR"></h3>
-</th:block>
-<form th:action="@{/bands/register}" th:method="POST">
+<form th:object="${bandRegister}" th:action="@{/bands/register}" th:method="POST">
     <div>
         <label for="name">Band name</label>
-        <input type="text" name="name" id="name">
+        <input type="text" name="name" id="name" th:value="*{name} != null ? *{name} : ''">
+        <div th:if="${#fields.hasErrors('name')}">
+            <th:block th:each="e : ${#fields.errors('name')}">
+                <small th:text="${e}"></small>
+            </th:block>
+        </div>
     </div>
     <div>
         <label for="instruments">Instrument</label>
-        <select id="instruments" name="instruments">
+        <select id="instruments" name="instrument">
             <option value="">Select instrument</option>
             <th:block th:each="i : ${T(rockwithme.app.model.entity.InstrumentEnum).values()}">
-                <option th:text="${i.name()}" th:value="${i}">Food</option>
+                <option th:text="${i.name()}" th:value="${i}" }>Instrument</option>
             </th:block>
         </select>
-        <div id="instrumentsContainer"></div>
+        <button type="submit" name="action" value="addInstr" th:formaction="@{/bands/register/addInstr}">Add
+            instrument
+        </button>
+        <div th:if="${#fields.hasErrors('instruments')}">
+            <th:block th:each="e : ${#fields.errors('instruments')}">
+                <small th:text="${e}"></small>
+            </th:block>
+        </div>
+        <div id="instrumentsContainer">
+            <th:block th:unless="${#lists.size(#session.getAttribute('bandInstruments')) == 0}">
+                <div th:each="i : ${#session.getAttribute('bandInstruments')}">
+                    <span th:text="${i.name()}"></span>
+                    <button type="submit" name="action" value="addInstr"
+                            th:formaction="@{/bands/register/removeInstr(instr=${i})}">Remove
+                    </button>
+                </div>
+            </th:block>
+        </div>
     </div>
     <div>
         <label for="style">Style</label>
-        <select id="style" name="styles">
+        <select id="style" name="style">
             <option value="">Select Style</option>
             <th:block th:each="s : ${T(rockwithme.app.model.entity.Style).values()}">
-                <option th:text="${s.name()}" th:value="${s}">Food</option>
+                <option th:text="${s.name()}" th:value="${s}">Style</option>
             </th:block>
         </select>
-        <div id="stylesContainer"></div>
+        <button type="submit" th:formaction="@{/bands/register/addStyle}">Add style</button>
+        <div th:if="${#fields.hasErrors('styles')}">
+            <th:block th:each="e : ${#fields.errors('styles')}">
+                <small th:text="${e}"></small>
+            </th:block>
+        </div>
+        <div id="stylesContainer">
+            <th:block th:each="s : ${#session.getAttribute('bandStyles')}">
+                <div>
+                    <span th:text="${s.name()}"></span>
+                    <button type="submit" name="action" value="addInstr"
+                            th:formaction="@{/bands/register/removeStyle(style=${s})}">
+                        Remove
+                    </button>
+                </div>
+            </th:block>
+        </div>
     </div>
     <div>
         <input type="radio" id="hasStudio" name="hasStudio" value="true">
         <label for="hasStudio">Has Studio</label>
         <input type="radio" id="noStudio" name="hasStudio" value="false" checked>
         <label for="noStudio">No studio</label>
+        <div th:if="${#fields.hasErrors('hasStudio')}">
+            <th:block th:each="e : ${#fields.errors('hasStudio')}">
+                <small th:text="${e}"></small>
+            </th:block>
+        </div>
     </div>
     <div>
         <input type="radio" id="needsProducer" name="needsProducer" value="true">
         <label for="needsProducer">Needs Producer</label>
         <input type="radio" id="noNeedsProducer" name="needsProducer" value="false" checked>
         <label for="noNeedsProducer">Doesn't need producer</label>
+        <div th:if="${#fields.hasErrors('needsProducer')}">
+            <th:block th:each="e : ${#fields.errors('needsProducer')}">
+                <small th:text="${e}"></small>
+            </th:block>
+        </div>
     </div>
     <div>
         <label for="goal">Goals</label>
-        <select id="goal" name="goals">
+        <select id="goal" name="goal">
             <option value="">Select Goal</option>
             <th:block th:each="g : ${T(rockwithme.app.model.entity.Goal).values()}">
-                <option th:text="${g.name()}" th:value="${g}">Food</option>
+                <option th:text="${g.name()}" th:value="${g}">Goal</option>
             </th:block>
         </select>
-        <div id="goalsContainer"></div>
+        <button type="submit" th:formaction="@{/bands/register/addGoal}">Add goal</button>
+        <div th:if="${#fields.hasErrors('goals')}">
+            <th:block th:each="e : ${#fields.errors('goals')}">
+                <small th:text="${e}"></small>
+            </th:block>
+        </div>
+        <div id="goalsContainer">
+            <th:block th:unless="${#sets.size(#session.getAttribute('bandGoals')) == 0}">
+                <div th:each="g : ${#session.getAttribute('bandGoals')}">
+                    <span th:text="${g.name()}"></span>
+                    <button type="submit" name="action" value="addInstr"
+                            th:formaction="@{/bands/register/removeGoal(goal=${g})}">Remove
+                    </button>
+                </div>
+            </th:block>
+        </div>
     </div>
+
     <div>
         <label for="town">Town</label>
         <select id="town" name="town">
             <option value="">Select Town</option>
             <th:block th:each="t : ${T(rockwithme.app.model.entity.Town).values()}">
-                <option th:text="${t.name()}" th:value="${t}">town</option>
+                <option th:text="${t.name()}" th:value="${t}" th:selected="${t.name()} == ${bandRegister.town}">town
+                </option>
             </th:block>
         </select>
+        <div th:if="${#fields.hasErrors('town')}">
+            <th:block th:each="e : ${#fields.errors('town')}">
+                <small th:text="${e}"></small>
+            </th:block>
+        </div>
     </div>
     <div>
         <label for="founder-instrument">Founder instrument:</label>
         <select id="founder-instrument" name="founderInstrument">
             <option value="">Select your instrument</option>
             <th:block th:each="i : ${founderInstruments}">
-                <option th:text="${i.name()}" th:value="${i}">Food</option>
+                <option th:text="${i.name()}" th:value="${i}"
+                        th:selected="${i.name()} == ${bandRegister.founderInstrument}">Founder instrument
+                </option>
             </th:block>
         </select>
+        <div th:if="${#fields.hasErrors('founderInstrument')}">
+            <th:block th:each="e : ${#fields.errors('founderInstrument')}">
+                <small th:text="${e}"></small>
+            </th:block>
+        </div>
     </div>
     <div>
         <label for="description">Description</label>
         <input type="text" name="description" id="description">
     </div>
-    <button type="submit" id="btnRegister">Register Band</button>
+    <button type="submit" name="action" id="btnRegister" value="registerBand">Register Band</button>
 </form>
 
-
-<script src="../js/registerBand.js"></script>
 </body>
 </html>

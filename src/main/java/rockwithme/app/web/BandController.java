@@ -49,41 +49,6 @@ public class BandController {
         return "bands";
     }
 
-//    @GetMapping("/register")
-//    public String regBand(Model model, HttpSession httpSession) {
-//        if (!model.containsAttribute("founderInstruments")) {
-//            model.addAttribute("founderInstruments",
-//                    this.playerSkillsService.getByPlayerId(this.userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getId())
-//                            .stream().map(PlayerSkillsServiceDTO::getInstrument).collect(Collectors.toList()));
-//        }
-//        if (!model.containsAttribute("bandRegister")) {
-//            model.addAttribute("bandRegister", new BandRegisterDTO());
-//        }
-//        return "band-register";
-//    }
-
-
-
-
-//    @PostMapping("/register")
-//    public ModelAndView registerBand(@Valid @RequestBody BandRegisterDTO bandRegisterDTO,
-//                                     BindingResult bindingResult,
-//                                     RedirectAttributes redirectAttributes,
-//                                     Authentication authentication,
-//                                     ModelAndView modelAndView) {
-//
-//        if (bindingResult.hasErrors()) {
-//            redirectAttributes.addFlashAttribute("bandRegister", bandRegisterDTO);
-//            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.bandRegister", bindingResult);
-//            modelAndView.setViewName("redirect:/bands/register");
-//        } else {
-//            bandRegisterDTO.setFounder(authentication.getName());
-//            this.bandService.registerBand(bandRegisterDTO);
-//            modelAndView.setViewName("redirect:/bands");
-//        }
-//        return modelAndView;
-//    }
-
     @GetMapping("/details/{id}")
     public String bandDetails(@PathVariable(name = "id") String id, Model model) {
         BandDetailsDTO bandDetailsDTO = this.bandService.getBandDetails(id);
