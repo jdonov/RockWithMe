@@ -100,10 +100,8 @@ public class BandController {
                            RedirectAttributes redirectAttributes,
                            @ModelAttribute(name = "joinBandProducer") JoinRequestProducerBindingDTO joinRequestProducerBindingDTO,
                            @RequestParam("becomeProducer") boolean becomeProducer) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         if (becomeProducer) {
-            joinRequestProducerBindingDTO.setUsername(username);
             this.joinRequestService.submitJoinRequestProducer(joinRequestProducerBindingDTO);
         } else {
             if (bindingResult.hasErrors()) {
@@ -112,18 +110,17 @@ public class BandController {
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.joinBand", bindingResult);
                 return "redirect:/bands/details/" + joinRequestBindingDTO.getBandId();
             } else {
-                try {
-                    joinRequestBindingDTO.setUsername(username);
+                /*try {*/
                     this.joinRequestService.submitJoinRequest(joinRequestBindingDTO);
                     return "redirect:/bands";
-                } catch (NotRequiredSkillsException notRequiredSkillsException) {
+              /*  } catch (NotRequiredSkillsException notRequiredSkillsException) {
                     FieldError err = new FieldError("joinBand", "instrument", "You don't have the required skills to join the band!");
                     bindingResult.addError(err);
                     redirectAttributes.addFlashAttribute("redirectErr", true);
                     redirectAttributes.addFlashAttribute("joinBand", joinRequestBindingDTO);
                     redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.joinBand", bindingResult);
                     return "redirect:/bands/details/" + joinRequestBindingDTO.getBandId();
-                }
+                }*/
             }
         }
         return "redirect:/bands";

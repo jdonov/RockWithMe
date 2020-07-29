@@ -7,6 +7,7 @@ import rockwithme.app.model.binding.JoinRequestBindingDTO;
 import rockwithme.app.model.binding.JoinRequestProducerBindingDTO;
 import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.JoinRequestServiceDTO;
+import rockwithme.app.model.service.PlayerSkillsBandMemberDTO;
 import rockwithme.app.model.service.PlayerSkillsServiceDTO;
 import rockwithme.app.repository.JoinRequestRepository;
 import rockwithme.app.service.*;
@@ -51,7 +52,10 @@ public class JoinRequestServiceImpl implements JoinRequestService {
             this.userService.addRequest(user, joinRequest);
             this.bandService.addRequest(band, joinRequest);
         } else {
-            throw new NotRequiredSkillsException("You don't have the required skills");
+            NotRequiredSkillsException e = new NotRequiredSkillsException("You don't have the required skills!");
+            e.setInstrumentEnums(playerSkills);
+            e.setBandId(band.getId());
+            throw e;
         }
     }
 

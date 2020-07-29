@@ -42,7 +42,7 @@
             <div id="join" th:class="${redirectErr} != null ? '' : 'hidden'">
                 <form th:object="${joinBand}" th:action="@{/bands/join}" th:method="POST">
                     <input type="hidden" name="bandId" th:value="${bandDetails.id}">
-                    <input type="hidden" name="username">
+                    <input type="hidden" name="username" th:value="${#authentication.name}">
                     <select name="instrument">
                         <option value="">Select instrument</option>
                         <th:block th:each="i : ${bandDetails.getInstrumentsNeeded()}">
@@ -57,12 +57,18 @@
                     <textarea th:field="*{description}" name="description"></textarea>
                     <input type="hidden" name="becomeProducer" value="false">
                     <input type="submit" value="Request to join"/>
+                    <th:block th:if="${notRequiredSkills} != null">
+                        <div>
+                            <small th:text="${notRequiredSkills}"></small>
+                        </div>
+                    </th:block>
                 </form>
             </div>
         </th:block>
         <th:block th:if="*{needsProducer}" sec:authorize="hasAuthority('PRODUCER')">
             <form th:object="${joinBandProducer}" th:action="@{/bands/join}" th:method="POST">
                 <input type="hidden" name="bandId" th:value="${bandDetails.id}">
+                <input type="hidden" name="username" th:value="${#authentication.name}">
                 <input type="hidden" name="becomeProducer" value="true">
                 <input type="submit" value="Request to become producer"/>
             </form>

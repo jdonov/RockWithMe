@@ -5,17 +5,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.FlashMap;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
+import rockwithme.app.exeption.NotRequiredSkillsException;
 import rockwithme.app.exeption.UserAlreadyExistsException;
 import rockwithme.app.exeption.UserRoleException;
+import rockwithme.app.model.entity.InstrumentEnum;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandlerController {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public RedirectView userExists(UserAlreadyExistsException e,
-                                                  HttpServletRequest request) {
+                                   HttpServletRequest request) {
         RedirectView rw = new RedirectView("/users/register");
         FlashMap outputFlashMap = RequestContextUtils.getOutputFlashMap(request);
         outputFlashMap.put("userExists", e.getMessage());
@@ -27,6 +30,21 @@ public class GlobalExceptionHandlerController {
         RedirectView rw = new RedirectView("/users/admin");
         FlashMap outputFlashMap = RequestContextUtils.getOutputFlashMap(request);
         outputFlashMap.put("errRole", e.getMessage());
+        return rw;
+    }
+
+    @ExceptionHandler(NotRequiredSkillsException.class)
+    private RedirectView notRequiredSkills(NotRequiredSkillsException e, HttpServletRequest request) {
+        FlashMap outputFlashMap = RequestContextUtils.getOutputFlashMap(request);
+        if (e.getInstrumentEnums().isEmpty()) {
+            outputFlashMap.put("notRequiredSkills", e.getMessage());
+        } else {
+            String errMessage = String.format("%s Your skills are: %s", e.getMessage(), e.getInstrumentEnums().stream()
+                    .map(InstrumentEnum::name).collect(Collectors.joining(", ")));
+            outputFlashMap.put("notRequiredSkills", errMessage);
+            outputFlashMap.put("redirectErr", true);
+        }
+        RedirectView rw = new RedirectView("/bands/details/" + e.getBandId());
         return rw;
     }
 }
