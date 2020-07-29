@@ -1,4 +1,4 @@
-package rockwithme.app.repository.specification;
+package rockwithme.app.specification;
 
 public class SearchCriteria {
     private String key;

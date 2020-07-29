@@ -1,6 +1,5 @@
 package rockwithme.app.web;
 
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -13,9 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import rockwithme.app.exeption.NotRequiredSkillsException;
 import rockwithme.app.model.binding.*;
-import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.*;
-import rockwithme.app.repository.specification.BandSpecificationBuilder;
 import rockwithme.app.service.BandService;
 import rockwithme.app.service.JoinRequestService;
 import rockwithme.app.service.PlayerSkillsService;
@@ -158,6 +155,13 @@ public class BandController {
         return modelAndView;
     }
 
+    @GetMapping("/search")
+    public String getBands(@ModelAttribute BandSearchBindingDTO bandSearchBindingDTO, RedirectAttributes redirectAttributes) {
+        List<BandSearchServiceDTO> bands = this.bandService.searchUsers(bandSearchBindingDTO);
+        redirectAttributes.addFlashAttribute("bands", bands);
+        return "redirect:/bands";
+    }
+
     private boolean inMyBands(String bandId) {
         Set<BandMyAllBandsDTO> myAllBandsDTOS = this.bandService.getBandByMember(SecurityContextHolder.getContext().getAuthentication().getName());
         if (myAllBandsDTOS == null || myAllBandsDTOS.isEmpty()) {
@@ -165,44 +169,5 @@ public class BandController {
         }
         return myAllBandsDTOS.stream().map(BaseServiceModel::getId).filter(id -> id.equals(bandId)).findFirst().orElse(null) != null;
     }
-
-    @GetMapping("/search")
-    public String getUser(@RequestParam(value = "name", required = false) String name,
-                          @RequestParam(value = "style", required = false) Style style,
-                          @RequestParam(value = "goal", required = false) Goal goal,
-                          @RequestParam(value = "town", required = false) Town town,
-                          @RequestParam(value = "needMembers", required = false) Boolean needMembers,
-                          @RequestParam(value = "needsProducer", required = false) Boolean needsProducer,
-                          RedirectAttributes redirectAttributes) {
-
-        BandSpecificationBuilder builder = new BandSpecificationBuilder();
-
-        if (name != null && !name.isEmpty()) {
-            builder.with("name", ":", name);
-        }
-        if (style != null) {
-            builder.with("styles", ":", style);
-        }
-        if (goal != null) {
-            builder.with("goals", ":", goal);
-        }
-        if (town != null) {
-            builder.with("town", ":", town);
-        }
-
-        if (needMembers != null) {
-            builder.with("needMembers", ":", needMembers);
-        }
-
-        if (needsProducer != null) {
-            builder.with("needsProducer", ":", needsProducer);
-        }
-
-        Specification<Band> spec = builder.build();
-        List<BandSearchServiceDTO> bands = this.bandService.searchUsers(spec);
-        redirectAttributes.addFlashAttribute("bands", bands);
-        return "redirect:/bands";
-    }
-
 
 }

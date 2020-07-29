@@ -14,7 +14,7 @@
 </div>
 <div>
     <th:block th:object="${currentPlayerSkills}" th:each="p : ${currentPlayerSkills}">
-        <form th:object="${p}" th:method="POST" th:action="@{/skills/update}">
+        <form th:object="${p}" th:method="PUT" th:action="@{/skills/update}">
             <div>
                 <span th:text="|Instrument: *{instrument}|"></span>
                 <input id="instr" type="hidden" th:name="instrument" th:value="*{instrument}"/>
@@ -27,7 +27,7 @@
                 </select>
                 <label for="y-playing">Years playing</label>
                 <input th:name="yearsPlaying" id="y-playing" type="number" th:placeholder="*{yearsPlaying}" th:value="*{yearsPlaying}"/>
-                <label for="b-played">Years playing</label>
+                <label for="b-played">Bands played</label>
                 <input th:name="bandPlayed" id="b-played" type="number" th:placeholder="*{bandPlayed}" th:value="*{bandPlayed}"/>
                 <input type="submit" value="Update"/>
             </div>

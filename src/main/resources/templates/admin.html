@@ -16,14 +16,14 @@
 </form>
 <div th:object="${adminInfo}">
     <p th:text="|Total users registered: *{registeredUsers}|"></p>
-    <p th:text="|Last registered user: *{lastRegisteredUser.firstName} *{lastRegisteredUser.lastName} username: *{lastRegisteredUser.username}, registered on *{lastRegisteredUser.getRegistrationDate()}|"></p>
+    <p th:text="|Last registered user: *{lastRegisteredUser.firstName} *{lastRegisteredUser.lastName} username: *{lastRegisteredUser.username}, registered on ${#temporals.format(adminInfo.lastRegisteredUser.getRegistrationDate(), 'dd-MMM-yyyy HH:mm')}|"></p>
     <p th:text="|Total active bands: *{getActiveBands()}|"></p>
     <p th:text="|Total deleted bands: *{getDeletedBands()}|"></p>
-    <p th:text="|Last registered band: *{lastRegisteredBand.name}, registered on *{lastRegisteredBand.getRegistrationDate()}|"></p>
+    <p th:text="|Last registered band: *{lastRegisteredBand.name}, registered on ${#temporals.format(adminInfo.lastRegisteredBand.getRegistrationDate(), 'dd-MMM-yyyy HH:mm')}|"></p>
 </div>
 <h2 th:unless="${errRole} == null" th:text="${errRole}"></h2>
 <th:block th:unless="${users} == null">
-    <h3 th:if="${#lists.size(users) == 0}" th:text="No users found!"></h3>
+    <h3 th:if="${#lists.size(users) == 0}">No users found!</h3>
     <th:block th:each="u : ${users}">
         <div>
             <span th:text="|${u.getFirstName()} |"></span>
@@ -35,7 +35,7 @@
                     <option th:text="${r.name()}"></option>
                 </th:block>
             </select>
-            <form th:action="@{/users/admin/addRole/{id}(id=${u.getId()})}" th:method="POST">
+            <form th:action="@{/users/admin/addRole/{id}(id=${u.getId()})}" th:method="PATCH">
                 <select name="role">
                     <option value="">Select new Role</option>
                     <th:block th:each="r : ${T(rockwithme.app.model.entity.Role).values()}">
@@ -45,14 +45,14 @@
                 </select>
                 <input type="submit" value="Add role">
             </form>
-            <form th:action="@{/users/admin/removeRole/{id}(id=${u.getId()})}" th:method="POST">
+            <form th:action="@{/users/admin/removeRole/{id}(id=${u.getId()})}" th:method="PATCH">
                 <select name="role">
                     <option value="">Select Role to remove</option>
                     <th:block th:each="r : ${u.getAuthorities()}">
                         <option th:name="role" th:text="${r.name()}" th:value="${r}"></option>
                     </th:block>
                 </select>
-                <input type="submit" value="Add role">
+                <input type="submit" value="Remove role">
             </form>
         </div>
     </th:block>

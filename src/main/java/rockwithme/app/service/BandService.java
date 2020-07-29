@@ -4,6 +4,7 @@ import org.springframework.data.jpa.domain.Specification;
 import rockwithme.app.model.binding.BandRegisterDTO;
 import rockwithme.app.model.binding.BandRemoveMemberBindingDTO;
 import rockwithme.app.model.binding.BandRemoveProducerBindingDTO;
+import rockwithme.app.model.binding.BandSearchBindingDTO;
 import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.*;
 
@@ -51,5 +52,5 @@ public interface BandService {
 
     BandAdminServiceDTO getLastRegistered();
 
-    List<BandSearchServiceDTO> searchUsers(Specification<Band> spec);
+    List<BandSearchServiceDTO> searchUsers(BandSearchBindingDTO bandSearchBindingDTO);
 }

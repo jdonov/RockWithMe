@@ -13,6 +13,7 @@ import rockwithme.app.exeption.PasswordsNotMatchException;
 import rockwithme.app.exeption.UserAlreadyExistsException;
 import rockwithme.app.exeption.UserWithoutRolesException;
 import rockwithme.app.model.binding.UserRegisterDTO;
+import rockwithme.app.model.binding.UserSearchBindingDTO;
 import rockwithme.app.model.binding.UserUpdateDTO;
 import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.UserAdminServiceDTO;
@@ -20,6 +21,7 @@ import rockwithme.app.model.service.UserMyDetailsServiceDTO;
 import rockwithme.app.model.service.UserPublicDetailsServiceDTO;
 import rockwithme.app.model.service.UserSearchDetailsDTO;
 import rockwithme.app.repository.UserRepository;
+import rockwithme.app.specification.UserSpecificationsBuilder;
 import rockwithme.app.service.UserService;
 
 import java.time.LocalDateTime;
@@ -63,8 +65,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserSearchDetailsDTO> searchUsers(Specification<User> specification) {
-        return this.userRepository.findAll(specification).stream()
+    public List<UserSearchDetailsDTO> searchUsers(UserSearchBindingDTO userSearchBindingDTO) {
+        UserSpecificationsBuilder builder = new UserSpecificationsBuilder();
+
+        if (userSearchBindingDTO.getUsername() != null && !userSearchBindingDTO.getUsername().isEmpty()) {
+            builder.with("username", ":", userSearchBindingDTO.getUsername());
+        }
+        if (userSearchBindingDTO.getFirstName() != null && !userSearchBindingDTO.getFirstName().isEmpty()) {
+            builder.with("firstName", ":", userSearchBindingDTO.getFirstName());
+        }
+        if (userSearchBindingDTO.getLastName() != null && !userSearchBindingDTO.getLastName().isEmpty()) {
+            builder.with("lastName", ":", userSearchBindingDTO.getLastName());
+        }
+
+        Specification<User> spec = builder.build();
+        return this.userRepository.findAll(spec).stream()
                 .map(user -> this.modelMapper.map(user, UserSearchDetailsDTO.class))
                 .collect(Collectors.toList());
     }
@@ -162,7 +177,7 @@ public class UserServiceImpl implements UserService {
             user.setAuthorities(newRoles);
             this.userRepository.saveAndFlush(user);
         } else {
-            throw new UserWithoutRolesException("Can not delete role! User has only one role!");
+            throw new UserWithoutRolesException(String.format("Can not delete role! User %s has only one role!", user.getUsername()));
         }
     }
 

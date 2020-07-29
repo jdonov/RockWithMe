@@ -12,6 +12,7 @@ public class EventServiceDTO extends BaseServiceModel{
     private EventCategory eventCategory;
     private LocalDateTime eventDate;
     private String description;
+    private boolean canceled;
 
     public EventServiceDTO() {
     }
@@ -46,5 +47,13 @@ public class EventServiceDTO extends BaseServiceModel{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isCanceled() {
+        return canceled;
+    }
+
+    public void setCanceled(boolean canceled) {
+        this.canceled = canceled;
     }
 }

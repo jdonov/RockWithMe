@@ -52,7 +52,7 @@ public class EventController {
     }
 
     @GetMapping("/update")
-    public String updateEvent(@RequestParam("id") String eventId, Model model) {
+    public String updateEvent(@RequestParam(value = "id", required = false) String eventId, Model model) {
         if (!model.containsAttribute("updateEvent")) {
             model.addAttribute("updateEvent", this.eventService.getEventToUpdateById(eventId));
         }
@@ -77,7 +77,7 @@ public class EventController {
         return modelAndView;
     }
 
-    @PostMapping("/cancel/{id}")
+    @DeleteMapping("/cancel/{id}")
     public String cancelEvent(@PathVariable("id") String eventId) {
         this.eventService.cancelEvent(eventId);
         return "redirect:/bands/myBands";

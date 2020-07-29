@@ -1,6 +1,5 @@
 package rockwithme.app.web;
 
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,22 +11,22 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import rockwithme.app.exeption.PasswordsNotMatchException;
+import rockwithme.app.exeption.UserAlreadyExistsException;
+import rockwithme.app.exeption.UserRoleException;
 import rockwithme.app.exeption.UserWithoutRolesException;
 import rockwithme.app.model.binding.UserChangePasswordDTO;
 import rockwithme.app.model.binding.UserRegisterDTO;
+import rockwithme.app.model.binding.UserSearchBindingDTO;
 import rockwithme.app.model.binding.UserUpdateDTO;
 import rockwithme.app.model.entity.Role;
-import rockwithme.app.model.entity.User;
-import rockwithme.app.model.service.AdminDetailsServiceDTO;
 import rockwithme.app.model.service.UserPublicDetailsServiceDTO;
 import rockwithme.app.model.service.UserSearchDetailsDTO;
-import rockwithme.app.repository.specification.UserSpecificationsBuilder;
 import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
 import rockwithme.app.utils.FileUploader;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -60,8 +59,19 @@ public class UserController {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerUser", bindingResult);
             modelAndView.setViewName("redirect:/users/register");
         } else {
-            this.userService.registerUser(userRegisterDTO);
-            modelAndView.setViewName("redirect:/login");
+            try {
+                this.userService.registerUser(userRegisterDTO);
+                modelAndView.setViewName("redirect:/login");
+            } catch (PasswordsNotMatchException e) {
+                redirectAttributes.addFlashAttribute("registerUser", userRegisterDTO);
+                FieldError fieldError = new FieldError("registerUser", "password", "Passwords do not match!");
+                FieldError fieldErrorConf = new FieldError("registerUser", "confirmPassword", "Passwords do not match!");
+                bindingResult.addError(fieldError);
+                bindingResult.addError(fieldErrorConf);
+                redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerUser", bindingResult);
+                modelAndView.setViewName("redirect:/users/register");
+            }
+
         }
 
         return modelAndView;
@@ -86,7 +96,7 @@ public class UserController {
         return "user-update";
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ModelAndView updateUserConfirm(@Valid @ModelAttribute("userUpdateDTO") UserUpdateDTO userUpdateDTO,
                                           BindingResult bindingResult,
                                           RedirectAttributes redirectAttributes,
@@ -111,12 +121,12 @@ public class UserController {
                 }
             }
             this.userService.updatePlayer(userUpdateDTO);
-            modelAndView.setViewName("redirect:update");
+            modelAndView.setViewName("redirect:/users/update");
         }
         return modelAndView;
     }
 
-    @PostMapping("/changePass")
+    @PatchMapping("/changePass")
     public ModelAndView changePassword(@Valid @ModelAttribute("changePassword") UserChangePasswordDTO userChangePasswordDTO,
                                        BindingResult bindingResult, RedirectAttributes redirectAttributes, ModelAndView modelAndView) {
 
@@ -125,7 +135,6 @@ public class UserController {
             FieldError err = new FieldError("changePassword", "confirmNewPassword", "Passwords do not match!");
             bindingResult.addError(err);
         }
-        //TODO passwordEncoder checks passwords too slowly!! Check passwordEncoder.matches() speed???
         if (!this.userService.checkIfValidOldPassword(username, userChangePasswordDTO.getOldPassword())) {
             FieldError err = new FieldError("changePassword", "oldPassword", "Wrong password!");
             bindingResult.addError(err);
@@ -152,30 +161,14 @@ public class UserController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/admin/search")
-    public String getUser(@RequestParam(value = "username", required = false) String username,
-                          @RequestParam(value = "firstName", required = false) String firstName,
-                          @RequestParam(value = "lastName", required = false) String lastName,
-                          RedirectAttributes redirectAttributes) {
+    public String getUser(@ModelAttribute UserSearchBindingDTO userSearchBindingDTO, RedirectAttributes redirectAttributes) {
 
-        UserSpecificationsBuilder builder = new UserSpecificationsBuilder();
-
-        if (username != null && !username.isEmpty()) {
-            builder.with("username", ":", username);
-        }
-        if (firstName != null && !firstName.isEmpty()) {
-            builder.with("firstName", ":", firstName);
-        }
-        if (lastName != null && !lastName.isEmpty()) {
-            builder.with("lastName", ":", lastName);
-        }
-
-        Specification<User> spec = builder.build();
-        List<UserSearchDetailsDTO> users = this.userService.searchUsers(spec);
+        List<UserSearchDetailsDTO> users = this.userService.searchUsers(userSearchBindingDTO);
         redirectAttributes.addFlashAttribute("users", users);
         return "redirect:/users/admin";
     }
 
-    @PostMapping("/admin/addRole/{id}")
+    @PatchMapping("/admin/addRole/{id}")
     public ModelAndView addNewRole(@PathVariable("id") String userId,
                                    @RequestParam(value = "role", required = false) Role role,
                                    RedirectAttributes redirectAttributes,
@@ -189,21 +182,14 @@ public class UserController {
         return modelAndView;
     }
 
-    @PostMapping("/admin/removeRole/{id}")
+    @PatchMapping("/admin/removeRole/{id}")
     public String removeRole(@PathVariable("id") String userId,
-                             @RequestParam(value = "role", required = false) Role role,
-                             RedirectAttributes redirectAttributes) {
+                             @RequestParam(value = "role", required = false) Role role) {
         if (role != null) {
-            try {
-                this.userService.removeUserRole(userId, role);
-            } catch (UserWithoutRolesException userWithoutRolesException) {
-                redirectAttributes.addFlashAttribute("errRole", userWithoutRolesException.getMessage());
-            }
+            this.userService.removeUserRole(userId, role);
         } else {
-            redirectAttributes.addFlashAttribute("errRole", "Select role to remove!");
+            throw new UserRoleException("Select role to remove!");
         }
         return "redirect:/users/admin";
     }
-
-
 }

@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 import rockwithme.app.model.binding.BandRegisterDTO;
 import rockwithme.app.model.binding.BandRemoveMemberBindingDTO;
 import rockwithme.app.model.binding.BandRemoveProducerBindingDTO;
+import rockwithme.app.model.binding.BandSearchBindingDTO;
 import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.*;
 import rockwithme.app.repository.BandRepository;
+import rockwithme.app.specification.BandSpecificationBuilder;
 import rockwithme.app.service.BandService;
 import rockwithme.app.service.InstrumentService;
 import rockwithme.app.service.PlayerSkillsService;
@@ -261,7 +263,30 @@ public class BandServiceImpl implements BandService {
     }
 
     @Override
-    public List<BandSearchServiceDTO> searchUsers(Specification<Band> spec) {
+    public List<BandSearchServiceDTO> searchUsers(BandSearchBindingDTO bandSearchBindingDTO) {
+        BandSpecificationBuilder builder = new BandSpecificationBuilder();
+        if (bandSearchBindingDTO.getName() != null && !bandSearchBindingDTO.getName().isEmpty()) {
+            builder.with("name", ":", bandSearchBindingDTO.getName());
+        }
+        if (bandSearchBindingDTO.getStyle() != null) {
+            builder.with("styles", ":", bandSearchBindingDTO.getStyle());
+        }
+        if (bandSearchBindingDTO.getGoal() != null) {
+            builder.with("goals", ":", bandSearchBindingDTO.getGoal());
+        }
+        if (bandSearchBindingDTO.getTown() != null) {
+            builder.with("town", ":", bandSearchBindingDTO.getTown());
+        }
+
+        if (bandSearchBindingDTO.getNeedMembers() != null) {
+            builder.with("needMembers", ":", bandSearchBindingDTO.getNeedMembers());
+        }
+
+        if (bandSearchBindingDTO.getNeedsProducer() != null) {
+            builder.with("needsProducer", ":", bandSearchBindingDTO.getNeedsProducer());
+        }
+
+        Specification<Band> spec = builder.build();
         return this.bandRepository.findAll(spec).stream()
                 .map(band -> this.modelMapper.map(band, BandSearchServiceDTO.class))
                 .collect(Collectors.toList());

@@ -1,4 +1,4 @@
-package rockwithme.app.repository.specification;
+package rockwithme.app.specification;
 
 import org.springframework.data.jpa.domain.Specification;
 import rockwithme.app.model.entity.Band;

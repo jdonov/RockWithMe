@@ -3,6 +3,7 @@ package rockwithme.app.service;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import rockwithme.app.model.binding.UserRegisterDTO;
+import rockwithme.app.model.binding.UserSearchBindingDTO;
 import rockwithme.app.model.binding.UserUpdateDTO;
 import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.UserAdminServiceDTO;
@@ -21,7 +22,7 @@ public interface UserService extends UserDetailsService {
 
     void addNewRole(String userId, Role role);
 
-    List<UserSearchDetailsDTO> searchUsers(Specification<User> specification);
+    List<UserSearchDetailsDTO> searchUsers(UserSearchBindingDTO userSearchBindingDTO);
 
     void addBand(User user, Band band);
 

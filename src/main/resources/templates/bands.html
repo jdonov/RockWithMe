@@ -55,20 +55,23 @@
         </a>
     </div>
 </th:block>
-<th:block th:unless="${bands} == null" th:each="b : ${bands}">
-    <div th:object="${b}">
-        <a th:href="@{/bands/details/{id}(id=*{id})}">
-            <span th:text="|Band name: *{name} |">Band name</span>
-            <p th:each="s : *{styles}" th:text="${s}"></p>
-            <p th:each="g : *{goals}" th:text="${g}"></p>
-            <span th:text="|Town: *{town}, |"></span>
-            <label>Needs members: </label>
-            <input disabled type="checkbox" th:checked="*{needMembers}"/>
-            <label>Needs producer: </label>
-            <input disabled type="checkbox" th:checked="*{needsProducer}"/>
-            <hr>
-        </a>
-    </div>
+<th:block th:unless="${bands} == null">
+    <h3 th:if="${#lists.size(bands) == 0}">No bands found!</h3>
+    <th:block th:each="b : ${bands}">
+        <div th:object="${b}">
+            <a th:href="@{/bands/details/{id}(id=*{id})}">
+                <span th:text="|Band name: *{name} |">Band name</span>
+                <p th:each="s : *{styles}" th:text="${s}"></p>
+                <p th:each="g : *{goals}" th:text="${g}"></p>
+                <span th:text="|Town: *{town}, |"></span>
+                <label>Needs members: </label>
+                <input disabled type="checkbox" th:checked="*{needMembers}"/>
+                <label>Needs producer: </label>
+                <input disabled type="checkbox" th:checked="*{needsProducer}"/>
+                <hr>
+            </a>
+        </div>
+    </th:block>
 </th:block>
 
 </body>

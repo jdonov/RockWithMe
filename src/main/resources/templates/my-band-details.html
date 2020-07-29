@@ -35,10 +35,15 @@
         <th:block th:each="e : *{getEvents()}">
             <span th:text="${e.getEventCategory()}"> </span>
             <span th:text="|Date: ${#temporals.format(e.getEventDate(), 'dd-MMM-yyyy HH:mm')}|"></span>
-            <a th:href="@{/bands/events/update(id=${e.id})}">Update event</a>
-            <form th:action="@{/bands/events/cancel/{id}(id=${e.id})}" method="POST">
-                <input type="submit" value="Cancel event">
-            </form>
+            <th:block th:if="${e.canceled == false}">
+                <a th:href="@{/bands/events/update(id=${e.id})}">Update event</a>
+            </th:block>
+            <th:block th:unless="${e.canceled}">
+                <form th:action="@{/bands/events/cancel/{id}(id=${e.id})}" th:method="DELETE">
+                    <input type="submit" value="Cancel event">
+                </form>
+            </th:block>
+            <span th:if="${e.canceled}" th:text="CANCELED"></span>
             <div>
                 <span th:text="${e.description}"></span>
             </div>

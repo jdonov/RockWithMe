@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<form method="post" th:object="${userUpdateDTO}" th:action="@{/users/update}" enctype="multipart/form-data">
+<form th:object="${userUpdateDTO}" th:action="@{/users/update}" th:method="PUT" enctype="multipart/form-data">
     <div>
         <img th:src="${userMyDetailsDTO.imgUrl}">
     </div>
@@ -46,7 +46,7 @@
     <input type="submit" value="Update player">
 </form>
 <div>
-<form th:object="${changePassword}" th:method="POST" th:action="@{/users/changePass}">
+<form th:object="${changePassword}" th:method="PATCH" th:action="@{/users/changePass}">
     <label for="oldPassword">Enter current password:</label>
     <input id="oldPassword" type="password" th:field="*{oldPassword}">
     <label for="newPassword">Enter new password:</label>

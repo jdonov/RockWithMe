@@ -61,6 +61,7 @@ public class BandRegisterController {
         return "band-register";
     }
 
+    //TODO Add AOP @Before to check if the user has registered skills!
     @PostMapping
     public ModelAndView registerBand(@Valid @ModelAttribute("bandRegister") BandRegisterDTO bandRegisterDTO,
                                      BindingResult bindingResult,
