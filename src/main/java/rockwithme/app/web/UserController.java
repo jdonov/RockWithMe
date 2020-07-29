@@ -143,13 +143,14 @@ public class UserController {
         return modelAndView;
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/admin")
     public String getAdmin() {
 
         return "admin";
     }
 
-    //TODO Add to security filter for only ADMIN!!!
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/admin/search")
     public String getUser(@RequestParam(value = "username", required = false) String username,
                           @RequestParam(value = "firstName", required = false) String firstName,

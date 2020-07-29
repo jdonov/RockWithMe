@@ -6,8 +6,11 @@
 </head>
 <body>
 <form method="post" th:action="@{/login/authenticate}">
+    <th:block th:if="${error}">
+        <h4 th:text="${error}"></h4>
+    </th:block>
     <label for="username">username</label>
-    <input type="text" name="username" id="username">
+    <input type="text" name="username" id="username" th:value="${username}">
     <label for="password">password</label>
     <input type="password" name="password" id="password">
     <input type="submit"/>
