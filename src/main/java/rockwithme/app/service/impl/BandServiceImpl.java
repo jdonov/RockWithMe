@@ -1,6 +1,10 @@
 package rockwithme.app.service.impl;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import rockwithme.app.model.binding.BandRegisterDTO;
@@ -155,13 +159,13 @@ public class BandServiceImpl implements BandService {
     @Override
     public void addRequest(Band band, JoinRequest request) {
         band.getRequests().add(request);
-        this.bandRepository.save(band);
+        this.bandRepository.saveAndFlush(band);
     }
 
     @Override
     public void addMember(Band band, PlayerSkills playerSkills) {
         band.getMembers().add(playerSkills);
-        this.bandRepository.save(band);
+        this.bandRepository.saveAndFlush(band);
     }
 
     @Override
@@ -179,7 +183,7 @@ public class BandServiceImpl implements BandService {
     @Override
     public void addProducer(User user, Band band) {
         band.setProducer(user);
-        this.bandRepository.save(band);
+        this.bandRepository.saveAndFlush(band);
     }
 
     @Override
@@ -263,7 +267,8 @@ public class BandServiceImpl implements BandService {
     }
 
     @Override
-    public List<BandSearchServiceDTO> searchUsers(BandSearchBindingDTO bandSearchBindingDTO) {
+    public Page<BandSearchServiceDTO> searchBands(BandSearchBindingDTO bandSearchBindingDTO, Pageable pageable) {
+
         BandSpecificationBuilder builder = new BandSpecificationBuilder();
         if (bandSearchBindingDTO.getName() != null && !bandSearchBindingDTO.getName().isEmpty()) {
             builder.with("name", ":", bandSearchBindingDTO.getName());
@@ -287,8 +292,21 @@ public class BandServiceImpl implements BandService {
         }
 
         Specification<Band> spec = builder.build();
-        return this.bandRepository.findAll(spec).stream()
+        List<BandSearchServiceDTO> bands = this.bandRepository.findAll(spec).stream()
                 .map(band -> this.modelMapper.map(band, BandSearchServiceDTO.class))
                 .collect(Collectors.toList());
+
+        int startItem = pageable.getPageNumber() * pageable.getPageSize();
+
+        List<BandSearchServiceDTO> list;
+
+        if (bands.size() < startItem) {
+            list = new ArrayList<>();
+        } else {
+            int toIndex = Math.min(startItem + pageable.getPageSize(), bands.size());
+            list = bands.subList(startItem, toIndex);
+        }
+
+        return new PageImpl<>(list, pageable, bands.size());
     }
 }

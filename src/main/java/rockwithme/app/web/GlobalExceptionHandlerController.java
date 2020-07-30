@@ -3,8 +3,10 @@ package rockwithme.app.web;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.FlashMap;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
+import rockwithme.app.exeption.NoRegisteredSkills;
 import rockwithme.app.exeption.NotRequiredSkillsException;
 import rockwithme.app.exeption.UserAlreadyExistsException;
 import rockwithme.app.exeption.UserRoleException;
@@ -34,7 +36,7 @@ public class GlobalExceptionHandlerController {
     }
 
     @ExceptionHandler(NotRequiredSkillsException.class)
-    private RedirectView notRequiredSkills(NotRequiredSkillsException e, HttpServletRequest request) {
+    public RedirectView notRequiredSkills(NotRequiredSkillsException e, HttpServletRequest request) {
         FlashMap outputFlashMap = RequestContextUtils.getOutputFlashMap(request);
         if (e.getInstrumentEnums().isEmpty()) {
             outputFlashMap.put("notRequiredSkills", e.getMessage());
@@ -44,8 +46,14 @@ public class GlobalExceptionHandlerController {
             outputFlashMap.put("notRequiredSkills", errMessage);
             outputFlashMap.put("redirectErr", true);
         }
-        RedirectView rw = new RedirectView("/bands/details/" + e.getBandId());
-        return rw;
+        return new RedirectView("/bands/details/" + e.getBandId());
+    }
+
+    @ExceptionHandler(NoRegisteredSkills.class)
+    public RedirectView noSkills(NoRegisteredSkills noRegisteredSkills, HttpServletRequest request) {
+        FlashMap outputFlashMap = RequestContextUtils.getOutputFlashMap(request);
+        outputFlashMap.put("noSkillsRegistered", noRegisteredSkills.getMessage());
+        return new RedirectView("/skills");
     }
 }
 

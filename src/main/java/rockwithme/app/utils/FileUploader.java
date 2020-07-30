@@ -39,4 +39,12 @@ public class FileUploader {
         }
         return null;
     }
+
+    public static boolean deleteFile(String imgUrl) {
+        File file = new File(UPLOAD_DIR);
+        String img = imgUrl.replace("/uploads", "");
+        String path = file.getAbsolutePath() + img;
+        file = new File(path);
+        return file.delete();
+    }
 }

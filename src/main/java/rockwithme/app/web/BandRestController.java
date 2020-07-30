@@ -1,19 +1,14 @@
 package rockwithme.app.web;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import rockwithme.app.model.binding.BandRegisterDTO;
 import rockwithme.app.model.binding.BandSearchBindingDTO;
-import rockwithme.app.model.entity.Band;
-import rockwithme.app.model.entity.Views;
 import rockwithme.app.model.service.BandSearchServiceDTO;
 import rockwithme.app.service.BandService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/bands")
@@ -26,12 +21,14 @@ public class BandRestController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<BandSearchServiceDTO>> getBands(@RequestBody BandSearchBindingDTO bandSearchBindingDTO) {
-        List<BandSearchServiceDTO> bands = this.bandService.searchUsers(bandSearchBindingDTO);
-        if (bands.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(bands);
+    public Page<BandSearchServiceDTO> getBands(@RequestBody BandSearchBindingDTO bandSearchBindingDTO,
+                                               @RequestParam("page") Integer page,
+                                               @RequestParam("size") Integer size) {
+
+        int currentPage = page == null ? 1 : page;
+        int pageSize = size == null ? 5 : size;
+
+        return this.bandService.searchBands(bandSearchBindingDTO, PageRequest.of(currentPage-1, pageSize));
     }
 
 //    @PostMapping

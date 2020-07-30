@@ -39,7 +39,7 @@ public class BandRegisterController {
 
 
     @GetMapping
-    public String regBand(Model model, HttpSession httpSession) {
+    public String registerBand(Model model, HttpSession httpSession) {
         if (!model.containsAttribute("founderInstruments")) {
             model.addAttribute("founderInstruments",
                     this.playerSkillsService.getByPlayerId(this.userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).getId())
@@ -63,7 +63,7 @@ public class BandRegisterController {
 
     //TODO Add AOP @Before to check if the user has registered skills!
     @PostMapping
-    public ModelAndView registerBand(@Valid @ModelAttribute("bandRegister") BandRegisterDTO bandRegisterDTO,
+    public ModelAndView registerBandConfirm(@Valid @ModelAttribute("bandRegister") BandRegisterDTO bandRegisterDTO,
                                      BindingResult bindingResult,
                                      RedirectAttributes redirectAttributes,
                                      HttpSession httpSession,

@@ -5,44 +5,47 @@
     <title>Title</title>
 </head>
 <body>
-<form th:action="@{/bands/search}" th:method="GET">
-    <div>
-        <div>
-            <span>Search</span>
-        </div>
-        <label for="name">Band name:</label>
-        <input type="text" name="name" id="name"/>
-        <select id="style" name="style">
-            <option value="">Select style</option>
-            <th:block th:each="s : ${T(rockwithme.app.model.entity.Style).values()}">
-                <option th:text="${s.name()}" th:value="${s}"></option>
-            </th:block>
-        </select>
-        <select id="goal" name="goal">
-            <option value="">Select goal</option>
-            <th:block th:each="g : ${T(rockwithme.app.model.entity.Goal).values()}">
-                <option th:text="${g.name()}" th:value="${g}"></option>
-            </th:block>
-        </select>
-        <select id="town" name="town">
-            <option value="">Select town</option>
-            <th:block th:each="t : ${T(rockwithme.app.model.entity.Town).values()}">
-                <option th:text="${t.name()}" th:value="${t}"></option>
-            </th:block>
-        </select>
-        <select name="needMembers">
-            <option value="">Select needed members</option>
-            <option value="true">Members are needed</option>
-            <option value="false">Members are not needed</option>
-        </select>
-        <select name="needsProducer">
-            <option value="">Select needs producer</option>
-            <option value="true">Producer is needed</option>
-            <option value="false">Producer is not needed</option>
-        </select>
-    </div>
-    <input type="submit" value="Search"/>
-</form>
+<div>
+    <a th:href="@{/bands/search}">Search band</a>
+</div>
+<!--<form th:action="@{/bands/search}" th:method="GET">-->
+<!--    <div>-->
+<!--        <div>-->
+<!--            <span>Search</span>-->
+<!--        </div>-->
+<!--        <label for="name">Band name:</label>-->
+<!--        <input type="text" name="name" id="name"/>-->
+<!--        <select id="style" name="style">-->
+<!--            <option value="">Select style</option>-->
+<!--            <th:block th:each="s : ${T(rockwithme.app.model.entity.Style).values()}">-->
+<!--                <option th:text="${s.name()}" th:value="${s}"></option>-->
+<!--            </th:block>-->
+<!--        </select>-->
+<!--        <select id="goal" name="goal">-->
+<!--            <option value="">Select goal</option>-->
+<!--            <th:block th:each="g : ${T(rockwithme.app.model.entity.Goal).values()}">-->
+<!--                <option th:text="${g.name()}" th:value="${g}"></option>-->
+<!--            </th:block>-->
+<!--        </select>-->
+<!--        <select id="town" name="town">-->
+<!--            <option value="">Select town</option>-->
+<!--            <th:block th:each="t : ${T(rockwithme.app.model.entity.Town).values()}">-->
+<!--                <option th:text="${t.name()}" th:value="${t}"></option>-->
+<!--            </th:block>-->
+<!--        </select>-->
+<!--        <select name="needMembers">-->
+<!--            <option value="">Select needed members</option>-->
+<!--            <option value="true">Members are needed</option>-->
+<!--            <option value="false">Members are not needed</option>-->
+<!--        </select>-->
+<!--        <select name="needsProducer">-->
+<!--            <option value="">Select needs producer</option>-->
+<!--            <option value="true">Producer is needed</option>-->
+<!--            <option value="false">Producer is not needed</option>-->
+<!--        </select>-->
+<!--    </div>-->
+<!--    <input type="submit" value="Search"/>-->
+<!--</form>-->
 <th:block th:if="${bands} == null" th:each="b : ${allBands}">
     <div th:object="${b}">
         <a th:href="@{/bands/details/{id}(id=*{id})}">
@@ -55,24 +58,24 @@
         </a>
     </div>
 </th:block>
-<th:block th:unless="${bands} == null">
-    <h3 th:if="${#lists.size(bands) == 0}">No bands found!</h3>
-    <th:block th:each="b : ${bands}">
-        <div th:object="${b}">
-            <a th:href="@{/bands/details/{id}(id=*{id})}">
-                <span th:text="|Band name: *{name} |">Band name</span>
-                <p th:each="s : *{styles}" th:text="${s}"></p>
-                <p th:each="g : *{goals}" th:text="${g}"></p>
-                <span th:text="|Town: *{town}, |"></span>
-                <label>Needs members: </label>
-                <input disabled type="checkbox" th:checked="*{needMembers}"/>
-                <label>Needs producer: </label>
-                <input disabled type="checkbox" th:checked="*{needsProducer}"/>
-                <hr>
-            </a>
-        </div>
-    </th:block>
-</th:block>
+<!--<th:block th:unless="${bands} == null">-->
+<!--    <h3 th:if="${#lists.size(bands) == 0}">No bands found!</h3>-->
+<!--    <th:block th:each="b : ${bands}">-->
+<!--        <div th:object="${b}">-->
+<!--            <a th:href="@{/bands/details/{id}(id=*{id})}">-->
+<!--                <span th:text="|Band name: *{name} |">Band name</span>-->
+<!--                <p th:each="s : *{styles}" th:text="${s}"></p>-->
+<!--                <p th:each="g : *{goals}" th:text="${g}"></p>-->
+<!--                <span th:text="|Town: *{town}, |"></span>-->
+<!--                <label>Needs members: </label>-->
+<!--                <input disabled type="checkbox" th:checked="*{needMembers}"/>-->
+<!--                <label>Needs producer: </label>-->
+<!--                <input disabled type="checkbox" th:checked="*{needsProducer}"/>-->
+<!--                <hr>-->
+<!--            </a>-->
+<!--        </div>-->
+<!--    </th:block>-->
+<!--</th:block>-->
 
 </body>
 </html>

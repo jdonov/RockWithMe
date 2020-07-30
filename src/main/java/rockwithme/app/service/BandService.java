@@ -1,5 +1,7 @@
 package rockwithme.app.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import rockwithme.app.model.binding.BandRegisterDTO;
 import rockwithme.app.model.binding.BandRemoveMemberBindingDTO;
 import rockwithme.app.model.binding.BandRemoveProducerBindingDTO;
@@ -50,5 +52,5 @@ public interface BandService {
 
     BandAdminServiceDTO getLastRegistered();
 
-    List<BandSearchServiceDTO> searchUsers(BandSearchBindingDTO bandSearchBindingDTO);
+    Page<BandSearchServiceDTO> searchBands(BandSearchBindingDTO bandSearchBindingDTO, Pageable pageable);
 }

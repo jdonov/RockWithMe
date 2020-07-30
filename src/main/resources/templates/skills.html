@@ -12,6 +12,11 @@
 <div id="info">
 
 </div>
+
+<div th:if="${noSkillsRegistered} != null">
+    <h2 th:text="${noSkillsRegistered}"></h2>
+</div>
+
 <div>
     <th:block th:object="${currentPlayerSkills}" th:each="p : ${currentPlayerSkills}">
         <form th:object="${p}" th:method="PUT" th:action="@{/skills/update}">

@@ -23,12 +23,13 @@ window.addEventListener('load', () => {
             needsProducer: needsProducerInput.value
         }
         let newSearch = Object.fromEntries(Object.entries(search).filter(([key, value]) => value));
-        try {
             let response = await searchSend(newSearch);
-            response.forEach(b => {
+
+        if (response.content.length !== 0) {
+            response.content.forEach(b => {
                 divContainer.appendChild(renderBand(b));
-            })
-        } catch (e) {
+            });
+        } else {
             let h = document.createElement("h3");
             h.setAttribute("id", "no-bands-message")
             h.textContent = "No bands found!";
@@ -37,7 +38,7 @@ window.addEventListener('load', () => {
     }
 
     async function searchSend(searchObj) {
-        const response = await fetch(`${localHost}/api/bands/search`, {
+        const response = await fetch(`${localHost}/api/bands/search?page=1&size=2`, {
             method: "POST",
             body: JSON.stringify(searchObj),
             headers: {

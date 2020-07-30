@@ -5,12 +5,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import rockwithme.app.exeption.NotRequiredSkillsException;
 import rockwithme.app.model.binding.*;
 import rockwithme.app.model.service.*;
 import rockwithme.app.service.BandService;
@@ -21,7 +19,6 @@ import rockwithme.app.utils.FileUploader;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 @Controller
@@ -44,8 +41,12 @@ public class BandController {
         if (!model.containsAttribute("allBands") && !model.containsAttribute("bands")) {
             model.addAttribute("allBands", this.bandService.getAllBands());
         }
-//        return "bands-search-test";
         return "bands";
+    }
+
+    @GetMapping("/search")
+    public String searchBand() {
+        return "bands-search-test";
     }
 
     @GetMapping("/details/{id}")
@@ -70,9 +71,7 @@ public class BandController {
     }
 
     @GetMapping("/myBands/{id}")
-    public String getMyBandDetails(@PathVariable(name = "id") String id, Model model, Authentication authentication) {
-
-        //TODO list band events with links
+    public String getMyBandDetails(@PathVariable(name = "id") String id, Model model) {
 
         model.addAttribute("myBand", this.bandService.getMyBandDetails(id));
         if (!model.containsAttribute("removeMember")) {
@@ -145,12 +144,18 @@ public class BandController {
         return modelAndView;
     }
 
-    @GetMapping("/search")
-    public String getBands(@ModelAttribute BandSearchBindingDTO bandSearchBindingDTO, RedirectAttributes redirectAttributes) {
-        List<BandSearchServiceDTO> bands = this.bandService.searchUsers(bandSearchBindingDTO);
-        redirectAttributes.addFlashAttribute("bands", bands);
-        return "redirect:/bands";
-    }
+    //TODO Remove the code in final version
+//    @GetMapping("/search")
+//    public String getBands(@ModelAttribute BandSearchBindingDTO bandSearchBindingDTO,
+//                           RedirectAttributes redirectAttributes,
+//                           @RequestParam("page") Optional<Integer> page,
+//                           @RequestParam("size") Optional<Integer> size) {
+//        int currentPage = page.orElse(1);
+//        int pageSize = size.orElse(5);
+//        Page<BandSearchServiceDTO> bands = this.bandService.searchBands(bandSearchBindingDTO, PageRequest.of(currentPage-1, pageSize));
+//        redirectAttributes.addFlashAttribute("bands", bands);
+//        return "redirect:/bands";
+//    }
 
     private boolean inMyBands(String bandId) {
         List<BandMyAllBandsDTO> myAllBandsDTOS = this.bandService.getBandByMember(SecurityContextHolder.getContext().getAuthentication().getName());
