@@ -42,7 +42,9 @@
     <div>
         <input type="file" id="file" name="file" class="custom-file-input" th:value="*{imgUrl}"/>
     </div>
-
+    <th:block th:if="${maxFileExceeded}">
+        <p>Max file size exceeded! Max size is 128KB!</p>
+    </th:block>
     <input type="submit" value="Update player">
 </form>
 <div>

@@ -2,8 +2,8 @@ package rockwithme.app.web;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.FlashMap;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 import rockwithme.app.exeption.NoRegisteredSkills;
@@ -54,6 +54,21 @@ public class GlobalExceptionHandlerController {
         FlashMap outputFlashMap = RequestContextUtils.getOutputFlashMap(request);
         outputFlashMap.put("noSkillsRegistered", noRegisteredSkills.getMessage());
         return new RedirectView("/skills");
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public RedirectView fileLimitExceeded(MaxUploadSizeExceededException e, HttpServletRequest httpServletRequest) {
+        String url = httpServletRequest.getRequestURL().toString();
+        FlashMap outputFlashMap = RequestContextUtils.getOutputFlashMap(httpServletRequest);
+        outputFlashMap.put("maxFileExceeded", true);
+        if (url.contains("/users/update")) {
+            return new RedirectView("/users/update");
+        } else {
+            int startIndex = url.indexOf("addPhoto");
+            startIndex += "addPhoto/".length();
+            String endUrl = url.substring(startIndex);
+            return new RedirectView("/bands/myBands/" + endUrl);
+        }
     }
 }
 

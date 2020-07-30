@@ -62,6 +62,9 @@
             <input type="file" id="file" name="file" class="custom-file-input" th:value="*{imgUrl}"/>
             <input type="submit" value="Upload picture">
         </form>
+        <th:block th:if="${maxFileExceeded}">
+            <p>Max file size exceeded! Max size is 128KB!</p>
+        </th:block>
     </div>
     <!--<th:block th:unless="*{events.isEmpty()}">-->
     <a th:href="@{/bands/events(bandId=${myBand.id}, upcoming=true)}">Upcoming events</a>

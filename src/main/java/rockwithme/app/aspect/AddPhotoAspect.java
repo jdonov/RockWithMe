@@ -1,6 +1,7 @@
 package rockwithme.app.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -24,14 +25,14 @@ public class AddPhotoAspect {
     }
 
     @Pointcut("execution(* rockwithme.app.web.BandController.addPhoto(..))")
-    public void removeBandPhoto() {
+    public void addBandPhoto() {
     }
 
     @Pointcut("execution(* rockwithme.app.web.UserController.updateUserConfirm(..))")
-    public void removeUserPhoto() {
+    public void addUserPhoto() {
     }
 
-    @Around("removeBandPhoto()")
+    @Around("addBandPhoto()")
     public Object deleteOldBandPhoto(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         String bandId = (String) proceedingJoinPoint.getArgs()[0];
         Band band = this.bandService.getBandById(bandId);
@@ -43,7 +44,8 @@ public class AddPhotoAspect {
         return ret;
     }
 
-    @Around("removeUserPhoto()")
+
+    @Around("addUserPhoto()")
     public Object deleteOldUserPhoto(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = this.userService.getUserByUsername(username);

@@ -46,7 +46,7 @@ public class BandController {
 
     @GetMapping("/search")
     public String searchBand() {
-        return "bands-search-test";
+        return "bands-search";
     }
 
     @GetMapping("/details/{id}")
