@@ -31,24 +31,6 @@
             </form>
         </div>
     </th:block>
-    <th:block th:unless="*{events.isEmpty()}">
-        <th:block th:each="e : *{getEvents()}">
-            <span th:text="${e.getEventCategory()}"> </span>
-            <span th:text="|Date: ${#temporals.format(e.getEventDate(), 'dd-MMM-yyyy HH:mm')}|"></span>
-            <th:block th:if="${e.canceled == false}">
-                <a th:href="@{/bands/events/update(id=${e.id})}">Update event</a>
-            </th:block>
-            <th:block th:unless="${e.canceled}">
-                <form th:action="@{/bands/events/cancel/{id}(id=${e.id})}" th:method="DELETE">
-                    <input type="submit" value="Cancel event">
-                </form>
-            </th:block>
-            <span th:if="${e.canceled}" th:text="CANCELED"></span>
-            <div>
-                <span th:text="${e.description}"></span>
-            </div>
-        </th:block>
-    </th:block>
     <th:block th:each="r : ${myBand.requests}" th:object="${r}">
         <div>
             <a th:href="@{/users/details(id=${r.getUserId()})}">
@@ -81,6 +63,43 @@
             <input type="submit" value="Upload picture">
         </form>
     </div>
+    <!--<th:block th:unless="*{events.isEmpty()}">-->
+    <a th:href="@{/bands/events(bandId=${myBand.id}, upcoming=true)}">Upcoming events</a>
+    <a th:href="@{/bands/events(bandId=${myBand.id}, upcoming=false)}">Past events</a>
+    <th:block th:unless="${upcomingEvents} == null">
+        <th:block th:each="e : ${upcomingEvents}">
+            <div>
+                <span th:text="|${e.getEventType().name()} event |"></span>
+                <span th:text="${e.getEventCategory()}"> </span>
+                <span th:text="|Date: ${#temporals.format(e.getEventDate(), 'dd-MMM-yyyy HH:mm')}|"></span>
+                <th:block th:if="${e.canceled == false}">
+                    <a th:href="@{/bands/events/update(id=${e.id})}">Update event</a>
+                </th:block>
+                <th:block th:unless="${e.canceled}">
+                    <form th:action="@{/bands/events/cancel/{id}(id=${e.id})}" th:method="DELETE">
+                        <input type="submit" value="Cancel event">
+                    </form>
+                </th:block>
+                <span th:if="${e.canceled}" th:text="CANCELED"></span>
+                <div>
+                    <span th:text="${e.description}"></span>
+                </div>
+            </div>
+        </th:block>
+    </th:block>
+    <th:block th:unless="${pastEvents} == null">
+        <th:block th:each="e : ${pastEvents}">
+            <div>
+                <span th:text="|${e.getEventType().name()} event |"></span>
+                <span th:text="${e.getEventCategory()}"> </span>
+                <span th:text="|Date: ${#temporals.format(e.getEventDate(), 'dd-MMM-yyyy HH:mm')}|"></span>
+                <span th:if="${e.canceled}" th:text="CANCELED"></span>
+                <div>
+                    <span th:text="${e.description}"></span>
+                </div>
+            </div>
+        </th:block>
+    </th:block>
 </div>
 
 </body>

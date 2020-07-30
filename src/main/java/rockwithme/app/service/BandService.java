@@ -1,6 +1,5 @@
 package rockwithme.app.service;
 
-import org.springframework.data.jpa.domain.Specification;
 import rockwithme.app.model.binding.BandRegisterDTO;
 import rockwithme.app.model.binding.BandRemoveMemberBindingDTO;
 import rockwithme.app.model.binding.BandRemoveProducerBindingDTO;
@@ -9,7 +8,6 @@ import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.*;
 
 import java.util.List;
-import java.util.Set;
 
 public interface BandService {
     Band registerBand(BandRegisterDTO band);
@@ -22,7 +20,7 @@ public interface BandService {
 
     Band getBandById(String id);
 
-    Set<BandMyAllBandsDTO> getBandByMember(String username);
+    List<BandMyAllBandsDTO> getBandByMember(String username);
 
     void addRequest(Band band, JoinRequest request);
 

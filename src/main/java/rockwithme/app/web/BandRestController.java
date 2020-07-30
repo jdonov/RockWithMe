@@ -29,7 +29,7 @@ public class BandRestController {
     public ResponseEntity<List<BandSearchServiceDTO>> getBands(@RequestBody BandSearchBindingDTO bandSearchBindingDTO) {
         List<BandSearchServiceDTO> bands = this.bandService.searchUsers(bandSearchBindingDTO);
         if (bands.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(bands);
     }

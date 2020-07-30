@@ -35,7 +35,7 @@
         </div>
     </th:block>
     <th:block th:unless="${inMyBands}">
-        <th:block sec:authorize="hasAuthority('PLAYER')">
+        <th:block th:unless="${#authentication.getAuthorities().contains('FAN')}">
             <div>
                 <button id="join-band" type="submit">Join the band</button>
             </div>
@@ -77,11 +77,9 @@
     <th:block th:if="${inMyBands}">
         <p>You are member of the band!</p>
     </th:block>
-    <th:block th:unless="${#lists.contains(userLikes, bandDetails.id)}">
-        <form th:action="@{/bands/likes/band/{id}(id=${bandDetails.id})}" th:method="POST">
-            <input type="submit" value="Like">
-        </form>
-    </th:block>
+    <form th:action="@{/bands/likes/band/{id}(id=${bandDetails.id})}" th:method="POST">
+        <input th:disabled="${#lists.contains(userLikes, bandDetails.id)}" type="submit" value="Like">
+    </form>
 </div>
 <script type="text/javascript" th:src="@{/js/joinBand.js}"></script>
 </body>

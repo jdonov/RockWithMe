@@ -8,9 +8,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import rockwithme.app.model.binding.EventCreateBindingDTO;
 import rockwithme.app.model.binding.EventUpdateBindingDTO;
+import rockwithme.app.model.service.EventServiceDTO;
 import rockwithme.app.service.EventService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/bands/events")
@@ -20,6 +22,19 @@ public class EventController {
 
     public EventController(EventService eventService) {
         this.eventService = eventService;
+    }
+
+    @GetMapping
+    public String getEvents(@RequestParam("bandId") String bandId,
+                            @RequestParam("upcoming") boolean upcoming,
+                            RedirectAttributes redirectAttributes) {
+        List<EventServiceDTO> events = this.eventService.getEventsByBandId(bandId, upcoming);
+        if (upcoming) {
+            redirectAttributes.addFlashAttribute("upcomingEvents", events);
+        } else {
+            redirectAttributes.addFlashAttribute("pastEvents", events);
+        }
+        return "redirect:/bands/myBands/" + bandId;
     }
 
     @GetMapping("/create")

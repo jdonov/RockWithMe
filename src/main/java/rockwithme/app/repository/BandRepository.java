@@ -16,6 +16,7 @@ import java.util.Optional;
 @Repository
 public interface BandRepository extends JpaRepository<Band, String>, JpaSpecificationExecutor<Band> {
 
+    @Query(value = "SELECT * FROM bands WHERE deleted = FALSE ORDER BY registration_date DESC LIMIT 3", nativeQuery = true)
     List<Band> findAllByDeletedIsFalse();
 
     Optional<Band> findById(String id);

@@ -11,6 +11,10 @@ import rockwithme.app.repository.EventRepository;
 import rockwithme.app.service.BandService;
 import rockwithme.app.service.EventService;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class EventServiceImpl implements EventService {
 
@@ -24,6 +28,20 @@ public class EventServiceImpl implements EventService {
         this.modelMapper = modelMapper;
     }
 
+    @Override
+    public List<EventServiceDTO> getEventsByBandId(String bandId, boolean upcoming) {
+        if (upcoming) {
+            return this.eventRepository.findByBand_IdAndEventDateIsAfter(bandId, LocalDateTime.now())
+                    .stream()
+                    .map(event -> this.modelMapper.map(event, EventServiceDTO.class))
+                    .collect(Collectors.toList());
+        } else {
+            return this.eventRepository.findByBand_IdAndEventDateIsBefore(bandId, LocalDateTime.now())
+                    .stream()
+                    .map(event -> this.modelMapper.map(event, EventServiceDTO.class))
+                    .collect(Collectors.toList());
+        }
+    }
 
     @Override
     public void createEvent(EventCreateBindingDTO eventCreateBindingDTO) {

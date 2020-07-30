@@ -18,6 +18,7 @@ import rockwithme.app.service.JoinRequestService;
 import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
 import rockwithme.app.utils.FileUploader;
+
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
@@ -43,6 +44,7 @@ public class BandController {
         if (!model.containsAttribute("allBands") && !model.containsAttribute("bands")) {
             model.addAttribute("allBands", this.bandService.getAllBands());
         }
+//        return "bands-search-test";
         return "bands";
     }
 
@@ -62,7 +64,7 @@ public class BandController {
 
     @GetMapping("/myBands")
     public String getMyBands(Model model, Authentication authentication) {
-        Set<BandMyAllBandsDTO> myAllBandsDTOS = this.bandService.getBandByMember(authentication.getName());
+        List<BandMyAllBandsDTO> myAllBandsDTOS = this.bandService.getBandByMember(authentication.getName());
         model.addAttribute("myBands", myAllBandsDTOS);
         return "my-bands";
     }
@@ -110,17 +112,8 @@ public class BandController {
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.joinBand", bindingResult);
                 return "redirect:/bands/details/" + joinRequestBindingDTO.getBandId();
             } else {
-                /*try {*/
-                    this.joinRequestService.submitJoinRequest(joinRequestBindingDTO);
-                    return "redirect:/bands";
-              /*  } catch (NotRequiredSkillsException notRequiredSkillsException) {
-                    FieldError err = new FieldError("joinBand", "instrument", "You don't have the required skills to join the band!");
-                    bindingResult.addError(err);
-                    redirectAttributes.addFlashAttribute("redirectErr", true);
-                    redirectAttributes.addFlashAttribute("joinBand", joinRequestBindingDTO);
-                    redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.joinBand", bindingResult);
-                    return "redirect:/bands/details/" + joinRequestBindingDTO.getBandId();
-                }*/
+                this.joinRequestService.submitJoinRequest(joinRequestBindingDTO);
+                return "redirect:/bands";
             }
         }
         return "redirect:/bands";
@@ -160,7 +153,7 @@ public class BandController {
     }
 
     private boolean inMyBands(String bandId) {
-        Set<BandMyAllBandsDTO> myAllBandsDTOS = this.bandService.getBandByMember(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<BandMyAllBandsDTO> myAllBandsDTOS = this.bandService.getBandByMember(SecurityContextHolder.getContext().getAuthentication().getName());
         if (myAllBandsDTOS == null || myAllBandsDTOS.isEmpty()) {
             return false;
         }

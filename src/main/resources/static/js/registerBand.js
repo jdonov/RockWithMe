@@ -86,7 +86,7 @@ async function createBand(band) {
             'Content-type': "application/json"
         }
     });
-    // return await response.json();
-    return await response.text();
+    return await response.json();
+    // return await response.text();
     // document.body.innerHTML = html;
 }

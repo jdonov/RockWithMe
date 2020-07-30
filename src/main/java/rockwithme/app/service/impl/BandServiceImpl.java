@@ -109,7 +109,6 @@ public class BandServiceImpl implements BandService {
             myBandDetails.setProducer(band.getProducer().getUsername());
         }
         myBandDetails.setInstrumentsNeeded(needed);
-        myBandDetails.setEvents(myBandDetails.getEvents().stream().sorted(Comparator.comparing(EventServiceDTO::getEventDate)).collect(Collectors.toCollection(LinkedHashSet::new)));
         return myBandDetails;
     }
 
@@ -137,17 +136,18 @@ public class BandServiceImpl implements BandService {
     }
 
     @Override
-    public Set<BandMyAllBandsDTO> getBandByMember(String username) {
+    public List<BandMyAllBandsDTO> getBandByMember(String username) {
         User user = this.userService.getUserByUsername(username);
-        Set<BandMyAllBandsDTO> myAllBandsDTOS = new HashSet<>();
+        List<BandMyAllBandsDTO> myAllBandsDTOS = new ArrayList<>();
         if (!user.getBands().isEmpty()) {
             myAllBandsDTOS = user.getBands().stream()
+                    .sorted(Comparator.comparing(Band::getRegistrationDate).reversed())
                     .map(b -> {
                         BandMyAllBandsDTO band = this.modelMapper.map(b, BandMyAllBandsDTO.class);
                         band.setNewRequests(b.getRequests().size());
                         return band;
                     })
-                    .collect(Collectors.toCollection(HashSet::new));
+                    .collect(Collectors.toList());
         }
         return myAllBandsDTOS;
     }

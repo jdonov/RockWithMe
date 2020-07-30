@@ -4,6 +4,8 @@ import rockwithme.app.model.binding.EventCreateBindingDTO;
 import rockwithme.app.model.binding.EventUpdateBindingDTO;
 import rockwithme.app.model.service.EventServiceDTO;
 
+import java.util.List;
+
 public interface EventService {
     void createEvent(EventCreateBindingDTO eventCreateBindingDTO);
 
@@ -14,4 +16,6 @@ public interface EventService {
     void updateEvent(String eventId, EventUpdateBindingDTO eventUpdateBindingDTO);
 
     void cancelEvent(String eventId);
+
+    List<EventServiceDTO> getEventsByBandId(String bandId, boolean upcoming);
 }
