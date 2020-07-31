@@ -19,7 +19,6 @@ window.addEventListener('load', () => {
             divList.removeChild(divList.firstChild);
         }
         let pages = await loadData(1, size);
-        console.log(pages);
         if (pages > 0) {
             await renderList(pages);
         }
@@ -70,7 +69,6 @@ window.addEventListener('load', () => {
             async function searchBandsPages(e) {
                 e.preventDefault();
                 let r = await loadData(i, size);
-                console.log(r);
             }
         }
         divList.appendChild(ulList);

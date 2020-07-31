@@ -30,7 +30,7 @@ public interface BandService {
 
     void removeMember(BandRemoveMemberBindingDTO bandRemoveMemberBindingDTO);
 
-    void addProducer(User user, Band band);
+    BandServiceDTO addProducer(User user, Band band);
 
     void removeProducer(BandRemoveProducerBindingDTO bandRemoveProducerBindingDTO);
 

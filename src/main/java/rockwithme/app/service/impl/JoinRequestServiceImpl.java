@@ -82,7 +82,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
 
     @Override
     public List<JoinRequestServiceDTO> getRequestByUserId(String id) {
-        List<JoinRequest> joinRequests = this.joinRequestRepository.findByBand_Id(id);
+        List<JoinRequest> joinRequests = this.joinRequestRepository.findByUser_Id(id);
         List<JoinRequestServiceDTO> requests = joinRequests.stream()
                 .map(r -> this.modelMapper.map(r, JoinRequestServiceDTO.class))
                 .collect(Collectors.toList());

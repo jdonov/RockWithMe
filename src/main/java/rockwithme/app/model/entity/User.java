@@ -27,7 +27,6 @@ public class User extends BaseEntity{
 
     public User() {
         this.authorities = new HashSet<>();
-
     }
 
     @Column(name ="first_name", nullable = false)

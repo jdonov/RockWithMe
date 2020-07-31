@@ -44,23 +44,7 @@
     <input id="btnSearch" type="submit" value="Search"/>
 </form>
 
-<div id="search-container">
-    <!--    <th:block th:each="b : ${bands}">-->
-    <!--        <div th:object="${b}">-->
-    <!--            <a th:href="@{/bands/details/{id}(id=*{id})}">-->
-    <!--                <span th:text="|Band name: *{name} |">Band name</span>-->
-    <!--                <p th:each="s : *{styles}" th:text="${s}"></p>-->
-    <!--                <p th:each="g : *{goals}" th:text="${g}"></p>-->
-    <!--                <span th:text="|Town: *{town}, |"></span>-->
-    <!--                <label>Needs members: </label>-->
-    <!--                <input disabled type="checkbox" th:checked="*{needMembers}"/>-->
-    <!--                <label>Needs producer: </label>-->
-    <!--                <input disabled type="checkbox" th:checked="*{needsProducer}"/>-->
-    <!--                <hr>-->
-    <!--            </a>-->
-    <!--        </div>-->
-    <!--    </th:block>-->
-</div>
+<div id="search-container"></div>
 <div id="pagination"></div>
 <script type="text/javascript" th:src="@{/js/bandSearch.js}"></script>
 </body>

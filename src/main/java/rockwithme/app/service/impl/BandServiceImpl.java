@@ -3,7 +3,6 @@ package rockwithme.app.service.impl;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -181,9 +180,9 @@ public class BandServiceImpl implements BandService {
     }
 
     @Override
-    public void addProducer(User user, Band band) {
+    public BandServiceDTO addProducer(User user, Band band) {
         band.setProducer(user);
-        this.bandRepository.saveAndFlush(band);
+        return this.modelMapper.map(this.bandRepository.saveAndFlush(band), BandServiceDTO.class);
     }
 
     @Override
@@ -225,13 +224,21 @@ public class BandServiceImpl implements BandService {
         BandOfTheWeekServiceDTO bandOfTheWeekServiceDTO = new BandOfTheWeekServiceDTO();
         bandOfTheWeekServiceDTO.setName(band.getName());
         bandOfTheWeekServiceDTO.setId(band.getId());
-        bandOfTheWeekServiceDTO.setLikes(band.getLikes().size());
-        bandOfTheWeekServiceDTO.setEvents(band.getEvents().stream()
-                .filter(event -> event.getEventType().equals(EventType.PUBLIC))
-                .map(e -> this.modelMapper.map(e, EventServiceDTO.class))
-                .sorted(Comparator.comparing(EventServiceDTO::getEventDate))
-                .limit(3)
-                .collect(Collectors.toCollection(LinkedHashSet::new)));
+        if (band.getLikes() != null && !band.getLikes().isEmpty()) {
+            bandOfTheWeekServiceDTO.setLikes(band.getLikes().size());
+        } else {
+            bandOfTheWeekServiceDTO.setLikes(0);
+        }
+        if (band.getEvents() != null && !band.getEvents().isEmpty()) {
+            bandOfTheWeekServiceDTO.setEvents(band.getEvents().stream()
+                    .filter(event -> event.getEventType().equals(EventType.PUBLIC))
+                    .map(e -> this.modelMapper.map(e, EventServiceDTO.class))
+                    .sorted(Comparator.comparing(EventServiceDTO::getEventDate))
+                    .limit(3)
+                    .collect(Collectors.toCollection(LinkedHashSet::new)));
+        } else {
+            bandOfTheWeekServiceDTO.setEvents(new LinkedHashSet<>());
+        }
         return bandOfTheWeekServiceDTO;
     }
 
@@ -243,12 +250,6 @@ public class BandServiceImpl implements BandService {
     @Override
     public List<Band> findAllToDelete() {
         return this.bandRepository.findAllToDelete();
-    }
-
-    private void bandInstruments(Band band) {
-        List<String> instr_ids = this.bandRepository.findBandInstruments(band.getId());
-        band.setInstruments(new ArrayList<>());
-        instr_ids.forEach(i -> band.getInstruments().add(this.instrumentService.getInstrumentById(i)));
     }
 
     @Override
@@ -308,5 +309,11 @@ public class BandServiceImpl implements BandService {
         }
 
         return new PageImpl<>(list, pageable, bands.size());
+    }
+
+    private void bandInstruments(Band band) {
+        List<String> instr_ids = this.bandRepository.findBandInstruments(band.getId());
+        band.setInstruments(new ArrayList<>());
+        instr_ids.forEach(i -> band.getInstruments().add(this.instrumentService.getInstrumentById(i)));
     }
 }

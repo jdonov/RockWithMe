@@ -16,10 +16,7 @@ import rockwithme.app.model.binding.UserRegisterDTO;
 import rockwithme.app.model.binding.UserSearchBindingDTO;
 import rockwithme.app.model.binding.UserUpdateDTO;
 import rockwithme.app.model.entity.*;
-import rockwithme.app.model.service.UserAdminServiceDTO;
-import rockwithme.app.model.service.UserMyDetailsServiceDTO;
-import rockwithme.app.model.service.UserPublicDetailsServiceDTO;
-import rockwithme.app.model.service.UserSearchDetailsDTO;
+import rockwithme.app.model.service.*;
 import rockwithme.app.repository.UserRepository;
 import rockwithme.app.specification.UserSpecificationsBuilder;
 import rockwithme.app.service.UserService;
@@ -45,7 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void registerUser(UserRegisterDTO userDto) {
+    public UserServiceDTO registerUser(UserRegisterDTO userDto) {
         this.userRepository.findByUsername(userDto.getUsername()).ifPresent(u -> {
             throw new UserAlreadyExistsException(String.format("User with username '%s' already exists.", userDto.getUsername()));
         });
@@ -56,7 +53,8 @@ public class UserServiceImpl implements UserService {
         user.setAuthorities(Set.of(Role.valueOf(userDto.getRole())));
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user.setRegistrationDate(LocalDateTime.now());
-        this.userRepository.saveAndFlush(user);
+        user = this.userRepository.saveAndFlush(user);
+        return this.modelMapper.map(user, UserServiceDTO.class);
     }
 
     @Override
@@ -85,27 +83,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addBand(User user, Band band) {
+    public UserServiceDTO addBand(User user, Band band) {
         user.getBands().add(band);
-        this.userRepository.saveAndFlush(user);
+        return this.modelMapper.map(this.userRepository.saveAndFlush(user), UserServiceDTO.class);
     }
 
     @Override
-    public void removeBand(User user, Band band) {
+    public UserServiceDTO removeBand(User user, Band band) {
         user.getBands().remove(band);
-        this.userRepository.saveAndFlush(user);
+        return this.modelMapper.map(this.userRepository.saveAndFlush(user), UserServiceDTO.class);
     }
 
     @Override
-    public void addRequest(User user, JoinRequest request) {
+    public UserServiceDTO addRequest(User user, JoinRequest request) {
         user.getRequests().add(request);
-        this.userRepository.saveAndFlush(user);
+        return this.modelMapper.map(this.userRepository.saveAndFlush(user), UserServiceDTO.class);
     }
 
     @Override
-    public void addLike(Like like, User user) {
+    public UserServiceDTO addLike(Like like, User user) {
         user.getLikes().add(like);
-        this.userRepository.saveAndFlush(user);
+        return this.modelMapper.map(this.userRepository.saveAndFlush(user), UserServiceDTO.class);
     }
 
     @Override
@@ -117,14 +115,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePlayer(UserUpdateDTO userUpdateDTO) {
+    public UserServiceDTO updatePlayer(UserUpdateDTO userUpdateDTO) {
         User user = this.userRepository.findByUsername(userUpdateDTO.getUsername()).orElse(null);
         user.setFirstName(userUpdateDTO.getFirstName());
         user.setLastName(userUpdateDTO.getLastName());
         user.setTown(Town.valueOf(userUpdateDTO.getTown()));
         user.setAge(userUpdateDTO.getAge());
         user.setImgUrl(userUpdateDTO.getImgUrl());
-        this.userRepository.saveAndFlush(user);
+        return this.modelMapper.map(this.userRepository.saveAndFlush(user), UserServiceDTO.class);
     }
 
     @Override
@@ -154,28 +152,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeUserPassword(String username, String password) {
+    public boolean changeUserPassword(String username, String password) {
         User user = this.userRepository.findByUsername(username).orElse(null);
         user.setPassword(this.passwordEncoder.encode(password));
-        this.userRepository.saveAndFlush(user);
+        return this.userRepository.saveAndFlush(user) != null;
     }
 
     @Override
-    public void addNewRole(String userId, Role role) {
+    public UserServiceDTO addNewRole(String userId, Role role) {
         User user = this.userRepository.findById(userId).orElse(null);
         user.getAuthorities().add(role);
-        this.userRepository.saveAndFlush(user);
+        return this.modelMapper.map(this.userRepository.saveAndFlush(user), UserServiceDTO.class);
     }
 
     @Override
-    public void removeUserRole(String userId, Role role) {
+    public UserServiceDTO removeUserRole(String userId, Role role) {
         User user = this.userRepository.findById(userId).orElse(null);
         if (user.getAuthorities().size() > 1) {
             Set<Role> newRoles = user.getAuthorities().stream()
                     .filter(r -> !r.equals(role))
                     .collect(Collectors.toSet());
             user.setAuthorities(newRoles);
-            this.userRepository.saveAndFlush(user);
+            return this.modelMapper.map(this.userRepository.saveAndFlush(user), UserServiceDTO.class);
         } else {
             throw new UserWithoutRolesException(String.format("Can not delete role! User %s has only one role!", user.getUsername()));
         }
@@ -202,6 +200,7 @@ public class UserServiceImpl implements UserService {
                         collect(Collectors.toList())
         );
     }
+
     private GrantedAuthority map(Role role) {
         return new SimpleGrantedAuthority(role.name());
     }
