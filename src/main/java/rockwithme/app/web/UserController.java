@@ -192,4 +192,9 @@ public class UserController {
         }
         return "redirect:/users/admin";
     }
+
+    @GetMapping("/search")
+    public String getUserSearch() {
+        return "user-search";
+    }
 }

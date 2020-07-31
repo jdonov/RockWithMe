@@ -3,16 +3,8 @@ package rockwithme.app.init;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import rockwithme.app.model.binding.BandRegisterDTO;
-import rockwithme.app.model.binding.LikeBindingDTO;
-import rockwithme.app.model.binding.PlayerSkillsAddDTO;
-import rockwithme.app.model.binding.UserRegisterDTO;
-import rockwithme.app.model.entity.*;
-import rockwithme.app.model.service.BandServiceDTO;
-import rockwithme.app.scheduller.OnInitPublisher;
+import rockwithme.app.event.OnInitPublisher;
 import rockwithme.app.service.*;
-
-import java.util.*;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -35,6 +27,7 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        //TODO add pic to each band
 //        Map<String, BandServiceDTO> bands = new HashMap<>();
 //        List.of(
 //                new UserRegisterDTO("Admin", "Admin", "admin", "123", "123", Role.ADMIN.name(), Town.SOFIA.name()),

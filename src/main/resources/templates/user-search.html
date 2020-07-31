@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form th:action="@{/users/search}" th:method="GET">
+    <div>
+        <div>
+            <span>Search</span>
+        </div>
+        <select id="instrument" name="instrument">
+            <option value="">Select instrument</option>
+            <th:block th:each="i : ${T(rockwithme.app.model.entity.InstrumentEnum).values()}">
+                <option th:text="${i.name()}" th:value="${i}"></option>
+            </th:block>
+        </select>
+        <select id="level" name="level">
+            <option value="">Select level</option>
+            <th:block th:each="l : ${T(rockwithme.app.model.entity.Level).values()}">
+                <option th:text="${l.name()}" th:value="${l}"></option>
+            </th:block>
+        </select>
+    </div>
+    <input id="btnSearch" type="submit" value="Search"/>
+</form>
+
+<div id="search-container"></div>
+<div id="pagination"></div>
+<script type="text/javascript" th:src="@{/js/userSearch.js}"></script>
+</body>
+</html>

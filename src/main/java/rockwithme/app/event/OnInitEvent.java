@@ -1,4 +1,4 @@
-package rockwithme.app.scheduller;
+package rockwithme.app.event;
 
 import org.springframework.context.ApplicationEvent;
 

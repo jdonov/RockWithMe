@@ -19,7 +19,6 @@ public class BandSpecification extends BaseSpecification implements Specificatio
     @Override
     public Predicate toPredicate(Root<Band> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
         if (this.getCriteria().getOperation().equalsIgnoreCase(":")) {
-//            if (root.get(criteria.getKey()).getJavaType() == String.class) {
             if (this.getCriteria().getKey().equals("name")) {
                 return criteriaBuilder.like(
                         root.get(this.getCriteria().getKey()), "%" + this.getCriteria().getValue() + "%");

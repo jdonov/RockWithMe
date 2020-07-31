@@ -144,19 +144,6 @@ public class BandController {
         return modelAndView;
     }
 
-    //TODO Remove the code in final version
-//    @GetMapping("/search")
-//    public String getBands(@ModelAttribute BandSearchBindingDTO bandSearchBindingDTO,
-//                           RedirectAttributes redirectAttributes,
-//                           @RequestParam("page") Optional<Integer> page,
-//                           @RequestParam("size") Optional<Integer> size) {
-//        int currentPage = page.orElse(1);
-//        int pageSize = size.orElse(5);
-//        Page<BandSearchServiceDTO> bands = this.bandService.searchBands(bandSearchBindingDTO, PageRequest.of(currentPage-1, pageSize));
-//        redirectAttributes.addFlashAttribute("bands", bands);
-//        return "redirect:/bands";
-//    }
-
     private boolean inMyBands(String bandId) {
         List<BandMyAllBandsDTO> myAllBandsDTOS = this.bandService.getBandByMember(SecurityContextHolder.getContext().getAuthentication().getName());
         if (myAllBandsDTOS == null || myAllBandsDTOS.isEmpty()) {

@@ -30,12 +30,4 @@ public class BandRestController {
 
         return this.bandService.searchBands(bandSearchBindingDTO, PageRequest.of(currentPage-1, pageSize));
     }
-
-//    @PostMapping
-//    @JsonView(Views.BandRegisterDTO.class)
-//    public ResponseEntity<Band> registerBand(@RequestBody BandRegisterDTO bandRegisterDTO, Authentication authentication) {
-//        bandRegisterDTO.setFounder(authentication.getName());
-//        Band band = this.bandService.registerBand(bandRegisterDTO);
-//        return ResponseEntity.ok(band);
-//    }
 }

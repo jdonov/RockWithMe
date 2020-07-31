@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "events")
 public class Event extends BaseEntity {
-    //TODO add scheduler to delete old events!
     private EventType eventType;
     private EventCategory eventCategory;
     private LocalDateTime eventDate;

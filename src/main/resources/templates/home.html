@@ -7,6 +7,9 @@
 <body>
 <h1>Hello, <span th:text="${user}">User name</span>!</h1>
 <p sec:authorize="hasAuthority('ADMIN')">Good job</p>
+<div>
+    <a th:href="@{/users/search}">Search user</a>
+</div>
 <th:block th:if="${bandOfTheWeek != null}" th:object="${bandOfTheWeek}">
     <h3 th:text="|The band of this week is ${bandOfTheWeek.name} with ${bandOfTheWeek.likes} likes|"></h3>
     <th:block th:unless="${bandOfTheWeek.events == null}">

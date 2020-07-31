@@ -69,7 +69,6 @@ public class PlayerSkillsController {
                                  RedirectAttributes redirectAttributes,
                                  ModelAndView modelAndView) {
         if (bindingResult.hasErrors()) {
-            //TODO handle validation errors - remove 'addPlayerSkill'???
             redirectAttributes.addFlashAttribute("addPlayerSkill", playerSkillsAddDTO);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.addPlayerSkill", bindingResult);
         } else {

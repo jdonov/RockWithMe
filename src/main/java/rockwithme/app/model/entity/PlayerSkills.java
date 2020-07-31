@@ -76,4 +76,6 @@ public class PlayerSkills {
     public void setBandPlayed(int bandPlayed) {
         this.bandPlayed = bandPlayed;
     }
+
+
 }

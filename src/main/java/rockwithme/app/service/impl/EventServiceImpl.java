@@ -55,14 +55,12 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventServiceDTO getEventById(String eventId) {
         return this.modelMapper.map(this.eventRepository.findById(eventId).orElse(null), EventServiceDTO.class);
-        //TODO throw exception and handle it if no such event!!!
     }
 
     @Override
     public EventUpdateBindingDTO getEventToUpdateById(String eventId) {
         Event event = this.eventRepository.findById(eventId).orElse(null);
         return this.modelMapper.map(event, EventUpdateBindingDTO.class);
-        //TODO throw exception and handle it if no such event!!!
     }
 
     @Override

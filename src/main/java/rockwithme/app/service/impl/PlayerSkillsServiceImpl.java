@@ -2,15 +2,23 @@ package rockwithme.app.service.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import rockwithme.app.model.binding.PlayerSkillsAddDTO;
+import rockwithme.app.model.binding.PlayerSkillsSearchBindingDTO;
 import rockwithme.app.model.entity.*;
+import rockwithme.app.model.service.BandSearchServiceDTO;
+import rockwithme.app.model.service.PlayerSkillsSearchDTO;
 import rockwithme.app.model.service.PlayerSkillsServiceDTO;
 import rockwithme.app.repository.PlayerSkillsRepository;
 import rockwithme.app.service.InstrumentService;
 import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
+import rockwithme.app.specification.PlayerSkillsSpecificationBuilder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -73,5 +81,43 @@ public class PlayerSkillsServiceImpl implements PlayerSkillsService {
     public PlayerSkills getByCompositeId(String userId, String instrumentId) {
         PlayerSkillsPK id = new PlayerSkillsPK(userId, instrumentId);
         return this.playerSkillsRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Page<PlayerSkillsSearchDTO> searchPlayerSkills(PlayerSkillsSearchBindingDTO playerSkillsSearchBindingDTO, Pageable pageable) {
+
+        PlayerSkillsSpecificationBuilder builder = new PlayerSkillsSpecificationBuilder();
+
+
+        if (playerSkillsSearchBindingDTO.getInstrument() != null) {
+            builder.with("instrument", ":", this.instrumentService.getInstrument(playerSkillsSearchBindingDTO.getInstrument()));
+        }
+
+        if (playerSkillsSearchBindingDTO.getLevel() != null) {
+            builder.with("level", ":", playerSkillsSearchBindingDTO.getLevel());
+        }
+
+        Specification<PlayerSkills> spec = builder.build();
+        List<PlayerSkills> players = this.playerSkillsRepository.findAll(spec);
+        List<PlayerSkillsSearchDTO> playersMapped = players.stream()
+                .map(p -> {
+                    PlayerSkillsSearchDTO pls = this.modelMapper.map(p, PlayerSkillsSearchDTO.class);
+                    pls.setUserId(p.getPlayer().getId());
+                    pls.setUsername(p.getPlayer().getUsername());
+                    return pls;
+                })
+                .collect(Collectors.toList());
+
+        int startItem = pageable.getPageNumber() * pageable.getPageSize();
+
+        List<PlayerSkillsSearchDTO> list;
+
+        if (players.size() < startItem) {
+            list = new ArrayList<>();
+        } else {
+            int toIndex = Math.min(startItem + pageable.getPageSize(), players.size());
+            list = playersMapped.subList(startItem, toIndex);
+        }
+        return new PageImpl<>(list, pageable, players.size());
     }
 }
