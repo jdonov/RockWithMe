@@ -1,9 +1,8 @@
-package rockwithme.app.playerSkills;
+package rockwithme.app.serviceLayerTests.playerSkills;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import rockwithme.app.model.entity.*;

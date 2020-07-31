@@ -42,6 +42,11 @@
         <div>
             <label for="description">Enter event description</label>
             <textarea id="description" name="description"></textarea>
+            <div th:if="${#fields.hasErrors('description')}">
+                <th:block th:each="e : ${#fields.errors('description')}">
+                    <small th:text="${e}"></small>
+                </th:block>
+            </div>
         </div>
         <input type="submit" value="Create event"/>
     </form>

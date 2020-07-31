@@ -1,5 +1,6 @@
 package rockwithme.app.model.binding;
 
+import org.hibernate.validator.constraints.Length;
 import rockwithme.app.constraint.EnumValue;
 import rockwithme.app.model.entity.*;
 
@@ -12,21 +13,29 @@ import java.util.Set;
 public class BandRegisterDTO {
     private String name;
     private String founder;
-//    private InstrumentEnum founderInstrument;
     private String founderInstrument;
     private List<InstrumentEnum> instruments;
-//    private List<String> instruments;
     private Set<Style> styles;
-//    private Set<String> styles;
     private boolean hasStudio;
     private boolean needsProducer;
     private Set<Goal> goals;
-//    private Set<String> goals;
-//    private Town town;
     private String town;
     private String description;
 
     public BandRegisterDTO() {
+    }
+
+    public BandRegisterDTO(String name, String founder, String founderInstrument, List<InstrumentEnum> instruments, Set<Style> styles, boolean hasStudio, boolean needsProducer, Set<Goal> goals, String town, String description) {
+        this.name = name;
+        this.founder = founder;
+        this.founderInstrument = founderInstrument;
+        this.instruments = instruments;
+        this.styles = styles;
+        this.hasStudio = hasStudio;
+        this.needsProducer = needsProducer;
+        this.goals = goals;
+        this.town = town;
+        this.description = description;
     }
 
     @NotBlank(message = "Band name can not be blank!")
@@ -55,7 +64,7 @@ public class BandRegisterDTO {
         this.founderInstrument = founderInstrument;
     }
 
-//    @NotEmpty(message = "select at least 1 instrument!")
+    @NotNull(message = "select at least 1 instrument!")
     public List<InstrumentEnum> getInstruments() {
         return instruments;
     }
@@ -64,7 +73,7 @@ public class BandRegisterDTO {
         this.instruments = instruments;
     }
 
-//    @NotEmpty(message = "Select at least 1 style!")
+    @NotNull(message = "Select at least 1 style!")
     public Set<Style> getStyles() {
         return styles;
     }
@@ -91,7 +100,7 @@ public class BandRegisterDTO {
         this.needsProducer = needsProducer;
     }
 
-//    @NotEmpty(message = "Select at least 1 goal!")
+    @NotNull(message = "Select at least 1 goal!")
     public Set<Goal> getGoals() {
         return goals;
     }
@@ -109,6 +118,7 @@ public class BandRegisterDTO {
         this.town = town;
     }
 
+    @Length(max = 255, message = "Description should be max 255 char long!")
     public String getDescription() {
         return description;
     }

@@ -23,6 +23,14 @@ public class PlayerSkillsAddDTO {
         this.bandPlayed = bandPlayed;
     }
 
+    public PlayerSkillsAddDTO(String username, InstrumentEnum instrument, Level level, int yearsPlaying, int bandPlayed) {
+        this.username = username;
+        this.instrument = instrument;
+        this.level = level;
+        this.yearsPlaying = yearsPlaying;
+        this.bandPlayed = bandPlayed;
+    }
+
     public String getUsername() {
         return username;
     }

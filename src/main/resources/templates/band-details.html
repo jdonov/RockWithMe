@@ -55,6 +55,11 @@
                         </th:block>
                     </th:block>
                     <textarea th:field="*{description}" name="description"></textarea>
+                    <div th:if="${#fields.hasErrors('description')}">
+                        <th:block th:each="e : ${#fields.errors('description')}">
+                            <small th:text="${e}"></small>
+                        </th:block>
+                    </div>
                     <input type="hidden" name="becomeProducer" value="false">
                     <input type="submit" value="Request to join"/>
                     <th:block th:if="${notRequiredSkills} != null">

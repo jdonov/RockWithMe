@@ -117,7 +117,7 @@ public class BandServiceImpl implements BandService {
 
     @Override
     @Transactional
-    public Band registerBand(BandRegisterDTO bandRegisterDTO) {
+    public BandServiceDTO registerBand(BandRegisterDTO bandRegisterDTO) {
         Band band = this.modelMapper.map(bandRegisterDTO, Band.class);
         User founder = this.userService.getUserByUsername(bandRegisterDTO.getFounder());
         Instrument founderInstrument = this.instrumentService.getInstrument(InstrumentEnum.valueOf(bandRegisterDTO.getFounderInstrument()));
@@ -130,7 +130,7 @@ public class BandServiceImpl implements BandService {
         band.setRegistrationDate(LocalDateTime.now());
         band = this.bandRepository.saveAndFlush(band);
         this.userService.addBand(founder, band);
-        return band;
+        return this.modelMapper.map(band, BandServiceDTO.class);
     }
 
     @Override

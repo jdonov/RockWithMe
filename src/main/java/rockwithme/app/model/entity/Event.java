@@ -49,7 +49,7 @@ public class Event extends BaseEntity {
         this.eventDate = eventDate;
     }
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description")
     public String getDescription() {
         return description;
     }

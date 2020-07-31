@@ -130,7 +130,7 @@ public class Band extends BaseEntity {
         this.town = town;
     }
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description")
     public String getDescription() {
         return description;
     }

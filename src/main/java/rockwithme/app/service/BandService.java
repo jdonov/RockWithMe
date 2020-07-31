@@ -12,7 +12,7 @@ import rockwithme.app.model.service.*;
 import java.util.List;
 
 public interface BandService {
-    Band registerBand(BandRegisterDTO band);
+    BandServiceDTO registerBand(BandRegisterDTO band);
 
     List<BandServiceDTO> getAllBands();
 

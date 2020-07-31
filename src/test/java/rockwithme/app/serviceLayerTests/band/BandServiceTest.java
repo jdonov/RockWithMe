@@ -1,4 +1,4 @@
-package rockwithme.app.band;
+package rockwithme.app.serviceLayerTests.band;
 
 import org.junit.Assert;
 import org.junit.Before;

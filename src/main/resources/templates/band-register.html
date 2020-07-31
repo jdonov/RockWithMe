@@ -150,6 +150,11 @@
     <div>
         <label for="description">Description</label>
         <input type="text" name="description" id="description">
+        <div th:if="${#fields.hasErrors('description')}">
+            <th:block th:each="e : ${#fields.errors('description')}">
+                <small th:text="${e}"></small>
+            </th:block>
+        </div>
     </div>
     <button type="submit" name="action" id="btnRegister" value="registerBand">Register Band</button>
 </form>

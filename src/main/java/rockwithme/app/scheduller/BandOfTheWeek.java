@@ -2,6 +2,7 @@ package rockwithme.app.scheduller;
 
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import rockwithme.app.model.service.BandOfTheWeekServiceDTO;
@@ -20,8 +21,17 @@ public class BandOfTheWeek implements ApplicationListener<ApplicationStartedEven
         return bandOfTheWeekServiceDTO;
     }
 
+    public void setBandOfTheWeekServiceDTO(BandOfTheWeekServiceDTO bandOfTheWeekServiceDTO) {
+        this.bandOfTheWeekServiceDTO = bandOfTheWeekServiceDTO;
+    }
+
     @Scheduled(cron = "0 0 0 * * MON")
     public void bandOfTheWeek() {
+        this.bandOfTheWeekServiceDTO = this.bandService.getBandOfTheWeek();
+    }
+
+    @EventListener(OnInitEvent.class)
+    public void setBandOfTheWeek() {
         this.bandOfTheWeekServiceDTO = this.bandService.getBandOfTheWeek();
     }
 

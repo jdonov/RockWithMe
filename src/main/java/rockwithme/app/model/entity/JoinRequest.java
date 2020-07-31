@@ -45,7 +45,7 @@ public class JoinRequest extends BaseEntity{
         this.instrument = instrument;
     }
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description")
     public String getDescription() {
         return description;
     }

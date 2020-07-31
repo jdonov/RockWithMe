@@ -1,4 +1,4 @@
-package rockwithme.app.user;
+package rockwithme.app.serviceLayerTests.user;
 
 import org.junit.Assert;
 import org.junit.Before;

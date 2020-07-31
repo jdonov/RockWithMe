@@ -1,5 +1,6 @@
 package rockwithme.app.model.binding;
 
+import org.hibernate.validator.constraints.Length;
 import rockwithme.app.model.entity.InstrumentEnum;
 
 import javax.validation.constraints.NotBlank;
@@ -42,6 +43,7 @@ public class JoinRequestBindingDTO {
         this.instrument = instrument;
     }
 
+    @Length(max = 255, message = "Description should be max 255 char long!")
     public String getDescription() {
         return description;
     }
