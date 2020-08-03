@@ -3,7 +3,7 @@ package rockwithme.app.model.service;
 import rockwithme.app.model.entity.InstrumentEnum;
 import rockwithme.app.model.entity.Level;
 
-public class PlayerSkillsSearchDTO {
+public class PlayerSkillsSearchDTO extends BaseServiceModel{
     private String userId;
     private String username;
     private InstrumentEnum instrument;

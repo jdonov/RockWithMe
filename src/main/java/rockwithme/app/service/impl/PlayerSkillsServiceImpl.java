@@ -100,12 +100,12 @@ public class PlayerSkillsServiceImpl implements PlayerSkillsService {
         Specification<PlayerSkills> spec = builder.build();
         List<PlayerSkills> players = this.playerSkillsRepository.findAll(spec);
         List<PlayerSkillsSearchDTO> playersMapped = players.stream()
-                .map(p -> {
-                    PlayerSkillsSearchDTO pls = this.modelMapper.map(p, PlayerSkillsSearchDTO.class);
-                    pls.setUserId(p.getPlayer().getId());
-                    pls.setUsername(p.getPlayer().getUsername());
-                    return pls;
-                })
+                .map(p -> new PlayerSkillsSearchDTO() {{
+                    setUserId(p.getId().getPlayerId());
+                    setUsername(p.getPlayer().getUsername());
+                    setInstrument(p.getInstrument().getInstrument());
+                    setLevel(p.getLevel());
+                }})
                 .collect(Collectors.toList());
 
         int startItem = pageable.getPageNumber() * pageable.getPageSize();

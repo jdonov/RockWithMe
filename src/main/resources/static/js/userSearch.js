@@ -51,12 +51,17 @@ window.addEventListener('load', () => {
 
     function renderList(totalPages) {
         let ulList = document.createElement("ul");
+        ulList.classList.add("pagination");
         for (let i = 1; i <= totalPages; i++) {
             let li = document.createElement("li");
-            let btn = document.createElement("button");
-            btn.textContent = i;
-            btn.addEventListener("click", searchBandsPages);
-            li.appendChild(btn);
+            li.classList.add("page-item");
+            li.classList.add("my-search-li");
+            let a = document.createElement("a");
+            a.textContent = i;
+            a.classList.add("page-link");
+            a.classList.add("text-light");
+            a.addEventListener("click", searchBandsPages);
+            li.appendChild(a);
             ulList.appendChild(li);
 
             async function searchBandsPages(e) {
@@ -80,21 +85,24 @@ window.addEventListener('load', () => {
 
     function renderUser(user) {
         let divUser = document.createElement("div");
+        divUser.classList.add("my-bcg", "border-bottom","border-light", "mt-2", "mb-2");
         let linkUser = document.createElement("a");
-        linkUser.setAttribute("href", `${localHost}/users/details/${user.id}`);
-        let spanName = document.createElement("span");
+        linkUser.setAttribute("href", `${localHost}/users/details/${user.userId}`);
+        let spanName = document.createElement("h6");
         spanName.textContent = `Username: ${user.username}`;
         linkUser.appendChild(spanName);
         divUser.appendChild(linkUser);
 
-        let pInstr = document.createElement("p");
-        pInstr.textContent = user.instrument;
-        linkUser.appendChild(pInstr);
-
-        let pLevel = document.createElement("p");
-        pLevel.textContent = user.level;
-        linkUser.appendChild(pLevel);
-
+        let pInfo = document.createElement("p");
+        pInfo.classList.add("my-search-p");
+        pInfo.textContent = "Instrument: ";
+        let instrument = user.instrument.replace("_", " ");
+        instrument = instrument.toLowerCase();
+        instrument = instrument.charAt(0).toUpperCase() + instrument.slice(1);
+        pInfo.textContent += instrument;
+        pInfo.textContent += ", Level: ";
+        pInfo.textContent += user.level;
+        linkUser.appendChild(pInfo);
         return divUser;
     }
 })

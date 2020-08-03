@@ -25,7 +25,7 @@
                     <a class="nav-link" th:href="@{/users/update}">Profile</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
-                    <a class="nav-link" th:href="@{users/admin}">Admin</a>
+                    <a class="nav-link" th:href="@{/users/admin}">Admin</a>
                 </li>
             </th:block>
         </ul>

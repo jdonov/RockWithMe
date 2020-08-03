@@ -11,6 +11,7 @@ window.addEventListener('load', () => {
     document.getElementById("btnSearch").addEventListener('click', searchBands);
     let sObj = {};
     let size = 2;
+    let currentPage = 1;
 
     async function searchBands(e) {
         e.preventDefault();
@@ -45,7 +46,7 @@ window.addEventListener('load', () => {
     }
 
     function searchObj() {
-        const search =  {
+        const search = {
             name: nameInput.value,
             style: styleInput.value,
             goal: goalInput.value,
@@ -58,17 +59,22 @@ window.addEventListener('load', () => {
 
     function renderList(totalPages) {
         let ulList = document.createElement("ul");
+        ulList.classList.add("pagination");
         for (let i = 1; i <= totalPages; i++) {
             let li = document.createElement("li");
-            let btn = document.createElement("button");
-            btn.textContent = i;
-            btn.addEventListener("click", searchBandsPages);
-            li.appendChild(btn);
+            li.classList.add("page-item");
+            li.classList.add("my-search-li");
+            let a = document.createElement("a");
+            a.textContent = i;
+            a.classList.add("page-link");
+            a.classList.add("text-light");
+            a.addEventListener("click", searchBandsPages);
+            li.appendChild(a);
             ulList.appendChild(li);
 
             async function searchBandsPages(e) {
                 e.preventDefault();
-                let r = await loadData(i, size);
+                await loadData(i, size);
             }
         }
         divList.appendChild(ulList);
@@ -87,21 +93,32 @@ window.addEventListener('load', () => {
 
     function renderBand(band) {
         let divBand = document.createElement("div");
+        divBand.classList.add("my-bcg", "border-bottom","border-light", "mt-2", "mb-2");
         let linkBand = document.createElement("a");
         linkBand.setAttribute("href", `${localHost}/bands/details/${band.id}`);
-        let spanName = document.createElement("span");
+        let spanName = document.createElement("h6");
         spanName.textContent = `Band name: ${band.name}`;
         linkBand.appendChild(spanName);
         divBand.appendChild(linkBand);
+        let pStyle = document.createElement("p");
+        pStyle.textContent = "Styles: ";
+        pStyle.classList.add("my-search-p");
         band.styles.forEach(s => {
-            let p = document.createElement("p");
-            p.textContent = s;
-            linkBand.appendChild(p);
+            let style = s.replace("_", " ");
+            style = style.toLowerCase();
+            style = style.charAt(0).toUpperCase() + style.slice(1);
+            pStyle.textContent += style + " ";
+            linkBand.appendChild(pStyle);
         });
+        let pGoal = document.createElement("p");
+        pGoal.classList.add("my-search-p");
+        pGoal.textContent = "Goals: ";
         band.goals.forEach(g => {
-            let p = document.createElement("p");
-            p.textContent = g;
-            linkBand.appendChild(p);
+            let goal = g.replace("_", " ");
+            goal = goal.toLowerCase();
+            goal = goal.charAt(0).toUpperCase() + goal.slice(1);
+            pGoal.textContent += goal;
+            linkBand.appendChild(pGoal);
         });
         return divBand;
     }

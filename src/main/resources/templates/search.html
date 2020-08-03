@@ -7,69 +7,100 @@
 <header>
     <th:block th:include="~{/fragments/nav}"></th:block>
 </header>
-<form th:action="@{/bands/search}" th:method="GET">
-    <div>
-        <div>
-            <span>Search</span>
-        </div>
-        <label for="name">Band name:</label>
-        <input type="text" name="name" id="name"/>
-        <select id="style" name="style">
-            <option value="">Select style</option>
-            <th:block th:each="s : ${T(rockwithme.app.model.entity.Style).values()}">
-                <option th:text="${s.name()}" th:value="${s}"></option>
-            </th:block>
-        </select>
-        <select id="goal" name="goal">
-            <option value="">Select goal</option>
-            <th:block th:each="g : ${T(rockwithme.app.model.entity.Goal).values()}">
-                <option th:text="${g.name()}" th:value="${g}"></option>
-            </th:block>
-        </select>
-        <select id="town" name="town">
-            <option value="">Select town</option>
-            <th:block th:each="t : ${T(rockwithme.app.model.entity.Town).values()}">
-                <option th:text="${t.name()}" th:value="${t}"></option>
-            </th:block>
-        </select>
-        <select id="needMembers" name="needMembers">
-            <option value="">Select needed members</option>
-            <option value="true">Members are needed</option>
-            <option value="false">Members are not needed</option>
-        </select>
-        <select id="needsProducer" name="needsProducer">
-            <option value="">Select needs producer</option>
-            <option value="true">Producer is needed</option>
-            <option value="false">Producer is not needed</option>
-        </select>
+<div class="container">
+    <div class="mt-2 mb-2 text-light">
+        <h5>Search bands</h5>
     </div>
-    <input id="btnSearch" type="submit" value="Search"/>
-</form>
-<div>
-    <form th:action="@{/users/search}" th:method="GET">
-        <div>
-            <div>
-                <span>Search</span>
+    <form class="form-group p-2 my-bcg rounded mt-2 border border-secondary text-light"
+          th:action="@{/bands/search}"
+          th:method="GET">
+        <div class="container-fluid d-flex flex-row justify-content-lg-around align-items-center">
+            <div class="search-data">
+                <input class="form-control form-control-sm" type="text" name="name" id="name"
+                       placeholder="Band name"/>
             </div>
-            <select id="instrument" name="instrument">
-                <option value="">Select instrument</option>
-                <th:block th:each="i : ${T(rockwithme.app.model.entity.InstrumentEnum).values()}">
-                    <option th:text="${i.name()}" th:value="${i}"></option>
-                </th:block>
-            </select>
-            <select id="level" name="level">
-                <option value="">Select level</option>
-                <th:block th:each="l : ${T(rockwithme.app.model.entity.Level).values()}">
-                    <option th:text="${l.name()}" th:value="${l}"></option>
-                </th:block>
-            </select>
+            <div class="search-data">
+                <select class="custom-select custom-select-sm" id="style" name="style">
+                    <option value="">Select style</option>
+                    <th:block th:each="s : ${T(rockwithme.app.model.entity.Style).values()}">
+                        <option th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(s.name(),'_',' ')))}"
+                                th:value="${s}"></option>
+                    </th:block>
+                </select>
+            </div>
+            <div class="search-data">
+                <select class="custom-select custom-select-sm" id="goal" name="goal">
+                    <option value="">Select goal</option>
+                    <th:block th:each="g : ${T(rockwithme.app.model.entity.Goal).values()}">
+                        <option th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(g.name(),'_',' ')))}"
+                                th:value="${g}"></option>
+                    </th:block>
+                </select>
+            </div>
+            <div class="search-data">
+                <select class="custom-select custom-select-sm" id="town" name="town">
+                    <option value="">Select town</option>
+                    <th:block th:each="t : ${T(rockwithme.app.model.entity.Town).values()}">
+                        <option th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(t.name(),'_',' ')))}"
+                                th:value="${t}"></option>
+                    </th:block>
+                </select>
+            </div>
+            <div class="search-data">
+                <select class="custom-select custom-select-sm" id="needMembers" name="needMembers">
+                    <option value="">Needs members</option>
+                    <option value="true">The band looks for members</option>
+                    <option value="false">The band is full</option>
+                </select>
+            </div>
+            <div class="search-data">
+                <select class="custom-select custom-select-sm" id="needsProducer" name="needsProducer">
+                    <option value="">Needs producer</option>
+                    <option value="true">Producer is needed</option>
+                    <option value="false">Producer is not needed</option>
+                </select>
+            </div>
+            <div class="search-data">
+                <button class="btn btn-secondary btn-sm" id="btnSearch" type="submit">Search</button>
+            </div>
         </div>
-        <input id="btnSearchPlayer" type="submit" value="Search"/>
     </form>
 </div>
-
-<div id="search-container"></div>
-<div id="pagination"></div>
+<div class="container">
+    <div class="mt-2 mb-2 text-light">
+        <h5>Search players</h5>
+    </div>
+    <form class="form-group w-50 p-2 my-bcg rounded mt-2 border border-secondary text-light"
+          th:action="@{/users/search}" th:method="GET">
+        <div class="container-fluid d-flex flex-row justify-content-between align-items-center">
+            <div class="skills-data">
+                <select class="custom-select custom-select-sm" id="instrument" name="instrument">
+                    <option value="">Select instrument</option>
+                    <th:block th:each="i : ${T(rockwithme.app.model.entity.InstrumentEnum).values()}">
+                        <option th:text="${#strings.capitalize(#strings.toLowerCase(i.name()))}"
+                                th:value="${i}"></option>
+                    </th:block>
+                </select>
+            </div>
+            <div class="skills-data">
+                <select class="custom-select custom-select-sm" id="level" name="level">
+                    <option value="">Select level</option>
+                    <th:block th:each="l : ${T(rockwithme.app.model.entity.Level).values()}">
+                        <option th:text="${#strings.capitalize(#strings.toLowerCase(l.name()))}"
+                                th:value="${l}"></option>
+                    </th:block>
+                </select>
+            </div>
+            <div class="skills-data">
+                <button class="btn btn-secondary btn-sm" id="btnSearchPlayer" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="container">
+    <div id="search-container"></div>
+    <div id="pagination"></div>
+</div>
 <footer th:replace="~{/fragments/footer}"></footer>
 <script type="text/javascript" th:src="@{/js/bandSearch.js}"></script>
 <script type="text/javascript" th:src="@{/js/userSearch.js}"></script>

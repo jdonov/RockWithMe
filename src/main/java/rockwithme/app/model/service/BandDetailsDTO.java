@@ -22,6 +22,7 @@ public class BandDetailsDTO extends BaseServiceModel{
     private String description;
     private boolean needMembers;
     private Set<EventServiceDTO> events;
+    private String imgUrl;
 
 
     public BandDetailsDTO() {
@@ -129,5 +130,13 @@ public class BandDetailsDTO extends BaseServiceModel{
 
     public void setEvents(Set<EventServiceDTO> events) {
         this.events = events;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

@@ -77,8 +77,8 @@ public class UserController {
         return modelAndView;
     }
 
-    @GetMapping("/details")
-    public ModelAndView userDetails(@RequestParam("id") String userId, ModelAndView modelAndView) {
+    @GetMapping("/details/{userId}")
+    public ModelAndView userDetails(@PathVariable("userId") String userId, ModelAndView modelAndView) {
         UserPublicDetailsServiceDTO user = this.userService.getUserPublicDetailsById(userId);
         modelAndView.addObject("userPublicDetails", user);
         modelAndView.addObject("userSkills", this.playerSkillsService.getByPlayerId(userId));
@@ -158,7 +158,6 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/admin")
     public String getAdmin() {
-
         return "admin";
     }
 

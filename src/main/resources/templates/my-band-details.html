@@ -11,10 +11,10 @@
     <div class="d-flex flex-column align-items-center" th:object="${myBand}">
         <h2 class="container-fluid w-75 bg-dark border border-secondary rounded text-center text-light p-2 mt-3 mb-3"
             th:text="*{name}"></h2>
-        <div class="container-fluid d-flex flex-row border border-secondary p-3 mt-3 rounded-lg my-bcg-2">
+        <div class="container-fluid d-flex flex-row border border-secondary p-3 mt-3 rounded-lg my-bcg">
             <div class="text-center w-50">
                 <img class="img-fluid border border-secondary rounded"
-                     th:src="${myBand.imgUrl} == null ? '/uploads/band.jpg' : *{imgUrl}">
+                     th:src="${myBand.imgUrl} == null ? '/uploads/band.jpg' : *{imgUrl}"/>
             </div>
             <div class="d-flex flex-column justify-content-between text-white text-center w-50">
                 <div>
@@ -114,15 +114,15 @@
                 </tbody>
             </table>
         </div>
-        <div class="container-fluid border border-secondary rounded mt-3 p-3 d-flex flex-row justify-content-lg-around">
+        <div id="event-container" class="container-fluid border border-secondary rounded mt-3 p-3 d-flex flex-row justify-content-lg-around">
             <div class="ml-3">
                 <a th:href="@{/bands/events/create(bandId=*{id})}"><h5>Create event</h5></a>
             </div>
             <div>
-                <a th:href="@{/bands/events(bandId=${myBand.id}, upcoming=true)}"><h5>Upcoming events</h5></a>
+                <a id="upcomingEvents" th:href="@{/bands/events(bandId=${myBand.id}, upcoming=true)}"><h5>Upcoming events</h5></a>
             </div>
             <div class="mr-3">
-                <a th:href="@{/bands/events(bandId=${myBand.id}, upcoming=false)}"><h5>Past events</h5></a>
+                <a id="pastEvents" th:href="@{/bands/events(bandId=${myBand.id}, upcoming=false)}"><h5>Past events</h5></a>
             </div>
         </div>
         <th:block th:unless="${upcomingEvents} == null">

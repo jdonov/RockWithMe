@@ -7,58 +7,108 @@
 <header>
     <th:block th:include="~{/fragments/nav}"></th:block>
 </header>
-<form th:action="@{/users/admin/search}" th:method="GET">
-    <label for="username">Search user by username:</label>
-    <input type="text" id="username" name="username">
-    <label for="firstName">Search user by first name:</label>
-    <input type="text" id="firstName" name="firstName">
-    <label for="lastName">Search user by last name:</label>
-    <input type="text" id="lastName" name="lastName">
-    <input type="submit" value="Search">
-</form>
-<div th:object="${adminInfo}">
-    <p th:text="|Total users registered: *{registeredUsers}|"></p>
-    <p th:text="|Last registered user: *{lastRegisteredUser.firstName} *{lastRegisteredUser.lastName} username: *{lastRegisteredUser.username}, registered on ${#temporals.format(adminInfo.lastRegisteredUser.getRegistrationDate(), 'dd-MMM-yyyy HH:mm')}|"></p>
-    <p th:text="|Total active bands: *{getActiveBands()}|"></p>
-    <p th:text="|Total deleted bands: *{getDeletedBands()}|"></p>
-    <p th:text="|Last registered band: *{lastRegisteredBand.name}, registered on ${#temporals.format(adminInfo.lastRegisteredBand.getRegistrationDate(), 'dd-MMM-yyyy HH:mm')}|"></p>
-</div>
-<h2 th:unless="${errRole} == null" th:text="${errRole}"></h2>
-<th:block th:unless="${users} == null">
-    <h3 th:if="${#lists.size(users) == 0}">No users found!</h3>
-    <th:block th:each="u : ${users}">
-        <div>
-            <span th:text="|${u.getFirstName()} |"></span>
-            <span th:text="|${u.getLastName()} |"></span>
-            <span th:text="${u.getUsername()}"></span>
-            <label for="user-roles">User roles: </label>
-            <select id="user-roles" name="userRoles">
-                <th:block th:each="r : ${u.getAuthorities()}">
-                    <option th:text="${r.name()}"></option>
-                </th:block>
-            </select>
-            <form th:action="@{/users/admin/addRole/{id}(id=${u.getId()})}" th:method="PATCH">
-                <select name="role">
-                    <option value="">Select new Role</option>
-                    <th:block th:each="r : ${T(rockwithme.app.model.entity.Role).values()}">
-                        <option th:name="role" th:unless="${#sets.contains(u.getAuthorities(),r)}" th:text="${r.name()}"
-                                th:value="${r}"></option>
-                    </th:block>
-                </select>
-                <input type="submit" value="Add role">
-            </form>
-            <form th:action="@{/users/admin/removeRole/{id}(id=${u.getId()})}" th:method="PATCH">
-                <select name="role">
-                    <option value="">Select Role to remove</option>
-                    <th:block th:each="r : ${u.getAuthorities()}">
-                        <option th:name="role" th:text="${r.name()}" th:value="${r}"></option>
-                    </th:block>
-                </select>
-                <input type="submit" value="Remove role">
-            </form>
+<div class="container">
+    <form class="form-group p-2 my-bcg rounded mt-2 border border-secondary text-light"
+          th:action="@{/users/admin/search}"
+          th:method="GET">
+        <div class="container-fluid d-flex flex-row justify-content-between align-items-center">
+            <div class="skills-data">
+                <input class="form-control form-control-sm" type="text" id="username" name="username"
+                       placeholder="Search by username"/>
+            </div>
+            <div class="skills-data">
+                <input class="form-control form-control-sm" type="text" id="firstName" name="firstName"
+                       placeholder="Search by first name"/>
+            </div>
+            <div class="skills-data">
+                <input class="form-control form-control-sm" type="text" id="lastName" name="lastName"
+                       placeholder="Search by last name"/>
+            </div>
+            <div class="skills-data">
+                <button class="btn btn-secondary btn-sm" type="submit">Search user</button>
+            </div>
         </div>
+    </form>
+    <div class="border border-light my-bcg rounded text-light mt-2">
+        <div class="p-3" th:object="${adminInfo}">
+            <p th:text="|Total users registered: *{registeredUsers}|"></p>
+            <p th:text="|Last registered user: *{lastRegisteredUser.firstName} *{lastRegisteredUser.lastName} username: *{lastRegisteredUser.username}, registered on ${#temporals.format(adminInfo.lastRegisteredUser.getRegistrationDate(), 'dd-MMM-yyyy HH:mm')}|"></p>
+            <p th:text="|Total active bands: *{getActiveBands()}|"></p>
+            <p th:text="|Total deleted bands: *{getDeletedBands()}|"></p>
+            <p th:text="|Last registered band: *{lastRegisteredBand.name}, registered on ${#temporals.format(adminInfo.lastRegisteredBand.getRegistrationDate(), 'dd-MMM-yyyy HH:mm')}|"></p>
+        </div>
+    </div>
+
+    <h2 class="text-light mt-3" th:unless="${errRole} == null" th:text="${errRole}"></h2>
+    <th:block th:unless="${users} == null">
+        <h3 class="text-light mt-3" th:if="${#lists.size(users) == 0}">No users found!</h3>
+        <table class="table table-hover mt-3 p-3">
+            <thead class="bg-primary font-weight-bold text-center text-light">
+            <tr>
+                <th scope="col">First name</th>
+                <th scope="col">Last name</th>
+                <th scope="col">Username</th>
+                <th scope="col">Roles</th>
+                <th scope="col">Add role</th>
+                <th scope="col">Remove role</th>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="u : ${users}">
+                <tr class="table-secondary">
+                    <td>
+                        <span th:text="|Fisrt name: ${u.getFirstName()} |"></span>
+                    </td>
+                    <td>
+                        <span th:text="|Last name: ${u.getLastName()} |"></span>
+                    </td>
+                    <td>
+                        <span th:text="|Username: ${u.getUsername()} |"></span>
+                    </td>
+                    <td>
+                        <select class="custom-select custom-select-sm" id="user-roles" name="userRoles">
+                            <th:block th:each="r : ${u.getAuthorities()}">
+                                <option th:text="${r.name()}"></option>
+                            </th:block>
+                        </select>
+                    </td>
+                    <td>
+                        <form class="my-search-admin"
+                              th:action="@{/users/admin/addRole/{id}(id=${u.getId()})}" th:method="PATCH">
+                            <select class="custom-select custom-select-sm" name="role">
+                                <option value="">Select new Role</option>
+                                <th:block th:each="r : ${T(rockwithme.app.model.entity.Role).values()}">
+                                    <option th:name="role" th:unless="${#sets.contains(u.getAuthorities(),r)}"
+                                            th:text="${r.name()}"
+                                            th:value="${r}"></option>
+                                </th:block>
+                            </select>
+                            <div>
+                                <button class="btn btn-secondary btn-sm" type="submit">Add</button>
+                            </div>
+                        </form>
+                    </td>
+                    <td>
+                        <form class="my-search-admin"
+                              th:action="@{/users/admin/removeRole/{id}(id=${u.getId()})}" th:method="PATCH">
+                            <select class="custom-select custom-select-sm" name="role">
+                                <option value="">Select Role to remove</option>
+                                <th:block th:each="r : ${u.getAuthorities()}">
+                                    <option th:name="role" th:text="${r.name()}" th:value="${r}"></option>
+                                </th:block>
+                            </select>
+                            <div>
+                                <button class="btn btn-secondary btn-sm" type="submit">Remove</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
     </th:block>
-</th:block>
+</div>
+
 <footer th:replace="~{/fragments/footer}"></footer>
 </body>
 </html>

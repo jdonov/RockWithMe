@@ -20,7 +20,7 @@
 <div class="container">
     <th:block th:unless="${#lists.size(currentPlayerSkills) == 0}">
         <th:block th:object="${currentPlayerSkills}" th:each="p : ${currentPlayerSkills}">
-            <form class="form-group p-1 my-bcg rounded mt-2 border border-secondary text-light"
+            <form class="form-group p-1 my-bcg rounded mt-2 pb-2 border border-secondary text-light"
                   th:object="${p}" th:method="PUT" th:action="@{/skills/update}">
                 <div class="container-fluid d-flex flex-row">
                     <div class="d-flex flex-column skills">
@@ -69,7 +69,7 @@
 <div class="container">
     <button class="btn btn-secondary" id="addSkills">Add new skills</button>
     <div id="add-skills" class="hidden">
-        <form class="form-group p-1 my-bcg rounded mt-2 border border-secondary text-light"
+        <form class="form-group p-1 my-bcg rounded mt-2 pb-2 border border-secondary text-light"
               th:object="${addPlayerSkill}" th:action="@{/skills}" th:method="POST">
             <div class="container-fluid d-flex flex-row">
                 <div class="d-flex flex-column skills">
