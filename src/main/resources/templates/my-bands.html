@@ -1,16 +1,47 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <th:block th:include="~{/fragments/head::head('RockWithMe')}"></th:block>
 </head>
 <body>
-<th:block th:each="b : ${myBands}">
-    <div>
-        <a th:href="@{/bands/myBands/{id}(id=${b.id})}">
-        <span th:text="|Band name: ${b.name}, requests to join: ${b.newRequests}|"></span>
-        </a>
+<header>
+    <th:block th:include="~{/fragments/nav}"></th:block>
+</header>
+<th:block th:unless="${#lists.size(myBands) == 0}">
+    <div class="container">
+        <table class="table table-hover m-5">
+            <thead class="bg-primary font-weight-bold text-center">
+                <tr>
+                    <th scope="col">Band name</th>
+                    <th scope="col">Join requests</th>
+                </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="b : ${myBands}">
+                <tr class="table-secondary">
+                    <th scope="row">
+                        <div>
+                            <a th:href="@{/bands/myBands/{id}(id=${b.id})}">
+                                <span th:text="${b.name}"></span>
+                            </a>
+                        </div>
+                    </th>
+                    <td class="text-center" th:text="${b.newRequests}">Column content</td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
     </div>
 </th:block>
+<th:block th:if="${#lists.size(myBands) == 0}">
+    <h1>You don't have registered bands</h1>
+</th:block>
+<form class="mx-auto w-25 rounded mt-5" th:action="@{/bands/register}" th:method="GET">
+    <div class="form-group text-center text-white">
+        <button type="submit" class="btn btn-secondary btn-lg btn-block">Register new band!</button>
+    </div>
+</form>
+
+<footer th:replace="~{/fragments/footer}"></footer>
 </body>
 </html>

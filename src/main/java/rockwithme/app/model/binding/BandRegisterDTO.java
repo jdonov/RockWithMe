@@ -21,11 +21,12 @@ public class BandRegisterDTO {
     private Set<Goal> goals;
     private String town;
     private String description;
+    private String imgUrl;
 
     public BandRegisterDTO() {
     }
 
-    public BandRegisterDTO(String name, String founder, String founderInstrument, List<InstrumentEnum> instruments, Set<Style> styles, boolean hasStudio, boolean needsProducer, Set<Goal> goals, String town, String description) {
+    public BandRegisterDTO(String name, String founder, String founderInstrument, List<InstrumentEnum> instruments, Set<Style> styles, boolean hasStudio, boolean needsProducer, Set<Goal> goals, String town, String description, String imgUrl) {
         this.name = name;
         this.founder = founder;
         this.founderInstrument = founderInstrument;
@@ -36,6 +37,7 @@ public class BandRegisterDTO {
         this.goals = goals;
         this.town = town;
         this.description = description;
+        this.imgUrl = imgUrl;
     }
 
     @NotBlank(message = "Band name can not be blank!")
@@ -64,7 +66,6 @@ public class BandRegisterDTO {
         this.founderInstrument = founderInstrument;
     }
 
-    @NotNull(message = "select at least 1 instrument!")
     public List<InstrumentEnum> getInstruments() {
         return instruments;
     }
@@ -73,7 +74,6 @@ public class BandRegisterDTO {
         this.instruments = instruments;
     }
 
-    @NotNull(message = "Select at least 1 style!")
     public Set<Style> getStyles() {
         return styles;
     }
@@ -100,7 +100,6 @@ public class BandRegisterDTO {
         this.needsProducer = needsProducer;
     }
 
-    @NotNull(message = "Select at least 1 goal!")
     public Set<Goal> getGoals() {
         return goals;
     }
@@ -125,5 +124,13 @@ public class BandRegisterDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

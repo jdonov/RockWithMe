@@ -1,68 +1,86 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <th:block th:include="~{/fragments/head::head('RockWithMe')}"></th:block>
 </head>
 <body>
-<form th:object="${registerUser}" th:action="@{/users/register}" th:method="POST">
-    <h4 th:if="${userExists}" th:text="${userExists}"></h4>
-    <div>
-        <label for="first-name">First name:</label>
-        <input id="first-name" type="text" name="firstName" th:value="*{firstName}">
-        <th:block th:if="${#fields.hasErrors('firstName')}">
-            <small th:each="e : ${#fields.errors('firstName')}" th:text="${e}"></small>
-        </th:block>
-    </div>
-    <div>
-        <label for="last-name">Last name:</label>
-        <input id="last-name" type="text" name="lastName" th:value="*{lastName}">
-        <th:block th:if="${#fields.hasErrors('lastName')}">
-            <small th:each="e : ${#fields.errors('lastName')}" th:text="${e}"></small>
-        </th:block>
-    </div>
-    <div>
-        <label for="username">Username:</label>
-        <input id="username" type="text" name="username" th:value="*{username}">
-        <th:block th:if="${#fields.hasErrors('username')}">
-            <small th:each="e : ${#fields.errors('username')}" th:text="${e}"></small>
-        </th:block>
-    </div>
-    <div>
-        <label for="password">Password</label>
-        <input id="password" type="password" name="password">
-        <th:block th:if="${#fields.hasErrors('password')}">
-            <small th:each="e : ${#fields.errors('password')}" th:text="${e}"></small>
-        </th:block>
-    </div>
-    <div>
-        <label for="confirm-password">Confirm password</label>
-        <input id="confirm-password" type="password" name="confirmPassword">
-        <th:block th:if="${#fields.hasErrors('confirmPassword')}">
-            <small th:each="e : ${#fields.errors('confirmPassword')}" th:text="${e}"></small>
-        </th:block>
-    </div>
-    <label for="role">Select Role</label>
-    <select id="role" name="role">
-        <option value="">Select role</option>
-        <th:block th:each="r : ${T(rockwithme.app.model.entity.Role).values()}">
-            <option th:unless="${r == T(rockwithme.app.model.entity.Role).ADMIN}" th:text="${r.name()}" th:selected="${r.name()} == ${registerUser.role}" th:value="${r}"></option>
-        </th:block>
-    </select>
-    <th:block th:if="${#fields.hasErrors('role')}">
-        <small th:each="e : ${#fields.errors('role')}" th:text="${e}"></small>
-    </th:block>
-    <label for="town">Select town</label>
-    <select id="town" name="town">
-        <option value="">Select town</option>
-        <th:block th:each="t : ${T(rockwithme.app.model.entity.Town).values()}">
-            <option th:text="${t.name()}" th:selected="${t.name()} == ${registerUser.town}" th:value="${t}"></option>
-        </th:block>
-    </select>
-    <th:block th:if="${#fields.hasErrors('town')}">
-        <small th:each="e : ${#fields.errors('town')}" th:text="${e}"></small>
-    </th:block>
-    <input type="submit" value="Register">
+<header>
+    <th:block th:include="~{/fragments/nav}"></th:block>
+</header>
+<form class="mx-auto w-25 p-3 my-bcg rounded mt-5 border border-secondary" th:object="${registerUser}" th:action="@{/users/register}"
+      th:method="POST">
+    <fieldset>
+        <div class="form-group text-center text-white">
+            <h4 th:if="${userExists}" th:text="${userExists}"></h4>
+            <div>
+                <label for="first-name">First name:</label>
+                <input id="first-name" type="text" name="firstName" th:value="*{firstName}"
+                       class="form-control text-dark" placeholder="First name">
+                <th:block th:if="${#fields.hasErrors('firstName')}">
+                    <small th:each="e : ${#fields.errors('firstName')}" th:text="${e}" class="text-danger"></small>
+                </th:block>
+            </div>
+            <div class="form-group">
+                <label for="last-name">Last name:</label>
+                <input id="last-name" type="text" name="lastName" th:value="*{lastName}" class="form-control text-dark"
+                       placeholder="Last name">
+                <th:block th:if="${#fields.hasErrors('lastName')}">
+                    <small th:each="e : ${#fields.errors('lastName')}" th:text="${e}" class="text-danger"></small>
+                </th:block>
+            </div>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input id="username" type="text" name="username" th:value="*{username}" class="form-control text-dark"
+                       placeholder="Username">
+                <th:block th:if="${#fields.hasErrors('username')}">
+                    <small th:each="e : ${#fields.errors('username')}" th:text="${e}" class="text-danger"></small>
+                </th:block>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password" class="form-control text-dark"
+                       placeholder="Password">
+                <th:block th:if="${#fields.hasErrors('password')}">
+                    <small th:each="e : ${#fields.errors('password')}" th:text="${e}" class="text-danger"></small>
+                </th:block>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm password</label>
+                <input id="confirm-password" type="password" name="confirmPassword" class="form-control text-dark"
+                       placeholder="Confirm password">
+                <th:block th:if="${#fields.hasErrors('confirmPassword')}">
+                    <small th:each="e : ${#fields.errors('confirmPassword')}" th:text="${e}" class="text-danger"></small>
+                </th:block>
+            </div>
+            <div class="form-group">
+               <!-- <label for="role">Select Role</label>-->
+                <select id="role" name="role" class="custom-select mt-2">
+                    <option value="">--Select role--</option>
+                    <th:block th:each="r : ${T(rockwithme.app.model.entity.Role).values()}">
+                        <option th:unless="${r == T(rockwithme.app.model.entity.Role).ADMIN}" th:text="${#strings.capitalize(#strings.toLowerCase(r.name()))}"
+                                th:selected="${r.name()} == ${registerUser.role}" th:value="${r}"></option>
+                    </th:block>
+                </select>
+                <th:block th:if="${#fields.hasErrors('role')}">
+                    <small th:each="e : ${#fields.errors('role')}" th:text="${e}" class="text-danger"></small>
+                </th:block>
+            </div>
+            <div class="form-group">
+                <select id="town" name="town" class="custom-select mt-2">
+                    <option value="">--Select town--</option>
+                    <th:block th:each="t : ${T(rockwithme.app.model.entity.Town).values()}">
+                        <option th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(t.name(),'_',' ')))}" th:selected="${t.name()} == ${registerUser.town}"
+                                th:value="${t}"></option>
+                    </th:block>
+                </select>
+                <th:block th:if="${#fields.hasErrors('town')}">
+                    <small th:each="e : ${#fields.errors('town')}" th:text="${e}" class="text-danger"></small>
+                </th:block>
+            </div>
+            <button type="submit" class="btn btn-secondary mt-3">Register</button>
+        </div>
+    </fieldset>
 </form>
+<footer th:replace="~{/fragments/footer}"></footer>
 </body>
 </html>

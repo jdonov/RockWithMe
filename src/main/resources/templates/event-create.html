@@ -1,55 +1,74 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <title>Create event</title>
+    <th:block th:include="~{/fragments/head::head('RockWithMe')}"></th:block>
 </head>
 <body>
-
-<div>
-    <form th:object="${createEvent}" th:action="@{/bands/events/create}" th:method="POST">
-        <input type="hidden" th:field="*{bandId}">
-        <div>
-            <label for="public">Public </label>
-            <input type="radio" id="public" name="eventType" th:value="${T(rockwithme.app.model.entity.EventType).PUBLIC}"/>
-            <label for="private">Private </label>
-            <input type="radio" id="private" name="eventType" th:value="${T(rockwithme.app.model.entity.EventType).MEMBERS_ONLY}" checked/>
-        </div>
-        <div>
-            <label for="event-category">Event category:</label>
-            <select id="event-category" name="eventCategory">
-                <option value="">Select event category</option>
-                <th:block th:each="c : ${T(rockwithme.app.model.entity.EventCategory).values()}">
-                    <option th:text="${c.name()}" th:value="${c}"></option>
-                </th:block>
-            </select>
-            <th:block th:if="${#fields.hasErrors('eventCategory')}">
-                <th:block th:each="e : ${#fields.errors('eventCategory')}">
-                    <small th:text="${e}" class="text-danger">Field error</small>
-                </th:block>
-            </th:block>
-        </div>
-        <div>
-            <label for="date-time">Date time</label>
-            <input type="datetime-local" id="date-time" name="eventDate">
-            <th:block th:if="${#fields.hasErrors('eventDate')}">
-                <th:block th:each="e : ${#fields.errors('eventDate')}">
-                    <small th:text="${e}" class="text-danger">Field error</small>
-                </th:block>
-            </th:block>
-        </div>
-
-        <div>
-            <label for="description">Enter event description</label>
-            <textarea id="description" name="description"></textarea>
-            <div th:if="${#fields.hasErrors('description')}">
-                <th:block th:each="e : ${#fields.errors('description')}">
-                    <small th:text="${e}"></small>
+<header>
+    <th:block th:include="~{/fragments/nav}"></th:block>
+</header>
+<form class="mx-auto w-25 p-3 my-bcg rounded mt-5 border border-secondary" th:object="${createEvent}"
+      th:action="@{/bands/events/create}" th:method="POST">
+    <input type="hidden" th:field="*{bandId}">
+    <fieldset>
+        <div class="form-group text-center text-white">
+            <span class="mb-2">Event type:</span>
+            <fieldset class="form-group text-left border border-secondary rounded mt-3">
+                <div class="form-check ml-3">
+                    <label class="form-check-label" for="public">
+                        <input class="form-check-input" type="radio" id="public" name="eventType"
+                               th:value="${T(rockwithme.app.model.entity.EventType).PUBLIC}"/>
+                        Public
+                    </label>
+                </div>
+                <div class="form-check ml-3">
+                    <label class="form-check-label" for="private">
+                        <input class="form-check-input" type="radio" id="private" name="eventType"
+                               th:value="${T(rockwithme.app.model.entity.EventType).MEMBERS_ONLY}" checked/>
+                        Private
+                    </label>
+                </div>
+            </fieldset>
+            <div class="mb-2">
+                <label for="event-category">Event category:</label>
+                <select class="custom-select custom-select-sm mt-2" id="event-category" name="eventCategory">
+                    <option value="">--Select event category--</option>
+                    <th:block th:each="c : ${T(rockwithme.app.model.entity.EventCategory).values()}">
+                        <option th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(c.name(), '_', ' ')))}"
+                                th:value="${c}"></option>
+                    </th:block>
+                </select>
+                <th:block th:if="${#fields.hasErrors('eventCategory')}">
+                    <th:block th:each="e : ${#fields.errors('eventCategory')}">
+                        <small th:text="${e}" class="text-danger">Field error</small>
+                    </th:block>
                 </th:block>
             </div>
+            <div class="form-group mt-2">
+                <label for="date-time">Date time</label>
+                <div>
+                    <input class="form-control form-control-sm" type="datetime-local" id="date-time" name="eventDate" data->
+                </div>
+                <th:block th:if="${#fields.hasErrors('eventDate')}">
+                    <th:block th:each="e : ${#fields.errors('eventDate')}">
+                        <small th:text="${e}" class="text-danger">Field error</small>
+                    </th:block>
+                </th:block>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Enter event description</label>
+                <textarea class="form-control" id="description" name="description"></textarea>
+                <div th:if="${#fields.hasErrors('description')}">
+                    <th:block th:each="e : ${#fields.errors('description')}">
+                        <small th:text="${e}" class="text-danger"></small>
+                    </th:block>
+                </div>
+            </div>
+            <button class="btn btn-secondary mt-3" type="submit" value="Create event">Create event</button>
         </div>
-        <input type="submit" value="Create event"/>
-    </form>
-</div>
+    </fieldset>
+</form>
+<footer th:replace="~{/fragments/footer}"></footer>
 </body>
 </html>

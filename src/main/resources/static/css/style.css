@@ -1,3 +1,49 @@
 .hidden{
     display: none;
 }
+body {
+    background-image: url(/img/background.jpg);
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
+    margin-bottom: 5rem;
+}
+
+footer {
+    position: fixed;
+    height: 3em;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    align-content: center;
+}
+
+.my-bcg {
+    background-color: rgba(58, 63, 68, .7);
+}
+.my-bcg-2 {
+    background-color: rgba(34,52,111,.3);
+}
+.my-bcg-3 {
+    background-color: rgba(110, 117, 123,.8);
+}
+div.select-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.skills {
+    width: 20%;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.skills-data {
+    height: 50%;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+

@@ -1,7 +1,16 @@
 const divSkills = document.getElementById("add-skills");
 const btnAdd = document.getElementById("addSkills");
+let trackChange = true;
 btnAdd.addEventListener('click', addSkills);
 
 function addSkills() {
-    divSkills.classList.remove("hidden");
+    if(trackChange) {
+        divSkills.classList.remove("hidden");
+        trackChange = false;
+        btnAdd.textContent = "Hide";
+    } else {
+        divSkills.classList.add("hidden");
+        trackChange = true;
+        btnAdd.textContent = "Add new skills";
+    }
 }

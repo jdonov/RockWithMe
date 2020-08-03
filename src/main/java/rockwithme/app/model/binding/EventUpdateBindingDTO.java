@@ -1,5 +1,6 @@
 package rockwithme.app.model.binding;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import rockwithme.app.model.entity.EventCategory;
 import rockwithme.app.model.entity.EventType;
@@ -64,6 +65,7 @@ public class EventUpdateBindingDTO {
         this.eventDate = eventDate;
     }
 
+    @Length(max = 255, message = "Description should be max 255 char long!")
     public String getDescription() {
         return description;
     }

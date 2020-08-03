@@ -121,7 +121,9 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userUpdateDTO.getLastName());
         user.setTown(Town.valueOf(userUpdateDTO.getTown()));
         user.setAge(userUpdateDTO.getAge());
-        user.setImgUrl(userUpdateDTO.getImgUrl());
+        if(userUpdateDTO.getImgUrl() != null) {
+            user.setImgUrl(userUpdateDTO.getImgUrl());
+        }
         return this.modelMapper.map(this.userRepository.saveAndFlush(user), UserServiceDTO.class);
     }
 

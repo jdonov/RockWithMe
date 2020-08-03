@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import rockwithme.app.exeption.BandAlreadyExistsException;
 import rockwithme.app.model.binding.BandRegisterDTO;
 import rockwithme.app.model.binding.BandRemoveMemberBindingDTO;
 import rockwithme.app.model.binding.BandRemoveProducerBindingDTO;
@@ -88,7 +89,9 @@ public class BandServiceImpl implements BandService {
 
         BandMyBandDetailsDTO myBandDetails = this.modelMapper.map(band, BandMyBandDetailsDTO.class);
         if (!band.getMembers().isEmpty()) {
-            myBandDetails.setMembers(band.getMembers().stream().map(p -> new PlayerSkillsBandMemberDTO(p.getPlayer().getUsername(), p.getInstrument().getInstrument()))
+            myBandDetails.setMembers(band.getMembers().stream()
+                    .map(p -> new PlayerSkillsBandMemberDTO(p.getPlayer().getUsername(), p.getInstrument().getInstrument()))
+                    .sorted(Comparator.comparing(PlayerSkillsBandMemberDTO::getUsername))
                     .collect(Collectors.toList()));
         }
         myBandDetails.setInstruments(band.getInstruments().stream().map(Instrument::getInstrument).collect(Collectors.toList()));
@@ -101,11 +104,14 @@ public class BandServiceImpl implements BandService {
                     }
                 });
         if (band.getRequests() != null && !band.getRequests().isEmpty()) {
-            Set<JoinRequestServiceDTO> reqs = band.getRequests().stream().map(request -> {
-                JoinRequestServiceDTO joinRequestServiceDTO = this.modelMapper.map(request, JoinRequestServiceDTO.class);
-                joinRequestServiceDTO.setUsername(request.getUser().getUsername());
-                return joinRequestServiceDTO;
-            }).collect(Collectors.toCollection(HashSet::new));
+            List<JoinRequestServiceDTO> reqs = band.getRequests().stream()
+                    .map(request -> {
+                        JoinRequestServiceDTO joinRequestServiceDTO = this.modelMapper.map(request, JoinRequestServiceDTO.class);
+                        joinRequestServiceDTO.setUsername(request.getUser().getUsername());
+                        return joinRequestServiceDTO;
+                    })
+                    .sorted(Comparator.comparing(JoinRequestServiceDTO::getUsername))
+                    .collect(Collectors.toList());
             myBandDetails.setRequests(reqs);
         }
         if (band.getProducer() != null) {
@@ -118,6 +124,10 @@ public class BandServiceImpl implements BandService {
     @Override
     @Transactional
     public BandServiceDTO registerBand(BandRegisterDTO bandRegisterDTO) {
+        Band checkBand = this.bandRepository.findByName(bandRegisterDTO.getName());
+        if (checkBand != null) {
+            throw new BandAlreadyExistsException(String.format("Band with name: %s already exists!", bandRegisterDTO.getName()));
+        }
         Band band = this.modelMapper.map(bandRegisterDTO, Band.class);
         User founder = this.userService.getUserByUsername(bandRegisterDTO.getFounder());
         Instrument founderInstrument = this.instrumentService.getInstrument(InstrumentEnum.valueOf(bandRegisterDTO.getFounderInstrument()));
@@ -211,8 +221,10 @@ public class BandServiceImpl implements BandService {
     @Override
     public void addPhoto(String bandId, String imgUrl) {
         Band band = this.bandRepository.findById(bandId).orElse(null);
-        band.setImgUrl(imgUrl);
-        this.bandRepository.saveAndFlush(band);
+        if (band != null && imgUrl != null) {
+            band.setImgUrl(imgUrl);
+            this.bandRepository.saveAndFlush(band);
+        }
     }
 
     @Override
@@ -309,6 +321,11 @@ public class BandServiceImpl implements BandService {
         }
 
         return new PageImpl<>(list, pageable, bands.size());
+    }
+
+    @Override
+    public int getTotalCountOfAllBAnds() {
+        return (int) this.bandRepository.count();
     }
 
     private void bandInstruments(Band band) {

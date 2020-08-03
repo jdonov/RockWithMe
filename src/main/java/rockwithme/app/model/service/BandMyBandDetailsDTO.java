@@ -21,7 +21,7 @@ public class BandMyBandDetailsDTO extends BaseServiceModel{
     private Town town;
     private String description;
     private boolean needMembers;
-    private Set<JoinRequestServiceDTO> requests;
+    private List<JoinRequestServiceDTO> requests;
     private String imgUrl;
 
     public BandMyBandDetailsDTO() {
@@ -123,11 +123,11 @@ public class BandMyBandDetailsDTO extends BaseServiceModel{
         this.needMembers = needMembers;
     }
 
-    public Set<JoinRequestServiceDTO> getRequests() {
+    public List<JoinRequestServiceDTO> getRequests() {
         return requests;
     }
 
-    public void setRequests(Set<JoinRequestServiceDTO> requests) {
+    public void setRequests(List<JoinRequestServiceDTO> requests) {
         this.requests = requests;
     }
 

@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import rockwithme.app.model.binding.UserUpdateDTO;
 import rockwithme.app.model.entity.Band;
 import rockwithme.app.model.entity.User;
 import rockwithme.app.service.BandService;
@@ -38,7 +39,7 @@ public class AddPhotoAspect {
         Band band = this.bandService.getBandById(bandId);
         String imgUrl = band.getImgUrl();
         Object ret = proceedingJoinPoint.proceed();
-        if (imgUrl != null) {
+        if (imgUrl != null && band.getImgUrl() != null && !imgUrl.equals(band.getImgUrl())) {
             FileUploader.deleteFile(imgUrl);
         }
         return ret;
@@ -50,8 +51,9 @@ public class AddPhotoAspect {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = this.userService.getUserByUsername(username);
         String imgUrl = user.getImgUrl();
+        UserUpdateDTO userUpdateDTO = (UserUpdateDTO) proceedingJoinPoint.getArgs()[0];
         Object ret = proceedingJoinPoint.proceed();
-        if (imgUrl != null) {
+        if (imgUrl != null && userUpdateDTO.getImgUrl() != null && !imgUrl.equals(userUpdateDTO.getImgUrl())) {
             FileUploader.deleteFile(imgUrl);
         }
         return ret;

@@ -16,11 +16,12 @@ public class UserRegisterDTO {
     private String confirmPassword;
     private String role;
     private String town;
+    private String imgUrl;
 
     public UserRegisterDTO() {
     }
 
-    public UserRegisterDTO(String firstName, String lastName, String username, String password, String confirmPassword, String role, String town) {
+    public UserRegisterDTO(String firstName, String lastName, String username, String password, String confirmPassword, String role, String town, String imgUrl) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -28,6 +29,7 @@ public class UserRegisterDTO {
         this.confirmPassword = confirmPassword;
         this.role = role;
         this.town = town;
+        this.imgUrl = imgUrl;
     }
 
     @NotBlank(message = "First name can not be empty!")
@@ -91,5 +93,13 @@ public class UserRegisterDTO {
 
     public void setTown(String town) {
         this.town = town;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <th:block th:include="~{/fragments/head::head('RockWithMe')}"></th:block>
 </head>
 <body>
+<header>
+    <th:block th:include="~{/fragments/nav}"></th:block>
+</header>
 <h1>Hello, <span th:text="${user}">User name</span>!</h1>
 <p sec:authorize="hasAuthority('ADMIN')">Good job</p>
-<div>
-    <a th:href="@{/users/search}">Search user</a>
-</div>
+
 <th:block th:if="${bandOfTheWeek != null}" th:object="${bandOfTheWeek}">
     <h3 th:text="|The band of this week is ${bandOfTheWeek.name} with ${bandOfTheWeek.likes} likes|"></h3>
     <th:block th:unless="${bandOfTheWeek.events == null}">
@@ -23,5 +23,6 @@
         </th:block>
     </th:block>
 </th:block>
+<footer th:replace="~{/fragments/footer}"></footer>
 </body>
 </html>

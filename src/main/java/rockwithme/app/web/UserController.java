@@ -63,11 +63,11 @@ public class UserController {
                 this.userService.registerUser(userRegisterDTO);
                 modelAndView.setViewName("redirect:/login");
             } catch (PasswordsNotMatchException e) {
-                redirectAttributes.addFlashAttribute("registerUser", userRegisterDTO);
                 FieldError fieldError = new FieldError("registerUser", "password", "Passwords do not match!");
                 FieldError fieldErrorConf = new FieldError("registerUser", "confirmPassword", "Passwords do not match!");
                 bindingResult.addError(fieldError);
                 bindingResult.addError(fieldErrorConf);
+                redirectAttributes.addFlashAttribute("registerUser", userRegisterDTO);
                 redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerUser", bindingResult);
                 modelAndView.setViewName("redirect:/users/register");
             }
@@ -116,8 +116,11 @@ public class UserController {
                     userUpdateDTO.setImgUrl("/" + FileUploader.UPLOAD_DIR + "/" + file.getOriginalFilename());
                     modelAndView.setViewName("redirect:/home");
                 } else {
-                    modelAndView.addObject("fileError", "Submit picture [.jpg, .png]");
-                    modelAndView.setViewName("redirect:update");
+                    FieldError fieldError = new FieldError("userUpdateDTO", "imgUrl", "Submit picture [.jpg, .png]");
+                    bindingResult.addError(fieldError);
+                    redirectAttributes.addFlashAttribute("userUpdateDTO", userUpdateDTO);
+                    redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userUpdateDTO", bindingResult);
+                    modelAndView.setViewName("redirect:/users/update");
                 }
             }
             this.userService.updatePlayer(userUpdateDTO);

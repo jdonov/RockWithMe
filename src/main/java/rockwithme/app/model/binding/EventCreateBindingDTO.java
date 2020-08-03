@@ -7,6 +7,7 @@ import rockwithme.app.model.entity.EventCategory;
 import rockwithme.app.model.entity.EventType;
 
 import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -18,6 +19,14 @@ public class EventCreateBindingDTO {
     private String bandId;
 
     public EventCreateBindingDTO() {
+    }
+
+    public EventCreateBindingDTO(EventType eventType, EventCategory eventCategory, LocalDateTime eventDate, String description, String bandId) {
+        this.eventType = eventType;
+        this.eventCategory = eventCategory;
+        this.eventDate = eventDate;
+        this.description = description;
+        this.bandId = bandId;
     }
 
     @NotNull(message = "Select event type!")

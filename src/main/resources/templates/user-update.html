@@ -1,62 +1,108 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <th:block th:include="~{/fragments/head::head('RWM - Profile')}"></th:block>
 </head>
 <body>
-<form th:object="${userUpdateDTO}" th:action="@{/users/update}" th:method="PUT" enctype="multipart/form-data">
-    <div>
-        <img th:src="${userMyDetailsDTO.imgUrl}">
-    </div>
-    <div>
-        <span th:text="|First name: ${userMyDetailsDTO.firstName}|"></span>
-        <br>
-        <label for="firstName">Change first name</label>
-        <input th:value="${userMyDetailsDTO.firstName}" type="text" name="firstName" id="firstName"/>
-    </div>
-    <div>
-        <span th:text="|Last name: ${userMyDetailsDTO.lastName}|"></span>
-        <br>
-        <label for="lastName">Change last name</label>
-        <input th:value="${userMyDetailsDTO.lastName}" type="text" name="lastName" id="lastName"/>
-    </div>
-    <div>
-        <span th:text="|Town: ${userMyDetailsDTO.town.name()}|"></span>
-        <br>
-        <label for="town">Change town:</label>
-        <select name="town" id="town">
-            <option value="">Select Town</option>
-            <th:block th:each="t : ${T(rockwithme.app.model.entity.Town).values()}">
-                <option th:text="${t.name()}" th:value="${t}" th:selected="${t} == ${userMyDetailsDTO.town}"></option>
-            </th:block>
-        </select>
-    </div>
-    <div>
-        <span th:text="|Age: ${userMyDetailsDTO.age}|"></span>
-        <br>
-        <label for="age">Update age:</label>
-        <input th:value="${userMyDetailsDTO.age}" type="number" name="age" id="age"/>
-    </div>
+<header>
+    <th:block th:include="~{/fragments/nav}"></th:block>
+</header>
+<form class="mx-auto w-25 p-3 my-bcg rounded mt-5 border border-secondary" th:object="${userUpdateDTO}" th:action="@{/users/update}"
+      th:method="PUT" enctype="multipart/form-data">
+    <fieldset>
+        <div class="form-group text-center text-white">
+            <div class="form-group text-center">
+                <img th:src="${userMyDetailsDTO.imgUrl}" class="rounded-circle w-75">
+            </div>
+            <div class="form-group text-center text-white">
+                <label for="firstName">Change first name</label>
+                <input class="form-control text-dark" th:value="${userMyDetailsDTO.firstName}" type="text"
+                       name="firstName" id="firstName"/>
+                <th:block th:if="${#fields.hasErrors('firstName')}">
+                    <small th:each="e : ${#fields.errors('firstName')}" th:text="${e}" class="text-danger"></small>
+                </th:block>
+            </div>
+            <div class="form-group text-center text-white">
+                <label for="lastName">Change last name</label>
+                <input class="form-control text-dark" th:value="${userMyDetailsDTO.lastName}" type="text"
+                       name="lastName" id="lastName"/>
+                <th:block th:if="${#fields.hasErrors('lastName')}">
+                    <small th:each="e : ${#fields.errors('lastName')}" th:text="${e}" class="text-danger"></small>
+                </th:block>
+            </div>
+            <div class="form-group text-center text-white">
+                <label for="town">Change town:</label>
+                <select name="town" id="town" class="custom-select mt-2">
+                    <option value="">--Select Town--</option>
+                    <th:block th:each="t : ${T(rockwithme.app.model.entity.Town).values()}">
+                        <option th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(t.name(),'_',' ')))}" th:value="${t}"
+                                th:selected="${t} == ${userMyDetailsDTO.town}"></option>
+                    </th:block>
+                </select>
+                <th:block th:if="${#fields.hasErrors('town')}">
+                    <small th:each="e : ${#fields.errors('town')}" th:text="${e}" class="text-danger"></small>
+                </th:block>
+            </div>
+            <div class="form-group text-center text-white">
+                <label for="age">Update age:</label>
+                <input class="form-control text-dark" th:value="${userMyDetailsDTO.age}" type="number" name="age"
+                       id="age"/>
+                <th:block th:if="${#fields.hasErrors('age')}">
+                    <small th:each="e : ${#fields.errors('age')}" th:text="${e}" class="text-danger"></small>
+                </th:block>
+            </div>
 
-    <div>
-        <input type="file" id="file" name="file" class="custom-file-input" th:value="*{imgUrl}"/>
-    </div>
-    <th:block th:if="${maxFileExceeded}">
-        <p>Max file size exceeded! Max size is 128KB!</p>
-    </th:block>
-    <input type="submit" value="Update player">
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="custom-file">
+                        <input type="file" class="form-control-file border border-secondary" id="file" name="file"
+                               th:value="*{imgUrl}"/>
+                    </div>
+                </div>
+                <div>
+                    <small class="text-light">Only jpg or png file formats are allowed!</small>
+                </div>
+            </div>
+            <th:block th:if="${#fields.hasErrors('imgUrl')}">
+                    <small th:each="e : ${#fields.errors('imgUrl')}" th:text="${e}" class="text-danger"></small>
+            </th:block>
+            <th:block th:if="${maxFileExceeded}">
+                    <small class="text-danger">Max file size exceeded! Max size is 128KB!</small>
+            </th:block>
+            <button class="btn btn-secondary mt-3" type="submit" value="Update player">Update profile</button>
+        </div>
+    </fieldset>
 </form>
-<div>
-<form th:object="${changePassword}" th:method="PATCH" th:action="@{/users/changePass}">
-    <label for="oldPassword">Enter current password:</label>
-    <input id="oldPassword" type="password" th:field="*{oldPassword}">
-    <label for="newPassword">Enter new password:</label>
-    <input id="newPassword" type="password" th:field="*{newPassword}">
-    <label for="confirmNewPassword">Confirm new password:</label>
-    <input id="confirmNewPassword" type="password" th:field="*{confirmNewPassword}">
-    <input type="submit" value="Change password">
-</form>
+
+<div class="mx-auto w-25 rounded mt-5 text-white">
+    <button class="btn btn-secondary btn-lg btn-block" id="btnChangePass">Change password</button>
 </div>
+
+<div id="change-password" class="hidden">
+    <form class="mx-auto w-25 p-3 my-bcg rounded mt-5 border border-secondary" th:object="${changePassword}" th:method="PATCH"
+          th:action="@{/users/changePass}">
+        <fieldset>
+            <div class="text-center text-white">
+                <div>
+                    <label for="oldPassword">Enter current password:</label>
+                    <input class="form-control text-dark" id="oldPassword" type="password" th:field="*{oldPassword}">
+                </div>
+                <div>
+                    <label for="newPassword">Enter new password:</label>
+                    <input class="form-control text-dark" id="newPassword" type="password" th:field="*{newPassword}">
+                </div>
+                <div>
+                    <label for="confirmNewPassword">Confirm new password:</label>
+                    <input class="form-control text-dark" id="confirmNewPassword" type="password"
+                           th:field="*{confirmNewPassword}">
+                </div>
+                <button class="btn btn-secondary mt-3" type="submit" value="Change password">Change password
+                </button>
+            </div>
+        </fieldset>
+    </form>
+</div>
+<footer th:replace="~{/fragments/footer}"></footer>
+<script type="text/javascript" th:src="@{/js/changePassUnhide.js}"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import rockwithme.app.exeption.BandAlreadyExistsException;
 import rockwithme.app.model.binding.BandRegisterDTO;
 import rockwithme.app.model.entity.Goal;
 import rockwithme.app.model.entity.InstrumentEnum;
@@ -77,9 +78,18 @@ public class BandRegisterController {
             modelAndView.setViewName("redirect:/bands/register");
         } else {
             bandRegisterDTO.setFounder(authentication.getName());
-            this.bandService.registerBand(bandRegisterDTO);
+            try {
+                this.bandService.registerBand(bandRegisterDTO);
+            } catch (BandAlreadyExistsException e) {
+                FieldError fieldError = new FieldError("bandRegister", "name", e.getMessage());
+                bindingResult.addError(fieldError);
+                redirectAttributes.addFlashAttribute("bandRegister", bandRegisterDTO);
+                redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.bandRegister", bindingResult);
+                modelAndView.setViewName("redirect:/bands/register");
+                return modelAndView;
+            }
             this.clear(httpSession);
-            modelAndView.setViewName("redirect:/bands");
+            modelAndView.setViewName("redirect:/home");
         }
         return modelAndView;
     }
@@ -190,6 +200,5 @@ public class BandRegisterController {
         session.removeAttribute("bandInstruments");
         session.removeAttribute("bandStyles");
         session.removeAttribute("bandGoals");
-
     }
 }

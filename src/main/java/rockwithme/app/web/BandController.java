@@ -1,5 +1,6 @@
 package rockwithme.app.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -42,11 +43,6 @@ public class BandController {
             model.addAttribute("allBands", this.bandService.getAllBands());
         }
         return "bands";
-    }
-
-    @GetMapping("/search")
-    public String searchBand() {
-        return "bands-search";
     }
 
     @GetMapping("/details/{id}")
@@ -112,10 +108,10 @@ public class BandController {
                 return "redirect:/bands/details/" + joinRequestBindingDTO.getBandId();
             } else {
                 this.joinRequestService.submitJoinRequest(joinRequestBindingDTO);
-                return "redirect:/bands";
+                return "redirect:/home";
             }
         }
-        return "redirect:/bands";
+        return "redirect:/home";
     }
 
     @PostMapping("/add/{request}")

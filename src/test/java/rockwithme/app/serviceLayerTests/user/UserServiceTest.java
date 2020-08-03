@@ -58,7 +58,7 @@ public class UserServiceTest {
             setAuthorities(Set.of(Role.PLAYER));
             setTown(Town.SOFIA);
         }};
-        UserRegisterDTO userRegisterDTO = new UserRegisterDTO("James", "Hatfield", "papaHat2", "123", "123", Role.PLAYER.name(), Town.SOFIA.name());
+        UserRegisterDTO userRegisterDTO = new UserRegisterDTO("James", "Hatfield", "papaHat2", "123", "123", Role.PLAYER.name(), Town.SOFIA.name(), null);
         UserServiceDTO userServiceDTO = new UserServiceDTO() {{
             setFirstName("James");
             setLastName("Hatfield");
@@ -90,7 +90,7 @@ public class UserServiceTest {
                 .findByUsername("papaHat"))
                 .thenReturn(java.util.Optional.ofNullable(this.testUser));
         User expected = this.testUser;
-        UserServiceDTO actual = userService.registerUser(new UserRegisterDTO("James", "Hatfield", "papaHat", "123", "123", Role.PLAYER.name(), Town.SOFIA.name()));
+        UserServiceDTO actual = userService.registerUser(new UserRegisterDTO("James", "Hatfield", "papaHat", "123", "123", Role.PLAYER.name(), Town.SOFIA.name(), null));
         Assert.assertEquals("Not working...", expected.getFirstName(), actual.getFirstName());
         Assert.assertEquals("Not working...", expected.getLastName(), actual.getLastName());
         Assert.assertEquals("Not working...", expected.getUsername(), actual.getUsername());

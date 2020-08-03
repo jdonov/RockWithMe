@@ -5,7 +5,7 @@ window.addEventListener('load', () => {
 
     const divContainer = document.getElementById("search-container");
     const divList = document.getElementById("pagination");
-    document.getElementById("btnSearch").addEventListener('click', searchUser);
+    document.getElementById("btnSearchPlayer").addEventListener('click', searchUser);
     let sObj = {};
     let size = 2;
 
@@ -61,7 +61,7 @@ window.addEventListener('load', () => {
 
             async function searchBandsPages(e) {
                 e.preventDefault();
-                let r = await loadData(i, size);
+                await loadData(i, size);
             }
         }
         divList.appendChild(ulList);

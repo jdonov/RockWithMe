@@ -50,6 +50,8 @@ public interface BandService {
 
     int getCountOfAllDeletedBands();
 
+    int getTotalCountOfAllBAnds();
+
     BandAdminServiceDTO getLastRegistered();
 
     Page<BandSearchServiceDTO> searchBands(BandSearchBindingDTO bandSearchBindingDTO, Pageable pageable);
