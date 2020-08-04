@@ -107,6 +107,14 @@
             </tbody>
         </table>
     </th:block>
+    <th:block th:unless="${updatedUser == null}">
+        <th:block th:if="${deleteAuthority}">
+            <h4 class="text-light text-center mt-3" th:text="|Role ${deletedRole.name()} removed from user: ${updatedUser.username}|"></h4>
+        </th:block>
+        <th:block th:unless="${deleteAuthority}">
+            <h4 class="text-light text-center mt-3" th:text="|Role ${addedRole.name()} added to user: ${updatedUser.username}|"></h4>
+        </th:block>
+    </th:block>
 </div>
 
 <footer th:replace="~{/fragments/footer}"></footer>

@@ -7,22 +7,55 @@
 <header>
     <th:block th:include="~{/fragments/nav}"></th:block>
 </header>
-<h1>Hello, <span th:text="${user}">User name</span>!</h1>
-<p sec:authorize="hasAuthority('ADMIN')">Good job</p>
-
-<th:block th:if="${bandOfTheWeek != null}" th:object="${bandOfTheWeek}">
-    <h3 th:text="|The band of this week is ${bandOfTheWeek.name} with ${bandOfTheWeek.likes} likes|"></h3>
-    <th:block th:unless="${bandOfTheWeek.events == null}">
-        <h4>The band has the following events coming soon...</h4>
-        <th:block th:each="e : ${bandOfTheWeek.events}">
-            <span th:text="${e.getEventCategory()}"> </span>
-            <span th:text="|Date: ${#temporals.format(e.getEventDate(), 'dd-MMM-yyyy HH:mm')}|"></span>
-            <div>
-                <span th:text="${e.description}"></span>
-            </div>
-        </th:block>
+<main>
+    <th:block th:unless="${bandOfTheWeek == null}" th:object="${bandOfTheWeek}">
+        <h3 class="text-center text-light mt-3 mb-3"
+            th:text="|The band of this week is ${bandOfTheWeek.name} with ${bandOfTheWeek.likes} likes|"></h3>
+        <div class="container">
+            <a th:href="@{/bands/details/{id}(id=${bandOfTheWeek.id})}">
+                <div class="container-fluid w-50 text-center">
+                    <img class="img-fluid w-100 rounded" th:src="*{imgUrl} == null ? '/uploads/band.jpg' : *{imgUrl}"
+                         alt="band-image">
+                </div>
+                <th:block th:unless="${bandOfTheWeek.events == null}">
+                    <div>
+                        <h5 class="mt-2 mb-2 text-center">The band has the following events coming soon...</h5>
+                        <th:block th:each="e : ${bandOfTheWeek.events}">
+                            <div class="container-fluid d-flex flex-column mt-3 pb-1 text-center text-light">
+                                <div class="container-fluid d-flex flex-row justify-content-center align-items-center">
+                                    <div>
+                                        <span th:text="${e.getEventCategory()}"> </span>
+                                        <span th:text="|Date: ${#temporals.format(e.getEventDate(), 'dd-MMM-yyyy HH:mm')}|"></span>
+                                        <span th:text="${#strings.abbreviate(e.description, 50)}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </th:block>
+                    </div>
+                </th:block>
+            </a>
+        </div>
     </th:block>
-</th:block>
+    <div class="container mt-3 my-bcg border border-secondary rounded">
+        <h4 class="text-center text-light mt-3 mb-3">Last registered bands</h4>
+        <div class="row mt-3 d-flex justify-content-around">
+            <th:block th:unless="${allBands} == null" th:each="b : ${allBands}">
+                <div class="col-md-3 d-flex flex-column text-center mb-3 p-2 border border-secondary" th:object="${b}">
+                    <a th:href="@{/bands/details/{id}(id=*{id})}">
+                        <img th:src="*{imgUrl} == null ? '/uploads/band.jpg' : *{imgUrl}" class="img-fluid" width="300">
+                        <p class="mb-1" th:text="|Band name: *{name} |">Band name</p>
+                        <span class="mr-2">Styles:</span>
+                        <span class="mr-2" th:each="s : *{styles}" th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(s.name(), '_', ' ')))}"></span>
+                        <p class="mb-1" th:text="|From: *{town}|"></p>
+                        <p class="mb-1" th:text="*{needMembers} == true ? 'The band is searching for new members' : 'The band is full'"></p>
+                    </a>
+                </div>
+            </th:block>
+        </div>
+    </div>
+</main>
+
+
 <footer th:replace="~{/fragments/footer}"></footer>
 </body>
 </html>

@@ -2,6 +2,7 @@ package rockwithme.app.service.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -77,7 +78,8 @@ public class UserServiceImpl implements UserService {
         }
 
         Specification<User> spec = builder.build();
-        return this.userRepository.findAll(spec).stream()
+        Sort sort = Sort.by(Sort.Direction.ASC, "firstName", "lastName", "username");
+        return this.userRepository.findAll(spec, sort).stream()
                 .map(user -> this.modelMapper.map(user, UserSearchDetailsDTO.class))
                 .collect(Collectors.toList());
     }

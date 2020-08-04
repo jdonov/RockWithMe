@@ -17,6 +17,8 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (modelAndView == null) {
             modelAndView = new ModelAndView();
         }
-        modelAndView.addObject("user", SecurityContextHolder.getContext().getAuthentication().getName());
+        if (SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+            modelAndView.addObject("user", SecurityContextHolder.getContext().getAuthentication().getName());
+        }
     }
 }

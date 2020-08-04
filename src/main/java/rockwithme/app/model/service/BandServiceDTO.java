@@ -9,6 +9,7 @@ public class BandServiceDTO extends BaseServiceModel {
     private Set<Goal> goals;
     private Town town;
     private boolean needMembers;
+    private String imgUrl;
 
     public BandServiceDTO() {
     }
@@ -51,5 +52,13 @@ public class BandServiceDTO extends BaseServiceModel {
 
     public void setNeedMembers(boolean needMembers) {
         this.needMembers = needMembers;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

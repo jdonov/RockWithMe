@@ -243,7 +243,7 @@ public class BandServiceImpl implements BandService {
         }
         if (band.getEvents() != null && !band.getEvents().isEmpty()) {
             bandOfTheWeekServiceDTO.setEvents(band.getEvents().stream()
-                    .filter(event -> event.getEventType().equals(EventType.PUBLIC))
+                    .filter(event -> event.getEventType().equals(EventType.PUBLIC) && event.getEventDate().isAfter(LocalDateTime.now()))
                     .map(e -> this.modelMapper.map(e, EventServiceDTO.class))
                     .sorted(Comparator.comparing(EventServiceDTO::getEventDate))
                     .limit(3)
@@ -251,6 +251,7 @@ public class BandServiceImpl implements BandService {
         } else {
             bandOfTheWeekServiceDTO.setEvents(new LinkedHashSet<>());
         }
+        bandOfTheWeekServiceDTO.setImgUrl(band.getImgUrl());
         return bandOfTheWeekServiceDTO;
     }
 

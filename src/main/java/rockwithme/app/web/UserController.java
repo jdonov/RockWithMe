@@ -22,6 +22,7 @@ import rockwithme.app.model.binding.UserUpdateDTO;
 import rockwithme.app.model.entity.Role;
 import rockwithme.app.model.service.UserPublicDetailsServiceDTO;
 import rockwithme.app.model.service.UserSearchDetailsDTO;
+import rockwithme.app.model.service.UserServiceDTO;
 import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
 import rockwithme.app.utils.FileUploader;
@@ -175,24 +176,41 @@ public class UserController {
                                    @RequestParam(value = "role", required = false) Role role,
                                    RedirectAttributes redirectAttributes,
                                    ModelAndView modelAndView) {
+        UserServiceDTO userServiceDTO = null;
         if (role != null) {
-            this.userService.addNewRole(userId, role);
+          userServiceDTO = this.userService.addNewRole(userId, role);
         } else {
             redirectAttributes.addFlashAttribute("errRole", "Select role to add!");
+        }
+        if (userServiceDTO != null) {
+            redirectAttributes.addFlashAttribute("updatedUser", userServiceDTO);
+            redirectAttributes.addFlashAttribute("addedRole", role);
+            redirectAttributes.addFlashAttribute("deleteRole", false);
         }
         modelAndView.setViewName("redirect:/users/admin");
         return modelAndView;
     }
 
     @PatchMapping("/admin/removeRole/{id}")
-    public String removeRole(@PathVariable("id") String userId,
-                             @RequestParam(value = "role", required = false) Role role) {
+    public ModelAndView removeRole(@PathVariable("id") String userId,
+                             @RequestParam(value = "role", required = false) Role role,
+                                   RedirectAttributes redirectAttributes,
+                                   ModelAndView modelAndView) {
+
+        UserServiceDTO userServiceDTO = null;
         if (role != null) {
-            this.userService.removeUserRole(userId, role);
+            userServiceDTO = this.userService.removeUserRole(userId, role);
         } else {
             throw new UserRoleException("Select role to remove!");
         }
-        return "redirect:/users/admin";
+
+        if (userServiceDTO != null) {
+            redirectAttributes.addFlashAttribute("updatedUser", userServiceDTO);
+            redirectAttributes.addFlashAttribute("deletedRole", role);
+            redirectAttributes.addFlashAttribute("deleteAuthority", true);
+        }
+        modelAndView.setViewName("redirect:/users/admin");
+        return modelAndView;
     }
 
     @GetMapping("/search")

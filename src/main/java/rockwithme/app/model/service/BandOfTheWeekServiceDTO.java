@@ -7,6 +7,7 @@ public class BandOfTheWeekServiceDTO extends BaseServiceModel{
     private String name;
     private int likes;
     private Set<EventServiceDTO> events;
+    private String imgUrl;
 
     public BandOfTheWeekServiceDTO() {
     }
@@ -43,5 +44,13 @@ public class BandOfTheWeekServiceDTO extends BaseServiceModel{
 
     public void setEvents(Set<EventServiceDTO> events) {
         this.events = events;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

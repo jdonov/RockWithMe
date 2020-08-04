@@ -37,14 +37,6 @@ public class BandController {
         this.userService = userService;
     }
 
-    @GetMapping
-    public String allBands(Model model) {
-        if (!model.containsAttribute("allBands") && !model.containsAttribute("bands")) {
-            model.addAttribute("allBands", this.bandService.getAllBands());
-        }
-        return "bands";
-    }
-
     @GetMapping("/details/{id}")
     public String bandDetails(@PathVariable(name = "id") String id, Model model) {
         BandDetailsDTO bandDetailsDTO = this.bandService.getBandDetails(id);

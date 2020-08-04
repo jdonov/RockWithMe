@@ -7,34 +7,45 @@
 <header>
     <th:block th:include="~{/fragments/nav}"></th:block>
 </header>
-<div>
-    <th:block th:object="${userPublicDetails}">
-        <h2 th:text="*{username}"></h2>
-        <img th:src="*{imgUrl}">
-        <br>
-        <span th:text="|First name: *{firstName}|"></span>
-        <br>
-        <span th:text="|Last name: *{lastName}|"></span>
-        <br>
-        <span th:text="|From *{town}|"></span>
-        <br>
-        <span th:text="|Age *{age}|"></span>
-        <h4>Skills:</h4>
-        <th:block th:each="s : ${userSkills}">
+<main class="container">
+<div class="d-flex flex-column align-items-center"th:object="${userPublicDetails}" >
+    <h2 class="container-fluid w-75 bg-dark border border-secondary rounded text-center text-light p-2 mt-3 mb-3"
+        th:text="*{username}"></h2>
+    <div class="container-fluid d-flex flex-row border border-secondary p-3 mt-3 rounded-lg my-bcg">
+        <div class="text-center w-50">
+            <img class="img-fluid border border-secondary rounded"
+                 th:src="*{imgUrl} == null ? '/uploads/player.jpg' : *{imgUrl}">
+        </div>
+        <div class="d-flex flex-column justify-content-between text-white text-center pl-3 pr-3 w-50">
             <div>
-                <span th:text="|Instrument: ${s.instrument} level ${s.level} plays for ${s.yearsPlaying} years in ${s.bandPlayed} bands|"></span>
+                <p th:text="|First name: *{firstName}|"></p>
+                <p th:text="|Last name: *{lastName}|"></p>
+                <p th:text="|From *{#strings.capitalize(#strings.toLowerCase(#strings.replace(town, '_', ' ')))}|"></p>
+                <th:block th:if="*{age > 0}">
+                    <p th:text="|Age *{age}|"></p>
+                </th:block>
+                <h4>Skills:</h4>
+                <th:block th:each="s : ${userSkills}">
+                    <div>
+                        <span th:text="|Instrument: ${#strings.toLowerCase(s.instrument)} level ${s.level} plays for ${s.yearsPlaying} years in ${s.bandPlayed} bands|"></span>
+                    </div>
+                </th:block>
+                <h4>Plays in: </h4>
+                <th:block th:each="b : ${userPublicDetails.bands}">
+                    <ul>
+                        <a th:href="@{/bands/details/{id}(id=${b.id})}">
+                            <li>
+                                <span class="border-bottom border-secondary" th:text="${b.name}"></span>
+                            </li>
+                        </a>
+                    </ul>
+                </th:block>
             </div>
-        </th:block>
-        <h4>Plays in: </h4>
-        <th:block th:each="b : ${userPublicDetails.bands}">
-            <ul>
-                <a th:href="@{/bands/details/{id}(id=${b.id})}">
-                    <li th:text="${b.name}"></li>
-                </a>
-            </ul>
-        </th:block>
-    </th:block>
+        </div>
+    </div>
+
 </div>
+</main>
 <footer th:replace="~{/fragments/footer}"></footer>
 </body>
 </html>
