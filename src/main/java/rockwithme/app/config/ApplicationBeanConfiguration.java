@@ -19,14 +19,6 @@ public class ApplicationBeanConfiguration {
 
     @Bean
     public ModelMapper modelMapper() {
-//        ModelMapper modelMapper = new ModelMapper();
-//        PropertyMap<Event, EventUpdateBindingDTO> eventPM = new PropertyMap<Event, EventUpdateBindingDTO>() {
-//            @Override
-//            protected void configure() {
-//                map().setBandId(source.getBand().getId());
-//            }
-//        };
-//        modelMapper.addMappings(eventPM);
         return new ModelMapper();
     }
 

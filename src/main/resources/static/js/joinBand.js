@@ -1,20 +1,25 @@
 const divSkills = document.getElementById("join");
 const btnAdd = document.getElementById("join-band");
-let trackChange = true;
+let bandImg = document.getElementById("my-img");
+let btnCancel = document.getElementById("btn-cancel");
 if (btnAdd) {
     btnAdd.addEventListener('click', show);
+}
+if (btnCancel) {
+    btnCancel.addEventListener('click', hide);
 }
 
 
 function show() {
-    if(trackChange) {
+        bandImg.classList.add("hidden");
         divSkills.classList.remove("hidden");
         trackChange = false;
-        btnAdd.textContent = "Cancel request";
-        divSkills.scrollIntoView(true);
-    } else {
-        divSkills.classList.add("hidden");
-        trackChange = true;
-        btnAdd.textContent = "Join the band";
-    }
+        btnAdd.classList.add("hidden");
+
+}
+
+function hide() {
+    divSkills.classList.add("hidden");
+    bandImg.classList.remove("hidden");
+    btnAdd.classList.remove("hidden");
 }

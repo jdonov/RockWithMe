@@ -62,7 +62,7 @@ public class UserController {
         } else {
             try {
                 this.userService.registerUser(userRegisterDTO);
-                modelAndView.setViewName("redirect:/login");
+                modelAndView.setViewName("redirect:/home");
             } catch (PasswordsNotMatchException e) {
                 FieldError fieldError = new FieldError("registerUser", "password", "Passwords do not match!");
                 FieldError fieldErrorConf = new FieldError("registerUser", "confirmPassword", "Passwords do not match!");

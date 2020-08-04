@@ -246,7 +246,7 @@ public class BandServiceImpl implements BandService {
                     .filter(event -> event.getEventType().equals(EventType.PUBLIC) && event.getEventDate().isAfter(LocalDateTime.now()))
                     .map(e -> this.modelMapper.map(e, EventServiceDTO.class))
                     .sorted(Comparator.comparing(EventServiceDTO::getEventDate))
-                    .limit(3)
+                    .limit(1)
                     .collect(Collectors.toCollection(LinkedHashSet::new)));
         } else {
             bandOfTheWeekServiceDTO.setEvents(new LinkedHashSet<>());

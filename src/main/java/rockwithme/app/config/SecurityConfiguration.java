@@ -53,7 +53,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/home").permitAll()
                 .usernameParameter("username")
                 .passwordParameter("password")
-//                .failureUrl("/users/login-error")
                 .and()
                 .exceptionHandling().accessDeniedPage("/unauthorized")
                 .and()

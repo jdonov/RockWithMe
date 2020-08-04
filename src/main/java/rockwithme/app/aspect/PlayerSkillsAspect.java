@@ -25,8 +25,20 @@ public class PlayerSkillsAspect {
     @Pointcut("execution(* rockwithme.app.web.BandRegisterController.registerBand(..))")
     public void checkRegisteredSkills() { }
 
+    @Pointcut("execution(* rockwithme.app.web.BandController.joinBand(..))")
+    public void checkRegisteredSkillsJoinRequest() { }
+
     @Before("checkRegisteredSkills()")
     public void check() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = this.userService.getUserByUsername(username);
+        if (this.playerSkillsService.getByPlayerId(user.getId()).isEmpty()) {
+            throw new NoRegisteredSkills("You don't have registered skills! You have to register your skills first!");
+        }
+    }
+
+    @Before("checkRegisteredSkillsJoinRequest()")
+    public void checkJoinRequest() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = this.userService.getUserByUsername(username);
         if (this.playerSkillsService.getByPlayerId(user.getId()).isEmpty()) {

@@ -17,9 +17,9 @@
                     <img class="img-fluid w-100 rounded" th:src="*{imgUrl} == null ? '/img/band.jpg' : *{imgUrl}"
                          alt="band-image">
                 </div>
-                <th:block th:unless="${bandOfTheWeek.events == null}">
+                <th:block th:unless="${#sets.size(bandOfTheWeek.events) == 0}">
                     <div>
-                        <h5 class="mt-2 mb-2 text-center">The band has the following events coming soon...</h5>
+                        <h5 class="mt-2 mb-2 text-center">The band has the following event coming soon...</h5>
                         <th:block th:each="e : ${bandOfTheWeek.events}">
                             <div class="container-fluid d-flex flex-column mt-3 pb-1 text-center text-light">
                                 <div class="container-fluid d-flex flex-row justify-content-center align-items-center">
