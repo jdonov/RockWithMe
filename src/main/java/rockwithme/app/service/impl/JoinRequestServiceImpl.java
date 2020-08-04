@@ -7,7 +7,6 @@ import rockwithme.app.model.binding.JoinRequestBindingDTO;
 import rockwithme.app.model.binding.JoinRequestProducerBindingDTO;
 import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.JoinRequestServiceDTO;
-import rockwithme.app.model.service.PlayerSkillsBandMemberDTO;
 import rockwithme.app.model.service.PlayerSkillsServiceDTO;
 import rockwithme.app.repository.JoinRequestRepository;
 import rockwithme.app.service.*;
@@ -91,7 +90,7 @@ public class JoinRequestServiceImpl implements JoinRequestService {
 
     @Override
     @Transactional
-    public void approveRequest(String requestId) {
+    public JoinRequestServiceDTO approveRequest(String requestId) {
         JoinRequest joinRequest = this.joinRequestRepository.findById(requestId).orElse(null);
         Band band = this.bandService.getBandById(joinRequest.getBand().getId());
         User user = this.userService.getUserByUsername(joinRequest.getUser().getUsername());
@@ -106,14 +105,16 @@ public class JoinRequestServiceImpl implements JoinRequestService {
         joinRequest.setApproved(true);
         joinRequest.setClosed(true);
         this.userService.addBand(user, band);
-        this.joinRequestRepository.save(joinRequest);
+        JoinRequestServiceDTO joinRequestServiceDTO = this.modelMapper.map(this.joinRequestRepository.saveAndFlush(joinRequest), JoinRequestServiceDTO.class);
+        return joinRequestServiceDTO;
     }
 
     @Override
-    public void rejectRequest(String requestId) {
+    public JoinRequestServiceDTO rejectRequest(String requestId) {
         JoinRequest joinRequest = this.joinRequestRepository.findById(requestId).orElse(null);
         joinRequest.setApproved(false);
         joinRequest.setClosed(true);
-        this.joinRequestRepository.save(joinRequest);
+        JoinRequestServiceDTO joinRequestServiceDTO = this.modelMapper.map(this.joinRequestRepository.saveAndFlush(joinRequest), JoinRequestServiceDTO.class);
+        return joinRequestServiceDTO;
     }
 }

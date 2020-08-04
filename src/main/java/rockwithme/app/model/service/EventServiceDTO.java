@@ -1,6 +1,5 @@
 package rockwithme.app.model.service;
 
-import rockwithme.app.model.entity.Band;
 import rockwithme.app.model.entity.EventCategory;
 import rockwithme.app.model.entity.EventType;
 
@@ -13,6 +12,7 @@ public class EventServiceDTO extends BaseServiceModel{
     private LocalDateTime eventDate;
     private String description;
     private boolean canceled;
+    private String bandId;
 
     public EventServiceDTO() {
     }
@@ -55,5 +55,13 @@ public class EventServiceDTO extends BaseServiceModel{
 
     public void setCanceled(boolean canceled) {
         this.canceled = canceled;
+    }
+
+    public String getBandId() {
+        return bandId;
+    }
+
+    public void setBandId(String bandId) {
+        this.bandId = bandId;
     }
 }

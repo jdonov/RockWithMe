@@ -7,7 +7,9 @@
 <header>
     <th:block th:include="~{/fragments/nav}"></th:block>
 </header>
-<h1>You don't have the required authorization!</h1>
+<div class="container text-danger mt-5 mb-3 d-flex flex-column justify-content-center align-items-center">
+    <h1>You don't have the required authorization!</h1>
+</div>
 <footer th:replace="~{/fragments/footer}"></footer>
 </body>
 </html>

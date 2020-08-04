@@ -115,13 +115,13 @@ public class UserController {
                 if (Pattern.matches(".+\\.(jpg|png)", file.getOriginalFilename())) {
                     FileUploader.handleMultipartFile(file);
                     userUpdateDTO.setImgUrl("/" + FileUploader.UPLOAD_DIR + "/" + file.getOriginalFilename());
-                    modelAndView.setViewName("redirect:/home");
                 } else {
                     FieldError fieldError = new FieldError("userUpdateDTO", "imgUrl", "Submit picture [.jpg, .png]");
                     bindingResult.addError(fieldError);
                     redirectAttributes.addFlashAttribute("userUpdateDTO", userUpdateDTO);
                     redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userUpdateDTO", bindingResult);
                     modelAndView.setViewName("redirect:/users/update");
+                    return modelAndView;
                 }
             }
             this.userService.updatePlayer(userUpdateDTO);
@@ -211,10 +211,5 @@ public class UserController {
         }
         modelAndView.setViewName("redirect:/users/admin");
         return modelAndView;
-    }
-
-    @GetMapping("/search")
-    public String getUserSearch() {
-        return "user-search";
     }
 }

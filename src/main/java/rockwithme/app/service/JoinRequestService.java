@@ -12,9 +12,9 @@ public interface JoinRequestService {
     List<JoinRequestServiceDTO> getRequestByBandId(String id);
     List<JoinRequestServiceDTO> getRequestByUserId(String id);
 
-    void approveRequest(String requestId);
+    JoinRequestServiceDTO approveRequest(String requestId);
 
-    void rejectRequest(String requestId);
+    JoinRequestServiceDTO rejectRequest(String requestId);
 
     void submitJoinRequestProducer(JoinRequestProducerBindingDTO username);
 }

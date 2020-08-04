@@ -14,7 +14,7 @@
         <div class="container-fluid d-flex flex-row border border-secondary p-3 mt-3 rounded-lg my-bcg">
             <div class="text-center w-50">
                 <img class="img-fluid border border-secondary rounded"
-                     th:src="${myBand.imgUrl} == null ? '/uploads/band.jpg' : *{imgUrl}"/>
+                     th:src="${myBand.imgUrl} == null ? '/img/band.jpg' : *{imgUrl}"/>
             </div>
             <div class="d-flex flex-column justify-content-between text-white text-center w-50">
                 <div>
@@ -63,10 +63,10 @@
                             </div>
 
                             <th:block th:if="${maxFileExceeded} != null">
-                                <small> Max file size exceeded! Max size is 128KB!</small>
+                                <small class="text-danger ml-2"> Max file size exceeded! Max size is 128KB!</small>
                             </th:block>
-                            <th:block th:if="${fileError} != null">
-                                <small th:text="${fileError}"></small>
+                            <th:block th:if="${fileError}">
+                                <small class="text-danger ml-2" th:text="${fileError}"></small>
                             </th:block>
                         </form>
                     </div>
@@ -86,7 +86,7 @@
                     <tr class="my-bcg-3">
                         <td>
                             <div class="d-flex flex-row justify-content-between mt-1 mb-1 p-1">
-                                <a th:href="@{/users/details(id=${r.getUserId()})}">
+                                <a th:href="@{/users/details/{userId}(userId=${r.getUserId()})}">
                                     <span th:text="|Player username: *{username} |"></span>
                                     <th:block th:unless="*{isBecomeProducer()}">
                                         <span th:text="|wants to join you on the ${#strings.toLowerCase(r.instrument)} |"></span>

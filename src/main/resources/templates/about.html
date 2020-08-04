@@ -7,7 +7,48 @@
 <header>
     <th:block th:include="~{/fragments/nav}"></th:block>
 </header>
-
+<main class="container mt-5">
+    <div class="container-fluid rounded border border-secondary my-bcg text-light">
+        <h2 class="text-center">Welcome to RockWithMe web page!</h2>
+        <p>The purpose of our site is to help you find your next rock band or create your own!</p>
+        <p>In order to promote the bands every week we choose <b>The band of The Week</b> - the band that has most likes.</p>
+        <p>You can register as:</p>
+        <ul>
+            <li><b>Player</b> - meaning you are a musician</li>
+            <li><b>Producer</b> - meaning you want to promote and sponsor rock bands</li>
+            <li><b>Fan</b> - just checking rock bands and players info</li>
+        </ul>
+        <p>
+            <span>
+                As a <b>player</b> you can register your own rock band or request to join an existing band (if you have the required skills).
+                If you create your own rock band or join an existing one, you become a member of the band and have all rights to approve or remove other members of the band,
+                create, update or cancel band events.
+                You can add skills - meaning the instruments that you play and the level of playing you have achieved!
+                You can also like any band that you want.
+            </span>
+        </p>
+        <p>
+            <span>
+                As a <b>producer</b> you can only request to join a rock bands which are searching for producers. If they approve you you become a member of the band
+                and have all rights to approve or remove other members of the band, create, update or cancel band events.
+                You can also like any band that you want.
+            </span>
+        </p>
+        <p>
+            <span>
+                As a <b>fan</b> You can check bands and players public profiles and like any band that you want.
+            </span>
+        </p>
+        <p>
+            <span>
+                We also have a special role - ADMIN. You can not register as an admin (That's why it is so special).
+                As an admin you have some statistics about the application, you can search users and add or remove roles to user.
+                Only other admin can add you role 'ADMIN'.
+            </span>
+        </p>
+        <h4 class="text-center">ENJOY!</h4>
+    </div>
+</main>
 <footer th:replace="~{/fragments/footer}"></footer>
 </body>
 </html>

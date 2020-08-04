@@ -73,9 +73,10 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void cancelEvent(String eventId) {
+    public EventServiceDTO cancelEvent(String eventId) {
         Event event = this.eventRepository.findById(eventId).orElse(null);
         event.setCanceled(true);
-        this.eventRepository.saveAndFlush(event);
+        EventServiceDTO eventServiceDTO = this.modelMapper.map(this.eventRepository.saveAndFlush(event), EventServiceDTO.class);
+        return eventServiceDTO;
     }
 }

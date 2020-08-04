@@ -7,11 +7,6 @@
 <header>
     <th:block th:include="~{/fragments/nav}"></th:block>
 </header>
-<h1>Hello, <span th:text="${user}">User name</span>!</h1>
-
-<div id="info">
-
-</div>
 
 <div th:if="${noSkillsRegistered} != null">
     <h2 th:text="${noSkillsRegistered}"></h2>

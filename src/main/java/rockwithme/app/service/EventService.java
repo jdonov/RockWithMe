@@ -15,7 +15,7 @@ public interface EventService {
 
     void updateEvent(String eventId, EventUpdateBindingDTO eventUpdateBindingDTO);
 
-    void cancelEvent(String eventId);
+    EventServiceDTO cancelEvent(String eventId);
 
     List<EventServiceDTO> getEventsByBandId(String bandId, boolean upcoming);
 }

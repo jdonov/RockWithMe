@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <h2 class="text-light mt-3" th:unless="${errRole} == null" th:text="${errRole}"></h2>
+    <h2 class="text-danger text-center mt-3" th:unless="${errRole} == null" th:text="${errRole}"></h2>
     <th:block th:unless="${users} == null">
         <h3 class="text-light mt-3" th:if="${#lists.size(users) == 0}">No users found!</h3>
         <table class="table table-hover mt-3 p-3">

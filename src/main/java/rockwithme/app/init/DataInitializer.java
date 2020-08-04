@@ -7,7 +7,6 @@ import rockwithme.app.event.OnInitPublisher;
 import rockwithme.app.model.binding.*;
 import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.BandServiceDTO;
-import rockwithme.app.model.service.UserServiceDTO;
 import rockwithme.app.service.*;
 
 import java.time.LocalDateTime;
@@ -65,7 +64,7 @@ public class DataInitializer implements CommandLineRunner {
                     new PlayerSkillsAddDTO("jamesLab", InstrumentEnum.SINGER, Level.MASTER, 9, 5),
                     new PlayerSkillsAddDTO("jamesLab", InstrumentEnum.SAX, Level.BEGINNER, 9, 5),
                     new PlayerSkillsAddDTO("mikeP", InstrumentEnum.DRUMS, Level.MASTER, 16, 8),
-                    new PlayerSkillsAddDTO("zolthan", InstrumentEnum.GUITAR, Level.MASTER, 18, 3),
+                    new PlayerSkillsAddDTO("zoltan", InstrumentEnum.GUITAR, Level.MASTER, 18, 3),
                     new PlayerSkillsAddDTO("ivanM", InstrumentEnum.SINGER, Level.MASTER, 6, 7),
                     new PlayerSkillsAddDTO("amy", InstrumentEnum.SINGER, Level.MASTER, 13, 3),
                     new PlayerSkillsAddDTO("tarja", InstrumentEnum.SINGER, Level.MASTER, 17, 2)
@@ -95,7 +94,7 @@ public class DataInitializer implements CommandLineRunner {
                             "DRUMS",
                             List.of(InstrumentEnum.GUITAR, InstrumentEnum.BASS, InstrumentEnum.KEYBOARD, InstrumentEnum.DRUMS),
                             Set.of(Style.PROGRESSIVE, Style.HARD_ROCK),
-                            true, false, Set.of(Goal.RECORD_ALBUM, Goal.PLAYING_FOR_FUN), Town.SOFIA.name(), "", "/uploads/sonsOfapollo.jpg"),
+                            true, false, Set.of(Goal.RECORD_ALBUM, Goal.PLAYING_FOR_FUN), Town.SOFIA.name(), "", "/uploads/sonsOfApollo.jpg"),
                     new BandRegisterDTO("Dream Theater",
                             "johnyP",
                             "GUITAR",
@@ -103,7 +102,7 @@ public class DataInitializer implements CommandLineRunner {
                             Set.of(Style.PROGRESSIVE),
                             true, false, Set.of(Goal.RECORD_ALBUM, Goal.PLAYING_FOR_FUN), Town.SOFIA.name(), "", "/uploads/DreamTheater.jpg"),
                     new BandRegisterDTO("Five Finger Death Punch",
-                            "zolthan",
+                            "zoltan",
                             "GUITAR",
                             List.of(InstrumentEnum.SINGER, InstrumentEnum.GUITAR, InstrumentEnum.BASS, InstrumentEnum.GUITAR, InstrumentEnum.DRUMS),
                             Set.of(Style.TRASH_METAL, Style.HARD_ROCK),
@@ -124,42 +123,42 @@ public class DataInitializer implements CommandLineRunner {
             ).forEach(b -> bands.put(b.getName(), this.bandService.registerBand(b)));
 
             List.of(
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.LIVE, LocalDateTime.of(2020, 12, 1, 20, 30), "Live in San Francisco", bands.get("Metallica").getId()),
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.TV, LocalDateTime.of(2020, 11, 3, 20, 30), "TV Show", bands.get("Metallica").getId()),
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.LIVE, LocalDateTime.now().plusSeconds(5), "Live in LA", bands.get("Metallica").getId()),
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.LIVE, LocalDateTime.now().plusSeconds(5), "Live in NY", bands.get("Metallica").getId()),
-                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.MEMBERS_MEETING, LocalDateTime.of(2020, 8, 3, 21, 15), "Drinking beer", bands.get("Metallica").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.LIVE, LocalDateTime.now().plusMonths(1).plusDays(2).plusHours(3), "Live in San Francisco", bands.get("Metallica").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.TV, LocalDateTime.now().plusMonths(3).plusDays(5).plusHours(1), "TV Show", bands.get("Metallica").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.LIVE, LocalDateTime.now().plusMinutes(3), "Live in LA", bands.get("Metallica").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.LIVE, LocalDateTime.now().plusMinutes(3), "Live in NY", bands.get("Metallica").getId()),
+                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.MEMBERS_MEETING, LocalDateTime.now().plusMonths(0).plusDays(15).plusHours(3).plusMinutes(15), "Drinking beer", bands.get("Metallica").getId()),
 
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.RADIO, LocalDateTime.of(2020, 10, 3, 12, 30), "Live in San Francisco", bands.get("Dream Theater").getId()),
-                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.RECORD, LocalDateTime.of(2020, 9, 3, 15, 45), "TV Show", bands.get("Dream Theater").getId()),
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.TV, LocalDateTime.now().plusSeconds(5), "Live in LA", bands.get("Dream Theater").getId()),
-                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.MEMBERS_MEETING, LocalDateTime.now().plusSeconds(5), "Drinking beer", bands.get("Dream Theater").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.RADIO, LocalDateTime.now().plusMonths(12).plusDays(15).plusHours(3).plusMinutes(15), "Live in San Francisco", bands.get("Dream Theater").getId()),
+                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.RECORD, LocalDateTime.now().plusMonths(2).plusDays(7).plusHours(3).plusMinutes(15), "TV Show", bands.get("Dream Theater").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.TV, LocalDateTime.now().plusMinutes(3), "Live in LA", bands.get("Dream Theater").getId()),
+                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.MEMBERS_MEETING, LocalDateTime.now().plusMinutes(3), "Drinking beer", bands.get("Dream Theater").getId()),
 
-                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.MEMBERS_MEETING, LocalDateTime.of(2020, 8, 19, 23, 0), "Drinking beer", bands.get("Five Finger Death Punch").getId()),
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.LIVE, LocalDateTime.now().plusSeconds(5), "TV Show", bands.get("Five Finger Death Punch").getId()),
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.RADIO, LocalDateTime.now().plusSeconds(5), "Radio Show", bands.get("Five Finger Death Punch").getId()),
-                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.REHEARSAL, LocalDateTime.now().plusSeconds(5), "Rehearsal", bands.get("Five Finger Death Punch").getId()),
-                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.MEMBERS_MEETING, LocalDateTime.now().plusSeconds(5), "Drinking beer", bands.get("Five Finger Death Punch").getId()),
+                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.MEMBERS_MEETING, LocalDateTime.now().plusMonths(4).plusDays(10).plusHours(5).plusMinutes(10), "Drinking beer", bands.get("Five Finger Death Punch").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.LIVE, LocalDateTime.now().plusMinutes(3), "TV Show", bands.get("Five Finger Death Punch").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.RADIO, LocalDateTime.now().plusMinutes(3), "Radio Show", bands.get("Five Finger Death Punch").getId()),
+                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.REHEARSAL, LocalDateTime.now().plusMinutes(3), "Rehearsal", bands.get("Five Finger Death Punch").getId()),
+                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.MEMBERS_MEETING, LocalDateTime.now().plusMinutes(3), "Drinking beer", bands.get("Five Finger Death Punch").getId()),
 
-                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.MEMBERS_MEETING, LocalDateTime.now().plusSeconds(5), "Drinking beer", bands.get("NightWish").getId()),
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.LIVE, LocalDateTime.of(2021, 3, 3, 19, 15), "Drinking beer", bands.get("NightWish").getId()),
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.RADIO, LocalDateTime.of(2020, 10, 5, 16, 0), "Drinking beer", bands.get("NightWish").getId()),
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.TV, LocalDateTime.of(2020, 9, 15, 22, 30), "Drinking beer", bands.get("NightWish").getId()),
-                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.REHEARSAL, LocalDateTime.now().plusSeconds(5), "Drinking beer", bands.get("NightWish").getId()),
+                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.MEMBERS_MEETING, LocalDateTime.now().plusMinutes(3), "Drinking beer", bands.get("NightWish").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.LIVE, LocalDateTime.now().plusMonths(5).plusDays(15).plusHours(3).plusMinutes(20), "Drinking beer", bands.get("NightWish").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.RADIO, LocalDateTime.now().plusMonths(3).plusDays(5).plusHours(2).plusMinutes(15), "Drinking beer", bands.get("NightWish").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.TV, LocalDateTime.now().plusMonths(6).plusDays(1).plusHours(3).plusMinutes(15), "Drinking beer", bands.get("NightWish").getId()),
+                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.REHEARSAL, LocalDateTime.now().plusMinutes(3), "Drinking beer", bands.get("NightWish").getId()),
 
-                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.MEMBERS_MEETING, LocalDateTime.now().plusSeconds(5), "Drinking beer", bands.get("Evanescence").getId()),
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.LIVE, LocalDateTime.of(2021, 3, 3, 19, 15), "Drinking beer", bands.get("Evanescence").getId()),
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.RADIO, LocalDateTime.of(2020, 10, 5, 16, 0), "Drinking beer", bands.get("Evanescence").getId()),
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.TV, LocalDateTime.of(2020, 9, 15, 22, 30), "Drinking beer", bands.get("Evanescence").getId()),
-                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.REHEARSAL, LocalDateTime.now().plusSeconds(5), "Drinking beer", bands.get("Evanescence").getId()),
+                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.MEMBERS_MEETING, LocalDateTime.now().plusMinutes(3), "Drinking beer", bands.get("Evanescence").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.LIVE, LocalDateTime.now().plusMonths(1).plusDays(15).plusHours(3).plusMinutes(15), "Drinking beer", bands.get("Evanescence").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.RADIO, LocalDateTime.now().plusMonths(0).plusDays(10).plusHours(6).plusMinutes(15), "Drinking beer", bands.get("Evanescence").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.TV, LocalDateTime.now().plusMonths(0).plusDays(20).plusHours(3).plusMinutes(15), "Drinking beer", bands.get("Evanescence").getId()),
+                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.REHEARSAL, LocalDateTime.now().plusMinutes(3), "Drinking beer", bands.get("Evanescence").getId()),
 
-                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.MEMBERS_MEETING, LocalDateTime.of(2021, 3, 3, 19, 15), "Drinking beer", bands.get("New Age Killer").getId()),
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.LIVE, LocalDateTime.now().plusSeconds(5), "Drinking beer", bands.get("New Age Killer").getId()),
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.RADIO, LocalDateTime.of(2020, 10, 5, 16, 0), "Drinking beer", bands.get("New Age Killer").getId()),
-                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.REHEARSAL, LocalDateTime.now().plusSeconds(5), "Drinking beer", bands.get("New Age Killer").getId()),
+                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.MEMBERS_MEETING, LocalDateTime.now().plusMonths(7).plusDays(1).plusHours(3).plusMinutes(15), "Drinking beer", bands.get("New Age Killer").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.LIVE, LocalDateTime.now().plusMinutes(3), "Drinking beer", bands.get("New Age Killer").getId()),
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.RADIO, LocalDateTime.now().plusMonths(2).plusDays(3).plusHours(3).plusMinutes(15), "Drinking beer", bands.get("New Age Killer").getId()),
+                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.REHEARSAL, LocalDateTime.now().plusMinutes(3), "Drinking beer", bands.get("New Age Killer").getId()),
 
-                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.RADIO, LocalDateTime.of(2020, 10, 5, 16, 0), "Drinking beer", bands.get("Cruisers").getId()),
-                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.REHEARSAL, LocalDateTime.now().plusSeconds(5), "Drinking beer", bands.get("Cruisers").getId())
+                    new EventCreateBindingDTO(EventType.PUBLIC, EventCategory.RADIO, LocalDateTime.now().plusMonths(0).plusDays(7).plusHours(3).plusMinutes(15), "Drinking beer", bands.get("Cruisers").getId()),
+                    new EventCreateBindingDTO(EventType.MEMBERS_ONLY, EventCategory.REHEARSAL, LocalDateTime.now().plusMinutes(3), "Drinking beer", bands.get("Cruisers").getId())
             ).forEach(this.eventService::createEvent);
 
             List.of(

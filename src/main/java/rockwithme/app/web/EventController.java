@@ -94,7 +94,7 @@ public class EventController {
 
     @DeleteMapping("/cancel/{id}")
     public String cancelEvent(@PathVariable("id") String eventId) {
-        this.eventService.cancelEvent(eventId);
-        return "redirect:/bands/myBands";
+        EventServiceDTO eventServiceDTO = this.eventService.cancelEvent(eventId);
+        return "redirect:/bands/myBands/" + eventServiceDTO.getBandId();
     }
 }

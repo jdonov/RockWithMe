@@ -108,24 +108,25 @@ public class BandController {
 
     @PostMapping("/add/{request}")
     public String addMember(@PathVariable(name = "request") String requestId, @RequestParam("addMember") boolean addMember) {
+        JoinRequestServiceDTO joinRequestServiceDTO = null;
         if (addMember) {
-            this.joinRequestService.approveRequest(requestId);
+            joinRequestServiceDTO = this.joinRequestService.approveRequest(requestId);
         } else {
-            this.joinRequestService.rejectRequest(requestId);
+            joinRequestServiceDTO = this.joinRequestService.rejectRequest(requestId);
         }
-        return "redirect:/bands/myBands";
+        return "redirect:/bands/myBands/" + joinRequestServiceDTO.getBandId();
     }
 
     @PostMapping("/myBands/addPhoto/{id}")
     public ModelAndView addPhoto(@PathVariable("id") String bandId,
                                  @RequestParam(name = "file", required = false) MultipartFile file,
-                                 ModelAndView modelAndView) {
+                                 ModelAndView modelAndView, RedirectAttributes redirectAttributes) {
         if (file != null && !file.isEmpty() && file.getOriginalFilename().length() > 0) {
             if (Pattern.matches(".+\\.(jpg|png)", file.getOriginalFilename())) {
                 FileUploader.handleMultipartFile(file);
                 this.bandService.addPhoto(bandId, "/" + FileUploader.UPLOAD_DIR + "/" + file.getOriginalFilename());
             } else {
-                modelAndView.addObject("fileError", "Submit picture [.jpg, .png]");
+                redirectAttributes.addFlashAttribute("fileError", "Submit picture [.jpg, .png]");
             }
         }
         modelAndView.setViewName("redirect:/bands/myBands/" + bandId);

@@ -36,7 +36,7 @@ window.addEventListener('load', () => {
         } else {
             let h = document.createElement("h3");
             h.setAttribute("id", "no-bands-message")
-            h.textContent = "No bands found!";
+            h.textContent = "No players found!";
             divContainer.appendChild(h);
             return 0;
         }

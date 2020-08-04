@@ -18,7 +18,7 @@
             </thead>
             <tbody>
             <th:block th:each="b : ${myBands}">
-                <tr class="table-secondary">
+                <tr class="table my-bcg">
                     <th scope="row">
                         <div>
                             <a th:href="@{/bands/myBands/{id}(id=${b.id})}">
@@ -34,9 +34,9 @@
     </div>
 </th:block>
 <th:block th:if="${#lists.size(myBands) == 0}">
-    <h1>You don't have registered bands</h1>
+    <h1 class="text-center text-secondary mt-3 mb-3">You don't have registered bands</h1>
 </th:block>
-<form class="mx-auto w-25 rounded mt-5" th:action="@{/bands/register}" th:method="GET">
+<form sec:authorize="hasAuthority('PLAYER')" class="mx-auto w-25 rounded mt-5" th:action="@{/bands/register}" th:method="GET">
     <div class="form-group text-center text-white">
         <button type="submit" class="btn btn-secondary btn-lg btn-block">Register new band!</button>
     </div>

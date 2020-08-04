@@ -14,7 +14,7 @@
         <div class="container">
             <a th:href="@{/bands/details/{id}(id=${bandOfTheWeek.id})}">
                 <div class="container-fluid w-50 text-center">
-                    <img class="img-fluid w-100 rounded" th:src="*{imgUrl} == null ? '/uploads/band.jpg' : *{imgUrl}"
+                    <img class="img-fluid w-100 rounded" th:src="*{imgUrl} == null ? '/img/band.jpg' : *{imgUrl}"
                          alt="band-image">
                 </div>
                 <th:block th:unless="${bandOfTheWeek.events == null}">
@@ -42,7 +42,7 @@
             <th:block th:unless="${allBands} == null" th:each="b : ${allBands}">
                 <div class="col-md-3 d-flex flex-column text-center mb-3 p-2 border border-secondary" th:object="${b}">
                     <a th:href="@{/bands/details/{id}(id=*{id})}">
-                        <img th:src="*{imgUrl} == null ? '/uploads/band.jpg' : *{imgUrl}" class="img-fluid" width="300">
+                        <img th:src="*{imgUrl} == null ? '/img/band.jpg' : *{imgUrl}" class="img-fluid" width="300">
                         <p class="mb-1" th:text="|Band name: *{name} |">Band name</p>
                         <span class="mr-2">Styles:</span>
                         <span class="mr-2" th:each="s : *{styles}" th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(s.name(), '_', ' ')))}"></span>
