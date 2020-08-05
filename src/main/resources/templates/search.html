@@ -11,9 +11,7 @@
     <div class="mt-2 mb-2 text-light">
         <h5>Search bands</h5>
     </div>
-    <form class="form-group p-2 my-bcg rounded mt-2 border border-secondary text-light"
-          th:action="@{/bands/search}"
-          th:method="GET">
+    <form class="form-group p-2 my-bcg rounded mt-2 border border-secondary text-light">
         <div class="container-fluid d-flex flex-row justify-content-lg-around align-items-center">
             <div class="search-data">
                 <input class="form-control form-control-sm" type="text" name="name" id="name"
@@ -70,8 +68,7 @@
     <div class="mt-2 mb-2 text-light">
         <h5>Search players</h5>
     </div>
-    <form class="form-group w-50 p-2 my-bcg rounded mt-2 border border-secondary text-light"
-          th:action="@{/users/search}" th:method="GET">
+    <form class="form-group w-50 p-2 my-bcg rounded mt-2 border border-secondary text-light">
         <div class="container-fluid d-flex flex-row justify-content-between align-items-center">
             <div class="skills-data">
                 <select class="custom-select custom-select-sm" id="instrument" name="instrument">
