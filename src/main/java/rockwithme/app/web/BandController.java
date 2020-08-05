@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import rockwithme.app.annotation.PlayerSkills;
 import rockwithme.app.model.binding.*;
 import rockwithme.app.model.service.*;
 import rockwithme.app.service.BandService;
@@ -83,6 +84,7 @@ public class BandController {
         return "redirect:/bands/myBands/" + bandRemoveProducerBindingDTO.getBandId();
     }
 
+    @PlayerSkills
     @PostMapping("/join")
     public String joinBand(@Valid @ModelAttribute(name = "joinBand") JoinRequestBindingDTO joinRequestBindingDTO,
                            BindingResult bindingResult,

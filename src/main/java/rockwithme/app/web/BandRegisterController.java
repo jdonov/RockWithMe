@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import rockwithme.app.annotation.PlayerSkills;
 import rockwithme.app.exeption.BandAlreadyExistsException;
 import rockwithme.app.model.binding.BandRegisterDTO;
 import rockwithme.app.model.entity.Goal;
@@ -39,6 +40,7 @@ public class BandRegisterController {
     }
 
 
+    @PlayerSkills
     @GetMapping
     public String registerBand(Model model, HttpSession httpSession) {
         if (!model.containsAttribute("founderInstruments")) {
@@ -62,6 +64,7 @@ public class BandRegisterController {
         return "band-register";
     }
 
+    @PlayerSkills
     @PostMapping
     public ModelAndView registerBandConfirm(@Valid @ModelAttribute("bandRegister") BandRegisterDTO bandRegisterDTO,
                                      BindingResult bindingResult,
