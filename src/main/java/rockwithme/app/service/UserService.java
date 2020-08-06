@@ -32,7 +32,7 @@ public interface UserService extends UserDetailsService {
 
     UserMyDetailsServiceDTO getUserDetailsByUsername(String username);
 
-    UserRegisterDTO updateUserByUsername(String username);
+    UserServiceDTO updateUserByUsername(String username);
 
     UserPublicDetailsServiceDTO getUserPublicDetailsById(String userId);
 

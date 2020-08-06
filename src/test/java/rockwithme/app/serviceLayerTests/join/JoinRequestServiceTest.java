@@ -5,8 +5,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
+import rockwithme.app.exeption.NotRequiredSkillsException;
+import rockwithme.app.model.binding.JoinRequestBindingDTO;
+import rockwithme.app.model.binding.JoinRequestProducerBindingDTO;
 import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.JoinRequestServiceDTO;
+import rockwithme.app.model.service.PlayerSkillsServiceDTO;
+import rockwithme.app.model.service.UserServiceDTO;
 import rockwithme.app.repository.JoinRequestRepository;
 import rockwithme.app.service.*;
 import rockwithme.app.service.impl.JoinRequestServiceImpl;
@@ -124,5 +129,209 @@ public class JoinRequestServiceTest {
                 }});
         List<JoinRequestServiceDTO> actual = this.joinRequestService.getRequestByUserId("TEST");
         Assert.assertEquals("papaHat", actual.get(0).getUsername());
+    }
+
+    @Test(expected = NotRequiredSkillsException.class)
+    public void submitJoinRequest_ThrowException() {
+        JoinRequestBindingDTO joinRequestBindingDTO = new JoinRequestBindingDTO(){{
+           setBandId("ID");
+           setUsername("papaHat");
+        }};
+        Mockito.when(this.mockedBandService.getBandById("ID")).thenReturn(testBand);
+        Mockito.when(this.mockedUserService.getUserByUsername("papaHat")).thenReturn(testUser);
+        this.joinRequestService.submitJoinRequest(joinRequestBindingDTO);
+    }
+
+    @Test
+    public void submitJoinRequest_SetCorrectRequest() {
+        JoinRequestBindingDTO joinRequestBindingDTO = new JoinRequestBindingDTO(){{
+            setBandId("ID");
+            setUsername("papaHat");
+            setInstrument(InstrumentEnum.GUITAR);
+        }};
+        testUser.setId("TEST_ID");
+        PlayerSkillsServiceDTO playerSkillsServiceDTO = new PlayerSkillsServiceDTO(){{
+            setLevel(Level.MASTER);
+            setInstrument(InstrumentEnum.GUITAR);
+            setYearsPlaying(3);
+            setBandPlayed(2);
+        }};
+        Mockito.when(this.mockedModelMapper.map(joinRequestBindingDTO, JoinRequest.class)).thenReturn(testJoinRequest);
+        Mockito.when(this.mockedBandService.getBandById("ID")).thenReturn(testBand);
+        Mockito.when(this.mockedBandService.addRequest(testBand,testJoinRequest)).thenReturn(true);
+        Mockito.when(this.mockedUserService.getUserByUsername("papaHat")).thenReturn(testUser);
+        Mockito.when(this.mockedUserService.addRequest(testUser, testJoinRequest)).thenReturn(new UserServiceDTO());
+        Mockito.when(this.mockedPlayerSkillsService.getByPlayerId("TEST_ID")).thenReturn(List.of(playerSkillsServiceDTO));
+        Mockito.when(this.mockedJoinRequestRepository.saveAndFlush(testJoinRequest)).thenReturn(testJoinRequest);
+        this.joinRequestService.submitJoinRequest(joinRequestBindingDTO);
+
+        Assert.assertEquals(testJoinRequest.getBand(), testBand);
+        Assert.assertEquals(testJoinRequest.getUser(), testUser);
+        Assert.assertEquals(testJoinRequest.getInstrument(), InstrumentEnum.GUITAR);
+    }
+
+    @Test(expected = NotRequiredSkillsException.class)
+    public void submitJoinRequest_ThrowExc() {
+        JoinRequestBindingDTO joinRequestBindingDTO = new JoinRequestBindingDTO(){{
+            setBandId("ID");
+            setUsername("papaHat");
+            setInstrument(InstrumentEnum.BASS);
+        }};
+        testUser.setId("TEST_ID");
+        PlayerSkillsServiceDTO playerSkillsServiceDTO = new PlayerSkillsServiceDTO(){{
+            setLevel(Level.MASTER);
+            setInstrument(InstrumentEnum.GUITAR);
+            setYearsPlaying(3);
+            setBandPlayed(2);
+        }};
+        Mockito.when(this.mockedModelMapper.map(joinRequestBindingDTO, JoinRequest.class)).thenReturn(testJoinRequest);
+        Mockito.when(this.mockedBandService.getBandById("ID")).thenReturn(testBand);
+        Mockito.when(this.mockedBandService.addRequest(testBand,testJoinRequest)).thenReturn(true);
+        Mockito.when(this.mockedUserService.getUserByUsername("papaHat")).thenReturn(testUser);
+        Mockito.when(this.mockedUserService.addRequest(testUser, testJoinRequest)).thenReturn(new UserServiceDTO());
+        Mockito.when(this.mockedPlayerSkillsService.getByPlayerId("TEST_ID")).thenReturn(List.of(playerSkillsServiceDTO));
+        Mockito.when(this.mockedJoinRequestRepository.saveAndFlush(testJoinRequest)).thenReturn(testJoinRequest);
+        this.joinRequestService.submitJoinRequest(joinRequestBindingDTO);
+
+        Assert.assertEquals(testJoinRequest.getBand(), testBand);
+        Assert.assertEquals(testJoinRequest.getUser(), testUser);
+        Assert.assertEquals(testJoinRequest.getInstrument(), InstrumentEnum.GUITAR);
+    }
+
+    @Test
+    public void submitJoinRequestProducer_SetCorrectRequest() {
+        JoinRequestProducerBindingDTO joinRequestProducerBindingDTO = new JoinRequestProducerBindingDTO(){{
+            setBandId("ID");
+            setUsername("papaHat");
+        }};
+        testUser.setId("TEST_ID");
+
+        Mockito.when(this.mockedModelMapper.map(joinRequestProducerBindingDTO, JoinRequest.class)).thenReturn(testJoinRequest);
+        Mockito.when(this.mockedBandService.getBandById("ID")).thenReturn(testBand);
+        Mockito.when(this.mockedBandService.addRequest(testBand,testJoinRequest)).thenReturn(true);
+        Mockito.when(this.mockedUserService.getUserByUsername("papaHat")).thenReturn(testUser);
+        Mockito.when(this.mockedUserService.addRequest(testUser, testJoinRequest)).thenReturn(new UserServiceDTO());
+        Mockito.when(this.mockedJoinRequestRepository.saveAndFlush(testJoinRequest)).thenReturn(testJoinRequest);
+        this.joinRequestService.submitJoinRequestProducer(joinRequestProducerBindingDTO);
+
+        Assert.assertEquals(testJoinRequest.getBand(), testBand);
+        Assert.assertEquals(testJoinRequest.getUser(), testUser);
+        Assert.assertEquals(testJoinRequest.getInstrument(), InstrumentEnum.GUITAR);
+    }
+
+    @Test
+    public void approveRequest_ReturnCorrect() {
+        JoinRequestBindingDTO joinRequestBindingDTO = new JoinRequestBindingDTO(){{
+            setBandId("ID");
+            setUsername("papaHat");
+            setInstrument(InstrumentEnum.GUITAR);
+        }};
+        testUser.setId("TEST_ID");
+        PlayerSkillsServiceDTO playerSkillsServiceDTO = new PlayerSkillsServiceDTO(){{
+            setLevel(Level.MASTER);
+            setInstrument(InstrumentEnum.GUITAR);
+            setYearsPlaying(3);
+            setBandPlayed(2);
+        }};
+        testBand.setId("TEST_ID");
+        testJoinRequest.setBecomeProducer(false);
+
+        Instrument testInstr = new Instrument(){{
+            setInstrument(InstrumentEnum.GUITAR);
+            setId("TEST_ID");
+        }};
+        PlayerSkills playerSkills = new PlayerSkills(){{
+            setPlayer(testUser);
+            setInstrument(testInstr);
+            setYearsPlaying(3);
+            setBandPlayed(4);
+            setLevel(Level.MASTER);
+        }};
+
+
+        Mockito.when(this.mockedJoinRequestRepository.findById("ID")).thenReturn(java.util.Optional.ofNullable(testJoinRequest));
+        Mockito.when(this.mockedModelMapper.map(joinRequestBindingDTO, JoinRequest.class)).thenReturn(testJoinRequest);
+        Mockito.when(this.mockedModelMapper.map(testJoinRequest, JoinRequestServiceDTO.class))
+                .thenReturn(new JoinRequestServiceDTO(){{
+                    setInstrument(InstrumentEnum.GUITAR);
+                    setUsername("papaHat");
+                    setBandName("Metallica");
+                }});
+        Mockito.when(this.mockedJoinRequestRepository.findById("TEST_ID")).thenReturn(java.util.Optional.ofNullable(testJoinRequest));
+        Mockito.when(this.mockedBandService.getBandById("TEST_ID")).thenReturn(testBand);
+        Mockito.when(this.mockedUserService.getUserByUsername("papaHat")).thenReturn(testUser);
+        Mockito.when(this.mockedInstrumentService.getInstrument(testJoinRequest.getInstrument())).thenReturn(testInstr);
+        Mockito.when(this.mockedPlayerSkillsService.getByPlayerIdAndInstrumentId("TEST_ID", "TEST_ID")).thenReturn(playerSkills);
+        Mockito.when(this.mockedJoinRequestRepository.saveAndFlush(testJoinRequest)).thenReturn(testJoinRequest);
+        Mockito.when(this.mockedBandService.addMember(testBand, playerSkills)).thenReturn(true);
+        Mockito.when(this.mockedUserService.addBand(testUser, testBand)).thenReturn(new UserServiceDTO());
+
+        JoinRequestServiceDTO joinRequestServiceDTO = this.joinRequestService.approveRequest("TEST_ID");
+        Assert.assertTrue(testJoinRequest.isApproved());
+    }
+
+    @Test
+    public void approveRequest_Producer_ReturnCorrect() {
+        JoinRequestBindingDTO joinRequestBindingDTO = new JoinRequestBindingDTO(){{
+            setBandId("ID");
+            setUsername("papaHat");
+            setInstrument(InstrumentEnum.GUITAR);
+        }};
+        testUser.setId("TEST_ID");
+        PlayerSkillsServiceDTO playerSkillsServiceDTO = new PlayerSkillsServiceDTO(){{
+            setLevel(Level.MASTER);
+            setInstrument(InstrumentEnum.GUITAR);
+            setYearsPlaying(3);
+            setBandPlayed(2);
+        }};
+        testBand.setId("TEST_ID");
+        testJoinRequest.setBecomeProducer(true);
+
+        Instrument testInstr = new Instrument(){{
+            setInstrument(InstrumentEnum.GUITAR);
+            setId("TEST_ID");
+        }};
+        PlayerSkills playerSkills = new PlayerSkills(){{
+            setPlayer(testUser);
+            setInstrument(testInstr);
+            setYearsPlaying(3);
+            setBandPlayed(4);
+            setLevel(Level.MASTER);
+        }};
+
+
+        Mockito.when(this.mockedJoinRequestRepository.findById("ID")).thenReturn(java.util.Optional.ofNullable(testJoinRequest));
+        Mockito.when(this.mockedModelMapper.map(joinRequestBindingDTO, JoinRequest.class)).thenReturn(testJoinRequest);
+        Mockito.when(this.mockedModelMapper.map(testJoinRequest, JoinRequestServiceDTO.class))
+                .thenReturn(new JoinRequestServiceDTO(){{
+                    setInstrument(InstrumentEnum.GUITAR);
+                    setUsername("papaHat");
+                    setBandName("Metallica");
+                }});
+        Mockito.when(this.mockedJoinRequestRepository.findById("TEST_ID")).thenReturn(java.util.Optional.ofNullable(testJoinRequest));
+        Mockito.when(this.mockedBandService.getBandById("TEST_ID")).thenReturn(testBand);
+        Mockito.when(this.mockedUserService.getUserByUsername("papaHat")).thenReturn(testUser);
+        Mockito.when(this.mockedInstrumentService.getInstrument(testJoinRequest.getInstrument())).thenReturn(testInstr);
+        Mockito.when(this.mockedPlayerSkillsService.getByPlayerIdAndInstrumentId("TEST_ID", "TEST_ID")).thenReturn(playerSkills);
+        Mockito.when(this.mockedJoinRequestRepository.saveAndFlush(testJoinRequest)).thenReturn(testJoinRequest);
+        Mockito.when(this.mockedBandService.addMember(testBand, playerSkills)).thenReturn(true);
+        Mockito.when(this.mockedUserService.addBand(testUser, testBand)).thenReturn(new UserServiceDTO());
+
+        JoinRequestServiceDTO joinRequestServiceDTO = this.joinRequestService.approveRequest("TEST_ID");
+        Assert.assertTrue(testJoinRequest.isApproved());
+    }
+
+    @Test
+    public void rejectRequest_ReturnCorrect() {
+        testJoinRequest.setBecomeProducer(true);
+
+        Mockito.when(this.mockedJoinRequestRepository.findById("TEST_ID")).thenReturn(java.util.Optional.ofNullable(testJoinRequest));
+        Mockito.when(this.mockedJoinRequestRepository.saveAndFlush(testJoinRequest)).thenReturn(testJoinRequest);
+        Mockito.when(this.mockedModelMapper.map(testJoinRequest, JoinRequestServiceDTO.class))
+                .thenReturn(new JoinRequestServiceDTO());
+
+        JoinRequestServiceDTO joinRequestServiceDTO = this.joinRequestService.rejectRequest("TEST_ID");
+        Assert.assertFalse(testJoinRequest.isApproved());
+        Assert.assertTrue(testJoinRequest.isClosed());
     }
 }

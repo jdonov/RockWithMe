@@ -130,10 +130,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRegisterDTO updateUserByUsername(String username) {
+    public UserServiceDTO updateUserByUsername(String username) {
         User user = this.userRepository.findByUsername(username).orElse(null);
-        UserRegisterDTO userRegisterDTO = this.modelMapper.map(user, UserRegisterDTO.class);
-        return null;
+        UserServiceDTO userServiceDTO = this.modelMapper.map(user, UserServiceDTO.class);
+        return userServiceDTO;
     }
 
     @Override

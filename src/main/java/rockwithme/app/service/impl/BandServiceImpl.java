@@ -166,20 +166,22 @@ public class BandServiceImpl implements BandService {
     }
 
     @Override
-    public void addRequest(Band band, JoinRequest request) {
+    public boolean addRequest(Band band, JoinRequest request) {
         band.getRequests().add(request);
         this.bandRepository.saveAndFlush(band);
+        return band.getRequests().contains(request);
     }
 
     @Override
-    public void addMember(Band band, PlayerSkills playerSkills) {
+    public boolean addMember(Band band, PlayerSkills playerSkills) {
         band.getMembers().add(playerSkills);
         this.bandRepository.saveAndFlush(band);
+        return band.getMembers().contains(playerSkills);
     }
 
     @Override
     @Transactional
-    public void removeMember(BandRemoveMemberBindingDTO bandRemoveMemberBindingDTO) {
+    public boolean removeMember(BandRemoveMemberBindingDTO bandRemoveMemberBindingDTO) {
         Band band = this.bandRepository.findById(bandRemoveMemberBindingDTO.getBandId()).orElse(null);
         User user = this.userService.getUserByUsername(bandRemoveMemberBindingDTO.getUsername());
         Instrument instrument = this.instrumentService.getInstrument(bandRemoveMemberBindingDTO.getInstrument());
@@ -187,6 +189,7 @@ public class BandServiceImpl implements BandService {
         band.getMembers().remove(playerSkills1);
         this.bandRepository.saveAndFlush(band);
         this.userService.removeBand(user, band);
+        return !band.getMembers().contains(playerSkills1);
     }
 
     @Override
@@ -197,33 +200,41 @@ public class BandServiceImpl implements BandService {
 
     @Override
     @Transactional
-    public void removeProducer(BandRemoveProducerBindingDTO bandRemoveProducerBindingDTO) {
+    public boolean removeProducer(BandRemoveProducerBindingDTO bandRemoveProducerBindingDTO) {
         User user = this.userService.getUserByUsername(bandRemoveProducerBindingDTO.getProducerUsername());
         Band band = this.bandRepository.findById(bandRemoveProducerBindingDTO.getBandId()).orElse(null);
         band.setProducer(null);
         this.bandRepository.saveAndFlush(band);
         this.userService.removeBand(user, band);
+        return band.getProducer() == null;
     }
 
     @Override
-    public void addEvent(Event event, String bandId) {
+    public boolean addEvent(Event event, String bandId) {
         Band band = this.bandRepository.findById(bandId).orElse(null);
         band.getEvents().add(event);
         this.bandRepository.saveAndFlush(band);
+        return band.getEvents().contains(event);
     }
 
     @Override
-    public void addLike(Like like, Band band) {
+    public boolean addLike(Like like, Band band) {
         band.getLikes().add(like);
         this.bandRepository.saveAndFlush(band);
+        return band.getLikes().contains(like);
     }
 
     @Override
-    public void addPhoto(String bandId, String imgUrl) {
+    public boolean addPhoto(String bandId, String imgUrl) {
         Band band = this.bandRepository.findById(bandId).orElse(null);
         if (band != null && imgUrl != null) {
             band.setImgUrl(imgUrl);
             this.bandRepository.saveAndFlush(band);
+        }
+        if (band.getImgUrl() == null) {
+            return false;
+        } else {
+            return band.getImgUrl().equals(imgUrl);
         }
     }
 

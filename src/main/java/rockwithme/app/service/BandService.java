@@ -24,21 +24,21 @@ public interface BandService {
 
     List<BandMyAllBandsDTO> getBandByMember(String username);
 
-    void addRequest(Band band, JoinRequest request);
+    boolean addRequest(Band band, JoinRequest request);
 
-    void addMember(Band band, PlayerSkills playerSkills);
+    boolean addMember(Band band, PlayerSkills playerSkills);
 
-    void removeMember(BandRemoveMemberBindingDTO bandRemoveMemberBindingDTO);
+    boolean removeMember(BandRemoveMemberBindingDTO bandRemoveMemberBindingDTO);
 
     BandServiceDTO addProducer(User user, Band band);
 
-    void removeProducer(BandRemoveProducerBindingDTO bandRemoveProducerBindingDTO);
+    boolean removeProducer(BandRemoveProducerBindingDTO bandRemoveProducerBindingDTO);
 
-    void addEvent(Event event, String bandId);
+    boolean addEvent(Event event, String bandId);
 
-    void addLike(Like like, Band band);
+    boolean addLike(Like like, Band band);
 
-    void addPhoto(String bandId, String imgUrl);
+    boolean addPhoto(String bandId, String imgUrl);
 
     void deleteBandsWithNoMembers();
 

@@ -5,13 +5,24 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import rockwithme.app.model.binding.PlayerSkillsAddDTO;
+import rockwithme.app.model.binding.PlayerSkillsSearchBindingDTO;
 import rockwithme.app.model.entity.*;
+import rockwithme.app.model.service.PlayerSkillsSearchDTO;
 import rockwithme.app.model.service.PlayerSkillsServiceDTO;
 import rockwithme.app.repository.PlayerSkillsRepository;
 import rockwithme.app.service.InstrumentService;
 import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
 import rockwithme.app.service.impl.PlayerSkillsServiceImpl;
+import rockwithme.app.specification.PlayerSkillsSpecificationBuilder;
 
 import java.util.List;
 
@@ -31,6 +42,7 @@ public class PlayerSkillsTest {
         this.mockedModelMapper = Mockito.mock(ModelMapper.class);
         this.mockedUserService = Mockito.mock(UserService.class);
         this.playerSkillsService = new PlayerSkillsServiceImpl(this.mockedPlayerSkillsRepository, this.mockedUserService, this.mockedInstrumentService, this.mockedModelMapper);
+
         this.testUser = new User() {{
             setUsername("papaHat");
         }};
@@ -84,5 +96,4 @@ public class PlayerSkillsTest {
         PlayerSkills actual = this.playerSkillsService.getByCompositeId("TEST", "TEST");
         Assert.assertEquals(testPlayerSkills, actual);
     }
-
 }

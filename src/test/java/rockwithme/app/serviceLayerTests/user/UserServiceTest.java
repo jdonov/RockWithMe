@@ -5,20 +5,23 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import rockwithme.app.exeption.UserAlreadyExistsException;
+import rockwithme.app.exeption.UserWithoutRolesException;
 import rockwithme.app.model.binding.UserRegisterDTO;
+import rockwithme.app.model.binding.UserSearchBindingDTO;
 import rockwithme.app.model.binding.UserUpdateDTO;
-import rockwithme.app.model.entity.Role;
-import rockwithme.app.model.entity.Town;
-import rockwithme.app.model.entity.User;
-import rockwithme.app.model.service.UserAdminServiceDTO;
-import rockwithme.app.model.service.UserMyDetailsServiceDTO;
-import rockwithme.app.model.service.UserPublicDetailsServiceDTO;
-import rockwithme.app.model.service.UserServiceDTO;
+import rockwithme.app.model.entity.*;
+import rockwithme.app.model.service.*;
 import rockwithme.app.repository.UserRepository;
 import rockwithme.app.service.UserService;
 import rockwithme.app.service.impl.UserServiceImpl;
+import rockwithme.app.specification.UserSpecificationsBuilder;
+
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class UserServiceTest {
@@ -37,8 +40,11 @@ public class UserServiceTest {
             setLastName("Hatfield");
             setUsername("papaHat");
             setAge(25);
-            setAuthorities(Set.of(Role.PLAYER));
+            setAuthorities(new HashSet<>(Set.of(Role.PLAYER)));
             setTown(Town.SOFIA);
+            setLikes(new HashSet<>());
+            setBands(new HashSet<>());
+            setRequests(new HashSet<>());
         }};
         this.mockedUserRepository = Mockito.mock(UserRepository.class);
         this.mockedModelMapper = Mockito.mock(ModelMapper.class);
@@ -204,6 +210,139 @@ public class UserServiceTest {
         Assert.assertEquals("Updated", actual.getFirstName());
         Assert.assertEquals("Updated", actual.getLastName());
         Assert.assertEquals(25, actual.getAge());
+    }
+
+
+    @Test
+    public void userService_addLike_ShouldReturn_Correct() {
+        Like like = new Like(){{
+            setUser(testUser);
+            setBand(new Band(){{
+                setName("Metallica");
+            }});
+            setId("123");
+        }};
+        Mockito.when(this.mockedUserRepository.saveAndFlush(testUser)).thenReturn(testUser);
+        Mockito.when(this.mockedModelMapper.map(testUser, UserServiceDTO.class))
+                .thenReturn(new UserServiceDTO(){{
+                    setUsername("papaHat");
+                }});
+        UserServiceDTO actual = this.userService.addLike(like, testUser);
+        Assert.assertEquals("papaHat", actual.getUsername());
+    }
+
+    @Test
+    public void userService_addJoinRequest_ShouldReturn_Correct() {
+        JoinRequest joinRequest = new JoinRequest(){{
+            setUser(testUser);
+            setInstrument(InstrumentEnum.GUITAR);
+            setBand(new Band(){{
+                setName("Metallica");
+            }});
+        }};
+        Mockito.when(this.mockedUserRepository.saveAndFlush(testUser)).thenReturn(testUser);
+        Mockito.when(this.mockedModelMapper.map(testUser, UserServiceDTO.class))
+                .thenReturn(new UserServiceDTO(){{
+                    setUsername("papaHat");
+                }});
+        UserServiceDTO actual = this.userService.addRequest(testUser, joinRequest);
+        Assert.assertEquals("papaHat", actual.getUsername());
+    }
+
+    @Test
+    public void userService_addBand_ShouldReturn_Correct() {
+        Band band = new Band(){{
+                setName("Metallica");
+            }};
+
+        Mockito.when(this.mockedUserRepository.saveAndFlush(testUser)).thenReturn(testUser);
+        Mockito.when(this.mockedModelMapper.map(testUser, UserServiceDTO.class))
+                .thenReturn(new UserServiceDTO(){{
+                    setUsername("papaHat");
+                }});
+        UserServiceDTO actual = this.userService.addBand(testUser, band);
+        Assert.assertEquals("papaHat", actual.getUsername());
+    }
+
+    @Test
+    public void userService_removeBand_ShouldReturn_Correct() {
+        Band band = new Band(){{
+            setName("Metallica");
+        }};
+
+        Mockito.when(this.mockedUserRepository.saveAndFlush(testUser)).thenReturn(testUser);
+        Mockito.when(this.mockedModelMapper.map(testUser, UserServiceDTO.class))
+                .thenReturn(new UserServiceDTO(){{
+                    setUsername("papaHat");
+                }});
+        UserServiceDTO actual = this.userService.removeBand(testUser, band);
+        Assert.assertEquals("papaHat", actual.getUsername());
+    }
+
+    @Test
+    public void updateUserByUsername_ShouldReturnCorrect() {
+        Mockito.when(this.mockedUserRepository.findByUsername("papaHat"))
+                .thenReturn(java.util.Optional.ofNullable(testUser));
+        Mockito.when(this.mockedModelMapper.map(testUser, UserServiceDTO.class))
+                .thenReturn(new UserServiceDTO(){{
+                    setUsername("papaHat");
+                }});
+
+        UserServiceDTO actual = this.userService.updateUserByUsername("papaHat");
+        Assert.assertEquals("papaHat", actual.getUsername());
+    }
+
+    @Test
+    public void addNewRole_ShouldReturnCorrect() {
+        Mockito.when(this.mockedUserRepository.findById("TEST_ID"))
+                .thenReturn(java.util.Optional.ofNullable(testUser));
+        Mockito.when(this.mockedUserRepository.saveAndFlush(testUser)).thenReturn(testUser);
+        Mockito.when(this.mockedModelMapper.map(testUser, UserServiceDTO.class))
+                .thenReturn(new UserServiceDTO(){{
+                    setUsername("papaHat");
+                }});
+        UserServiceDTO userServiceDTO = this.userService.addNewRole("TEST_ID", Role.FAN);
+        Assert.assertEquals("papaHat", userServiceDTO.getUsername());
+    }
+
+    @Test(expected = UserWithoutRolesException.class)
+    public void removeUserRole_UserWithOneRole_ThrowException() {
+        Mockito.when(this.mockedUserRepository.findById("TEST_ID"))
+                .thenReturn(java.util.Optional.ofNullable(testUser));
+        Mockito.when(this.mockedUserRepository.saveAndFlush(testUser)).thenReturn(testUser);
+        Mockito.when(this.mockedModelMapper.map(testUser, UserServiceDTO.class))
+                .thenReturn(new UserServiceDTO(){{
+                    setUsername("papaHat");
+                }});
+        UserServiceDTO userServiceDTO = this.userService.removeUserRole("TEST_ID", Role.PLAYER);
+        Assert.assertEquals("papaHat", userServiceDTO.getUsername());
+
+    }
+
+    @Test
+    public void removeUserRole_ShouldReturnCorrect() {
+        testUser.getAuthorities().add(Role.FAN);
+        Mockito.when(this.mockedUserRepository.findById("TEST_ID"))
+                .thenReturn(java.util.Optional.ofNullable(testUser));
+        Mockito.when(this.mockedUserRepository.saveAndFlush(testUser)).thenReturn(testUser);
+        Mockito.when(this.mockedModelMapper.map(testUser, UserServiceDTO.class))
+                .thenReturn(new UserServiceDTO(){{
+                    setUsername("papaHat");
+                }});
+        UserServiceDTO userServiceDTO = this.userService.removeUserRole("TEST_ID", Role.PLAYER);
+        Assert.assertEquals("papaHat", userServiceDTO.getUsername());
+
+    }
+
+    @Test
+    public void checkIfValidOldPassword_ShouldReturn_True() {
+        Mockito.when(this.mockedUserRepository.findByUsername("papaHat"))
+                .thenReturn(java.util.Optional.ofNullable(testUser));
+        Mockito.when(this.mockedPasswordEncoder.matches("123", testUser.getPassword()))
+                .thenReturn(true);
+
+        Assert.assertTrue(this.userService.checkIfValidOldPassword("papaHat", "123"));
+
     }
 }
 

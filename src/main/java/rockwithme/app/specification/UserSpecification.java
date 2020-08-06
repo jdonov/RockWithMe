@@ -28,7 +28,6 @@ public class UserSpecification extends BaseSpecification implements Specificatio
                     root.get(this.getCriteria().getKey()), this.getCriteria().getValue().toString());
         }
         else if (this.getCriteria().getOperation().equalsIgnoreCase(":")) {
-//            if (root.get(this.getCriteria().getKey()).getJavaType() == String.class) {
             if (this.getCriteria().getKey().equals("username") || this.getCriteria().getKey().equals("firstName") || this.getCriteria().getKey().equals("lastName")) {
                 return builder.like(
                         root.get(this.getCriteria().getKey()), "%" + this.getCriteria().getValue() + "%");

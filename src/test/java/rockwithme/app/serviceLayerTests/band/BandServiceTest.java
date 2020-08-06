@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
+import rockwithme.app.model.binding.BandRemoveMemberBindingDTO;
 import rockwithme.app.model.binding.BandRemoveProducerBindingDTO;
 import rockwithme.app.model.entity.*;
 import rockwithme.app.model.service.*;
@@ -15,6 +16,8 @@ import rockwithme.app.service.PlayerSkillsService;
 import rockwithme.app.service.UserService;
 import rockwithme.app.service.impl.BandServiceImpl;
 
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -97,6 +100,15 @@ public class BandServiceTest {
 
     @Test
     public void getMyBandDetails_ShouldReturn_Correct() {
+        JoinRequest joinRequest = new JoinRequest(){{
+            setUser(testUser);
+            setInstrument(InstrumentEnum.GUITAR);
+            setBand(new Band(){{
+                setName("Metallica");
+            }});
+        }};
+        testBand.setRequests(Set.of(joinRequest));
+
         Mockito.when(this.mockedBandRepository.findById("TEST_ID"))
                 .thenReturn(java.util.Optional.ofNullable(this.testBand));
         Mockito.when(this.mockedModelMapper.map(testBand, BandMyBandDetailsDTO.class))
@@ -106,12 +118,19 @@ public class BandServiceTest {
                     setGoals(Set.of(Goal.PLAYING_FOR_FUN));
                     setStyles(Set.of(Style.TRASH_METAL));
                 }});
+        Mockito.when(this.mockedModelMapper.map(joinRequest, JoinRequestServiceDTO.class))
+                .thenReturn(new JoinRequestServiceDTO(){{
+                    setBandName("Metallica");
+                    setUsername("papaHat");
+                    setInstrument(InstrumentEnum.GUITAR);
+                }});
         BandMyBandDetailsDTO actual = this.bandService.getMyBandDetails("TEST_ID");
         Assert.assertEquals("Metallica", actual.getName());
         Assert.assertEquals(1, actual.getGoals().size());
         Assert.assertTrue(actual.getStyles().contains(Style.TRASH_METAL));
         Assert.assertTrue(actual.getGoals().contains(Goal.PLAYING_FOR_FUN));
         Assert.assertEquals(1, actual.getGoals().size());
+        Assert.assertEquals(1, actual.getRequests().size());
     }
 
     @Test
@@ -202,5 +221,108 @@ public class BandServiceTest {
             setBandId("TEST_ID");
         }});
         Assert.assertNull(testBand.getProducer());
+    }
+
+    @Test
+    public void getBandByMember_ShouldReturnCorrect() {
+        testUser.setBands(Set.of(testBand));
+        Mockito.when(this.mockedUserService.getUserByUsername("papaHat"))
+                .thenReturn(testUser);
+        Mockito.when(this.mockedModelMapper.map(testBand, BandMyAllBandsDTO.class))
+                .thenReturn(new BandMyAllBandsDTO(){{
+                    setName("Metallica");
+                }});
+        List<BandMyAllBandsDTO> actual = this.bandService.getBandByMember("papaHat");
+        Assert.assertEquals(1, actual.size());
+        Assert.assertEquals("Metallica", actual.get(0).getName());
+    }
+
+    @Test
+    public void addRequest_ShouldReturnTrue() {
+        JoinRequest joinRequest = new JoinRequest(){{
+            setBand(testBand);
+            setInstrument(InstrumentEnum.GUITAR);
+            setUser(testUser);
+        }};
+
+        Assert.assertTrue(this.bandService.addRequest(testBand, joinRequest));
+    }
+
+    @Test
+    public void addMember_ShouldReturnTrue() {
+        testBand.setMembers(new HashSet<>());
+        PlayerSkills playerSkills = new PlayerSkills(){{
+            setPlayer(testUser);
+            setInstrument(new Instrument(){{
+                setInstrument(InstrumentEnum.GUITAR);
+            }});
+            setYearsPlaying(3);
+            setBandPlayed(0);
+            setLevel(Level.MASTER);
+        }};
+        Mockito.when(this.mockedBandRepository.saveAndFlush(testBand)).thenReturn(testBand);
+        Assert.assertTrue(this.bandService.addMember(testBand,playerSkills));
+    }
+
+    @Test
+    public void removeMember_ReturnTrue() {
+        PlayerSkills playerSkills = new PlayerSkills(){{
+            setLevel(Level.MASTER);
+            setBandPlayed(3);
+            setYearsPlaying(3);
+            setInstrument(new Instrument(){{setInstrument(InstrumentEnum.GUITAR);}});
+            setPlayer(testUser);
+        }};
+        testBand.setMembers(new HashSet<>(Set.of(playerSkills)));
+        Mockito.when(this.mockedBandRepository.findById("TEST_ID")).thenReturn(java.util.Optional.ofNullable(testBand));
+        Mockito.when(this.mockedUserService.getUserByUsername("papaHat")).thenReturn(testUser);
+        Mockito.when(this.mockedInstrumentService.getInstrument(InstrumentEnum.GUITAR)).thenReturn(new Instrument(){{setInstrument(InstrumentEnum.GUITAR);}});
+        Mockito.when(this.mockedPlayerSkillsService.getByCompositeId("TEST_ID", "TEST_ID"))
+                .thenReturn(playerSkills);
+        Assert.assertTrue(this.bandService.removeMember(new BandRemoveMemberBindingDTO(){{
+            setBandId("TEST_ID");
+            setUsername("papaHat");
+            setInstrument(InstrumentEnum.GUITAR);
+        }}));
+    }
+
+    @Test
+    public void addEvent_ReturnTrue() {
+        Event event = new Event(){{
+            setEventCategory(EventCategory.LIVE);
+            setEventType(EventType.PUBLIC);
+            setEventDate(LocalDateTime.now().plusHours(6));
+        }};
+        Mockito.when(this.mockedBandRepository.findById("TEST_ID")).thenReturn(java.util.Optional.ofNullable(testBand));
+        testBand.setEvents(new HashSet<>());
+        Assert.assertTrue(this.bandService.addEvent(event, "TEST_ID"));
+        Assert.assertTrue(testBand.getEvents().contains(event));
+
+    }
+
+    @Test
+    public void addLike_ReturnTrue() {
+        Like like = new Like(){{
+           setBand(testBand);
+           setUser(testUser);
+        }};
+        Mockito.when(this.mockedBandRepository.saveAndFlush(testBand)).thenReturn(testBand);
+        testBand.setLikes(new HashSet<>());
+        Assert.assertTrue(this.bandService.addLike(like, testBand));
+        Assert.assertTrue(testBand.getLikes().contains(like));
+
+    }
+
+    @Test
+    public void addPhoto_ReturnTrue() {
+        Mockito.when(this.mockedBandRepository.findById("TEST_ID")).thenReturn(java.util.Optional.ofNullable(testBand));
+        Assert.assertTrue(this.bandService.addPhoto("TEST_ID", "img"));
+    }
+
+    @Test
+    public void addPhoto_ReturnFalse() {
+        testBand.setImgUrl("test");
+        Mockito.when(this.mockedBandRepository.findById("TEST_ID")).thenReturn(java.util.Optional.ofNullable(testBand));
+        Assert.assertFalse(this.bandService.addPhoto("TEST_ID", null));
     }
 }

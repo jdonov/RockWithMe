@@ -65,10 +65,8 @@ public class PlayerSkillsServiceImpl implements PlayerSkillsService {
         return this.playerSkillsRepository.findAllByPlayer(playerId).stream()
                 .map(playerSkills -> {
                     PlayerSkillsServiceDTO ps = this.modelMapper.map(playerSkills, PlayerSkillsServiceDTO.class);
-//                    ps.setInstrument(playerSkills.getInstrument().getInstrument());
                     return ps;
                 })
-//                .sorted((p1,p2) -> p2.getLevel().compareTo(p1.getLevel()))
                 .collect(Collectors.toList());
     }
 

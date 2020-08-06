@@ -16,6 +16,9 @@ import rockwithme.app.service.BandService;
 import rockwithme.app.service.EventService;
 import rockwithme.app.service.impl.EventServiceImpl;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class EventServiceTest {
     private Event testEvent;
     private Band testBand;
