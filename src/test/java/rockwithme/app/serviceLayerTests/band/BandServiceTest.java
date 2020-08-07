@@ -167,6 +167,14 @@ public class BandServiceTest {
     }
 
     @Test
+    public void getCountOfAllBands_ShouldReturn_Correct() {
+        Mockito.when(this.mockedBandRepository.count())
+                .thenReturn(15L);
+        int actual = this.bandService.getTotalCountOfAllBAnds();
+        Assert.assertEquals(15, actual);
+    }
+
+    @Test
     public void getCountOfAllActiveBands_ShouldReturn_Correct() {
         Mockito.when(this.mockedBandRepository.findAllActive())
                 .thenReturn(15);
@@ -325,4 +333,5 @@ public class BandServiceTest {
         Mockito.when(this.mockedBandRepository.findById("TEST_ID")).thenReturn(java.util.Optional.ofNullable(testBand));
         Assert.assertFalse(this.bandService.addPhoto("TEST_ID", null));
     }
+
 }

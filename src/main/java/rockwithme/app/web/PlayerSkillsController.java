@@ -67,7 +67,7 @@ public class PlayerSkillsController {
     }
 
     @PutMapping("/update")
-    public ModelAndView updateSkill(@Valid @ModelAttribute PlayerSkillsAddDTO playerSkillsAddDTO,
+    public ModelAndView updateSkill(@Valid @ModelAttribute("addPlayerSkill") PlayerSkillsAddDTO playerSkillsAddDTO,
                                  BindingResult bindingResult,
                                  RedirectAttributes redirectAttributes,
                                  ModelAndView modelAndView) {
