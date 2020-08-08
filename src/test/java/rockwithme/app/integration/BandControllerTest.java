@@ -9,6 +9,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import rockwithme.app.model.binding.JoinRequestBindingDTO;
 import rockwithme.app.model.entity.*;
+import rockwithme.app.repository.BandRepository;
 
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class BandControllerTest {
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private BandRepository bandRepository;
 
     private User testUser;
     private PlayerSkills testPlayerSkills;
@@ -72,5 +76,14 @@ public class BandControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists("redirectErr", "joinBand"))
                 .andExpect(view().name("redirect:/bands/details/ID"));
+    }
+
+    @Test
+    @WithMockUser(username = "papaHat", authorities = {"PLAYER"})
+    public void getMyBandDetails() throws Exception {
+        Band band = this.bandRepository.findLastRegistered();
+        mockMvc.perform(get("/bands/myBands/" + band.getId()))
+                .andExpect(model().attributeExists("myBand", "removeMember", "removeProducer"))
+                .andExpect(view().name("my-band-details"));
     }
 }

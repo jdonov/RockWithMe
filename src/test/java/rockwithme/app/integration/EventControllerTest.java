@@ -13,8 +13,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import rockwithme.app.model.binding.EventCreateBindingDTO;
 import rockwithme.app.model.entity.*;
 import rockwithme.app.repository.BandRepository;
+import rockwithme.app.repository.EventRepository;
 import rockwithme.app.repository.PlayerSkillsRepository;
 import rockwithme.app.repository.UserRepository;
+import rockwithme.app.service.EventService;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -30,6 +32,9 @@ public class EventControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     private User testUser;
     private PlayerSkills testPlayerSkills;
@@ -100,6 +105,44 @@ public class EventControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("createEvent"))
                 .andExpect(view().name("event-create"));
+    }
+
+    @Test
+    @WithMockUser(username = "papaHat", authorities = {"PLAYER"})
+    public void postCreateEvent_BindingError() throws Exception {
+        EventCreateBindingDTO eventCreateBindingDTO = new EventCreateBindingDTO(){{
+            setBandId("ID");
+        }};
+        mockMvc.perform(
+                post("/bands/events/create").flashAttr("createEvent", eventCreateBindingDTO)
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists("createEvent"))
+                .andExpect(view().name("redirect:/bands/events/create?bandId=ID"));
+    }
+
+    @Test
+    @WithMockUser(username = "papaHat", authorities = {"PLAYER"})
+    public void getEventUpdate_OK() throws Exception {
+        Event event = this.eventRepository.findAll().stream().findFirst().orElse(null);
+        mockMvc.perform(
+                get("/bands/events/update").param("id", event.getId())
+        )
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("updateEvent"))
+                .andExpect(view().name("event-update"));
+    }
+
+    @Test
+    @WithMockUser(username = "papaHat", authorities = {"PLAYER"})
+    public void postEventUpdate_BindingErr() throws Exception {
+        Event event = this.eventRepository.findAll().stream().findFirst().orElse(null);
+        mockMvc.perform(
+                post("/bands/events/update/"+event.getId())
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists("updateEvent"))
+                .andExpect(view().name("redirect:/bands/events/update?id=" + event.getId()));
     }
 
 }
