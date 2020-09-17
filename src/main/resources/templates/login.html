@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <th:block th:include="~{/fragments/head::head('Login')}"></th:block>
+    <th:block th:include="~{fragments/head::head('Login')}"></th:block>
 </head>
 <body>
 <header>
-    <th:block th:include="~{/fragments/nav}"></th:block>
+    <th:block th:include="~{fragments/nav}"></th:block>
 </header>
 <form class="mx-auto w-25 p-3 rounded mt-5 border border-secondary my-bcg" th:method="POST" th:action="@{/login/authenticate}">
     <fieldset>
@@ -23,6 +23,6 @@
         </div>
     </fieldset>
 </form>
-<footer th:replace="~{/fragments/footer}"></footer>
+<footer th:replace="~{fragments/footer}"></footer>
 </body>
 </html>

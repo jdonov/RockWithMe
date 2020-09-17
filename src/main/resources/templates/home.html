@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <th:block th:include="~{/fragments/head::head('RockWithMe')}"></th:block>
+    <th:block th:include="~{fragments/head::head('RockWithMe')}"></th:block>
 </head>
 <body>
 <header>
-    <th:block th:include="~{/fragments/nav}"></th:block>
+    <th:block th:include="~{fragments/nav}"></th:block>
 </header>
 <main>
     <th:block th:unless="${bandOfTheWeek == null}" th:object="${bandOfTheWeek}">
@@ -56,6 +56,6 @@
 </main>
 
 
-<footer th:replace="~{/fragments/footer}"></footer>
+<footer th:replace="~{fragments/footer}"></footer>
 </body>
 </html>

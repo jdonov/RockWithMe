@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <th:block th:include="~{/fragments/head::head('RockWithMe')}"></th:block>
+    <th:block th:include="~{fragments/head::head('RockWithMe')}"></th:block>
 </head>
 <body>
 <header>
-    <th:block th:include="~{/fragments/nav}"></th:block>
+    <th:block th:include="~{fragments/nav}"></th:block>
 </header>
 <div class="container">
     <form class="form-group p-2 my-bcg rounded mt-2 border border-secondary text-light"
@@ -117,6 +117,6 @@
     </th:block>
 </div>
 
-<footer th:replace="~{/fragments/footer}"></footer>
+<footer th:replace="~{fragments/footer}"></footer>
 </body>
 </html>

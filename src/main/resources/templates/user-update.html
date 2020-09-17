@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <th:block th:include="~{/fragments/head::head('RWM - Profile')}"></th:block>
+    <th:block th:include="~{fragments/head::head('RWM - Profile')}"></th:block>
 </head>
 <body>
 <header>
-    <th:block th:include="~{/fragments/nav}"></th:block>
+    <th:block th:include="~{fragments/nav}"></th:block>
 </header>
 <form class="mx-auto w-25 p-3 my-bcg rounded mt-5 border border-secondary" th:object="${userUpdateDTO}"
       th:action="@{/users/update}"
@@ -109,7 +109,7 @@
         </fieldset>
     </form>
 </div>
-<footer th:replace="~{/fragments/footer}"></footer>
+<footer th:replace="~{fragments/footer}"></footer>
 <script type="text/javascript" th:src="@{/js/changePassUnhide.js}"></script>
 </body>
 </html>

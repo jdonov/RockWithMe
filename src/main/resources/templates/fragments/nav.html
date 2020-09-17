@@ -1,65 +1,74 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
 
-    <a sec:authorize="!isAuthenticated()" class="navbar-brand text-danger" th:href="@{/}"><strong>RockWithMe</strong></a>
+    <a sec:authorize="!isAuthenticated()" class="navbar-brand text-danger"
+       th:href="@{/}"><strong>RockWithMe</strong></a>
     <a sec:authorize="isAuthenticated()" class="navbar-brand text-danger" th:href="@{/home}"><strong>RockWithMe</strong></a>
     <a th:if="${error}" class="navbar-brand text-danger" th:href="@{/}"><strong>RockWithMe</strong></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
             aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarColor01">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item" sec:authorize="isAuthenticated()">
-                <a class="nav-link text-danger" th:href="@{/home}">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-danger" th:href="@{/about}">About</a>
-            </li>
-            <th:block sec:authorize="isAuthenticated()">
-                <li class="nav-item" sec:authorize="hasAnyAuthority('PLAYER', 'PRODUCER')">
-                    <a class="nav-link text-danger" th:href="@{/bands/myBands}">MyBands</a>
-                </li>
-                <li class="nav-item" sec:authorize="hasAuthority('PLAYER')">
-                    <a class="nav-link text-danger" th:href="@{/skills}">MySkills</a>
+    <div class="d-flex w-100 justify-content-between">
+        <div class="collapse navbar-collapse w-100" id="navbarColor01">
+            <ul class="navbar-nav mr-auto w-100">
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link text-danger" th:href="@{/home}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-danger" th:href="@{/users/update}">Profile</a>
+                    <a class="nav-link text-danger" th:href="@{/about}">About</a>
                 </li>
-                <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
-                    <a class="nav-link text-danger" th:href="@{/users/admin}">Admin</a>
-                </li>
-            </th:block>
-        </ul>
-    </div>
-    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
-        <ul class="navbar-nav ml-auto">
-            <th:block sec:authorize="!isAuthenticated()">
-                <li class="nav-item">
-                    <a class="nav-link text-danger" th:href="@{/login}">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-danger" th:href="@{/users/register}">Register</a>
-                </li>
-            </th:block>
-            <th:block th:if="${error}">
-                <li class="nav-item">
-                    <a class="nav-link text-danger" th:href="@{/login}">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-danger" th:href="@{/users/register}">Register</a>
-                </li>
-            </th:block>
-            <th:block sec:authorize="isAuthenticated()">
-                <li class="d-flex flex-column justify-content-center">
-                    <p class="mb-0 mr-3 text-danger" th:text="|Hello, ${user}|"></p>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-danger" th:href="@{/logout}">Logout</a>
-                </li>
-            </th:block>
-        </ul>
-        <form class="form-inline my-2 my-lg-0" th:action="@{/search}" th:method="GET">
-            <button class="btn btn-danger my-2 my-sm-0" type="submit">Search</button>
-        </form>
+                <th:block sec:authorize="isAuthenticated()">
+                    <li class="nav-item" sec:authorize="hasAnyAuthority('PLAYER', 'PRODUCER')">
+                        <a class="nav-link text-danger" th:href="@{/bands/myBands}">MyBands</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAuthority('PLAYER')">
+                        <a class="nav-link text-danger" th:href="@{/skills}">MySkills</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" th:href="@{/users/update}">Profile</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+                        <a class="nav-link text-danger" th:href="@{/users/admin}">Admin</a>
+                    </li>
+                </th:block>
+                <th:block sec:authorize="!isAuthenticated()">
+                    <li class="nav-item flex-grow-1"></li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" th:href="@{/login}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" th:href="@{/users/register}">Register</a>
+                    </li>
+                </th:block>
+                <th:block th:if="${error}">
+                    <li class="nav-item flex-grow-1"></li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" th:href="@{/login}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" th:href="@{/users/register}">Register</a>
+                    </li>
+                </th:block>
+                <th:block sec:authorize="isAuthenticated()">
+                    <li class="nav-item flex-grow-1"></li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" th:href="@{/logout}">Logout</a>
+                    </li>
+                </th:block>
+            </ul>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                <th:block sec:authorize="isAuthenticated()">
+
+                <span class="d-flex flex-column justify-content-center" id="name-greeting">
+                    <p class="mb-0 mr-3 text-danger text-nowrap" th:text="|Hello, ${user}|"></p>
+                </span>
+                </th:block>
+                <form class="form-inline my-2 my-lg-0" th:action="@{/search}" th:method="GET">
+                    <button class="btn btn-danger my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </ul>
+        </div>
     </div>
 </nav>

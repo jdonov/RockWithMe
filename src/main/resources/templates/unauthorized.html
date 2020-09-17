@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <th:block th:include="~{/fragments/head::head('RWM - Unauthorized')}"></th:block>
+    <th:block th:include="~{fragments/head::head('RWM - Unauthorized')}"></th:block>
 </head>
 <body>
 <header>
-    <th:block th:include="~{/fragments/nav}"></th:block>
+    <th:block th:include="~{fragments/nav}"></th:block>
 </header>
 <div class="container text-danger mt-5 mb-3 d-flex flex-column justify-content-center align-items-center">
     <h1>You don't have the required authorization!</h1>
 </div>
-<footer th:replace="~{/fragments/footer}"></footer>
+<footer th:replace="~{fragments/footer}"></footer>
 </body>
 </html>

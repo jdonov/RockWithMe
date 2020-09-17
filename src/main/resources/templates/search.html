@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <th:block th:include="~{/fragments/head::head('RockWithMe')}"></th:block>
+    <th:block th:include="~{fragments/head::head('RockWithMe')}"></th:block>
 </head>
 <body>
 <header>
-    <th:block th:include="~{/fragments/nav}"></th:block>
+    <th:block th:include="~{fragments/nav}"></th:block>
 </header>
 <div class="container">
     <div class="mt-2 mb-2 text-light">
@@ -98,7 +98,7 @@
     <div id="search-container"></div>
     <div id="pagination"></div>
 </div>
-<footer th:replace="~{/fragments/footer}"></footer>
+<footer th:replace="~{fragments/footer}"></footer>
 <script type="text/javascript" th:src="@{/js/bandSearch.js}"></script>
 <script type="text/javascript" th:src="@{/js/userSearch.js}"></script>
 </body>
